@@ -15,20 +15,41 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // Variables
     var centralManager : CBCentralManager!
     var count = 0
+    // How often to restart the scan (in seconds)
+    var scanEverySec = 0.5
+    var scanTimer = Timer()
     
+    // Primary setup
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Primary setup
         centralManager = CBCentralManager(delegate: self, queue: nil, options: nil)
     }
     
+    // Print a debug message
+    func printDebug(_ message : String){
+        print("[DEBUG] " + message)
+    }
+    
+    // Start scanning
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         if central.state == .poweredOn {
-            print("Bluetooth is on")
-            centralManager.scanForPeripherals(withServices: nil, options: nil)
+            printDebug("Bluetooth is on, starting scans")
+            scanTimerLoop()
         } else {
-            print("Bluetooth is off!")
+            printDebug("Bluetooth is off!")
         }
+    }
+    
+    // Calls restartScan() every scanEverySec seconds
+    func scanTimerLoop() {
+        scanTimer = Timer.scheduledTimer(timeInterval: scanEverySec, target: self, selector: #selector(ViewController.restartScan), userInfo: nil, repeats: true)
+    }
+    
+    // Restarts the scan
+    @objc func restartScan() {
+        printDebug("Restarting scan")
+        centralManager.stopScan()
+        centralManager.scanForPeripherals(withServices: nil, options: nil)
     }
     
     // Prints timestamp
