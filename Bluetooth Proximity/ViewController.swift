@@ -8,9 +8,8 @@
 
 import UIKit
 import CoreBluetooth
-import CoreLocation
 
-class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationManagerDelegate {
+class ViewController: UIViewController, CBCentralManagerDelegate {
     
     // Variables
     var centralManager : CBCentralManager!
