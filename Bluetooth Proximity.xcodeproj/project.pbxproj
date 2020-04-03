@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		75B0EFCF2436D17800482BBC /* corona.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 75B0EFCE2436D17800482BBC /* corona.jpg */; };
+		757BF3612437FE0D000C3736 /* icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 757BF3602437FE0D000C3736 /* icon.jpg */; };
 		75C515DF243697FE0071BE11 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C515DE243697FE0071BE11 /* AppDelegate.swift */; };
 		75C515E1243697FE0071BE11 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C515E0243697FE0071BE11 /* ViewController.swift */; };
 		75C515E4243697FE0071BE11 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75C515E2243697FE0071BE11 /* Main.storyboard */; };
@@ -36,7 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		75B0EFCE2436D17800482BBC /* corona.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = corona.jpg; path = ../../corona.jpg; sourceTree = "<group>"; };
+		757BF3602437FE0D000C3736 /* icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = icon.jpg; sourceTree = "<group>"; };
 		75C515DB243697FE0071BE11 /* Bluetooth Proximity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bluetooth Proximity.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		75C515DE243697FE0071BE11 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75C515E0243697FE0071BE11 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -81,6 +81,7 @@
 		75C515D2243697FE0071BE11 = {
 			isa = PBXGroup;
 			children = (
+				757BF3602437FE0D000C3736 /* icon.jpg */,
 				75C515DD243697FE0071BE11 /* Bluetooth Proximity */,
 				75C515F5243697FF0071BE11 /* Bluetooth ProximityTests */,
 				75C51600243697FF0071BE11 /* Bluetooth ProximityUITests */,
@@ -107,7 +108,6 @@
 				75C515E8243697FE0071BE11 /* Assets.xcassets */,
 				75C515EA243697FE0071BE11 /* LaunchScreen.storyboard */,
 				75C515ED243697FE0071BE11 /* Info.plist */,
-				75B0EFCE2436D17800482BBC /* corona.jpg */,
 				75C515E5243697FE0071BE11 /* Bluetooth_Proximity.xcdatamodeld */,
 			);
 			path = "Bluetooth Proximity";
@@ -235,10 +235,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				757BF3612437FE0D000C3736 /* icon.jpg in Resources */,
 				75C515EC243697FE0071BE11 /* LaunchScreen.storyboard in Resources */,
 				75C515E9243697FE0071BE11 /* Assets.xcassets in Resources */,
 				75C515E4243697FE0071BE11 /* Main.storyboard in Resources */,
-				75B0EFCF2436D17800482BBC /* corona.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

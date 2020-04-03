@@ -6,6 +6,13 @@
 //  Copyright © 2020 Michael Wentz. All rights reserved.
 //
 
+// TODO
+// - Filter out bad RSSIs (>0 ?)
+// - Add hysteresis to decision
+// - Add range estimation
+// - Update table to replace "far" decisions with "close" ones (if we're out of room)
+// - Log GPS, accelerometer, other sensors on a second interval
+
 import UIKit
 import CoreBluetooth
 
@@ -188,27 +195,25 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
             }
         }
         
-        // TODO
-        // - Add hysterisis
-        // - Replace far detections with close ones if they can't be displayed
-
         // Update screen
         countText.text = count.description
-        uuidLabelArr[uuidIdx!].text = String(uuid.prefix(4))
-        rssiLabelArr[uuidIdx!].text = RSSI.description
-        let mNstr = "(\(s)/\(nArr[uuidIdx!]))"
-        if detArr[uuidIdx!] == 0 {
-            proximityLabelArr[uuidIdx!].text = "Far " + mNstr
-            proximityLabelArr[uuidIdx!].textColor = UIColor.green
-        } else if detArr[uuidIdx!] == 1 {
-            proximityLabelArr[uuidIdx!].text = "Far? " + mNstr
-            proximityLabelArr[uuidIdx!].textColor = UIColor.orange
-        } else if detArr[uuidIdx!] == 2 {
-            proximityLabelArr[uuidIdx!].text = "Close? " + mNstr
-            proximityLabelArr[uuidIdx!].textColor = UIColor.yellow
-        } else if detArr[uuidIdx!] == 3 {
-            proximityLabelArr[uuidIdx!].text = "Close " + mNstr
-            proximityLabelArr[uuidIdx!].textColor = UIColor.red
+        if uuidIdx! < uuidLabelArr.count {
+            uuidLabelArr[uuidIdx!].text = String(uuid.prefix(4))
+            rssiLabelArr[uuidIdx!].text = RSSI.description
+            let mNstr = "(\(s)/\(nArr[uuidIdx!]))"
+            if detArr[uuidIdx!] == 0 {
+                proximityLabelArr[uuidIdx!].text = "Far " + mNstr
+                proximityLabelArr[uuidIdx!].textColor = UIColor.green
+            } else if detArr[uuidIdx!] == 1 {
+                proximityLabelArr[uuidIdx!].text = "Far? " + mNstr
+                proximityLabelArr[uuidIdx!].textColor = UIColor.orange
+            } else if detArr[uuidIdx!] == 2 {
+                proximityLabelArr[uuidIdx!].text = "Close? " + mNstr
+                proximityLabelArr[uuidIdx!].textColor = UIColor.yellow
+            } else if detArr[uuidIdx!] == 3 {
+                proximityLabelArr[uuidIdx!].text = "Close " + mNstr
+                proximityLabelArr[uuidIdx!].textColor = UIColor.red
+            }
         }
 
     }
