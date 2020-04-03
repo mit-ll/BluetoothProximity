@@ -7,7 +7,8 @@
 //
 
 // TODO
-// - Filter out bad RSSIs (>0 ?)
+// - Fix dectector - store N measurements, not M
+// - Put M and N parameters on the screen
 // - Add hysteresis to decision
 // - Add range estimation
 // - Update table to replace "far" decisions with "close" ones (if we're out of room)
@@ -168,18 +169,24 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
         //      1 - not enough info, but suspect no detection
         //      2 - not enough info, but suspect detection
         //      3 - detection
+        
+        // Number of measurements retained for each device
         if nArr[uuidIdx!] < N {
             nArr[uuidIdx!] += 1
         }
-        if RSSI.intValue >= rssiThresh {
+        // Filter out erroneous RSSI readings. Sometimes there are very large values, or
+        // values that are lower than the receiver sensitivity.
+        if (RSSI.intValue >= rssiThresh) && (RSSI.intValue < 0) && (RSSI.intValue > -110) {
             mMtx[uuidIdx!][mPtr[uuidIdx!]] = 1
         } else {
             mMtx[uuidIdx!][mPtr[uuidIdx!]] = 0
         }
+        // Wrap pointer to the buffer
         mPtr[uuidIdx!] += 1
         if mPtr[uuidIdx!] == M {
             mPtr[uuidIdx!] = 0
         }
+        // See if there are M positives in N samples
         let s = mMtx[uuidIdx!].reduce(0, +)
         if s >= M {
             if nArr[uuidIdx!] == N {
