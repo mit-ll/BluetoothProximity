@@ -90,15 +90,17 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
     // Start scanning
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         if central.state == .poweredOn {
-            statusText.text = "Running!"
+            statusText.text = "Running"
+            statusText.textColor = UIColor.green
             if printDebug {
                 print("Bluetooth is on, starting scans")
             }
             scanTimerLoop()
         } else {
-            statusText.text = "Bluetooth is off!"
+            statusText.text = "Bluetooth is off"
+            statusText.textColor = UIColor.red
             if printDebug {
-                print("Bluetooth is off!")
+                print("Bluetooth is off")
             }
         }
     }
@@ -185,6 +187,10 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
                 detArr[uuidIdx!] = 1
             }
         }
+        
+        // TODO
+        // - Add hysterisis
+        // - Replace far detections with close ones if they can't be displayed
 
         // Update screen
         countText.text = count.description
@@ -192,7 +198,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
         rssiLabelArr[uuidIdx!].text = RSSI.description
         let mNstr = "(\(s)/\(nArr[uuidIdx!]))"
         if detArr[uuidIdx!] == 0 {
-            proximityLabelArr[uuidIdx!].text = "Far! " + mNstr
+            proximityLabelArr[uuidIdx!].text = "Far " + mNstr
             proximityLabelArr[uuidIdx!].textColor = UIColor.green
         } else if detArr[uuidIdx!] == 1 {
             proximityLabelArr[uuidIdx!].text = "Far? " + mNstr
@@ -201,7 +207,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
             proximityLabelArr[uuidIdx!].text = "Close? " + mNstr
             proximityLabelArr[uuidIdx!].textColor = UIColor.yellow
         } else if detArr[uuidIdx!] == 3 {
-            proximityLabelArr[uuidIdx!].text = "Close! " + mNstr
+            proximityLabelArr[uuidIdx!].text = "Close " + mNstr
             proximityLabelArr[uuidIdx!].textColor = UIColor.red
         }
 
