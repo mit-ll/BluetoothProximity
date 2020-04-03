@@ -14,8 +14,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
     // Parameters
     var scanEverySec = 0.5          // How often the scan is restarted  (seconds)
     var rssiThresh = -65            // Threshold RSSI, dBm
-    var M = 20                      // Samples that must cross threshold
-    var N = 50                      // Total number of samples
+    var M = 5                       // Samples that must cross threshold
+    var N = 20                      // Total number of samples
     
     // Debugging
     var printDebug = false
@@ -28,11 +28,12 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
     var mMtx : [[Int]] = []
     var mPtr : [Int] = []
     var nArr : [Int] = []
-    var detArr : [Bool] = []
+    var detArr : [Int] = []
     
     // Outlets
     @IBOutlet weak var statusText: UILabel!
     @IBOutlet weak var countText: UILabel!
+    @IBOutlet weak var rssiText: UILabel!
     
     @IBOutlet weak var uuidLabel0: UILabel!
     @IBOutlet weak var uuidLabel1: UILabel!
@@ -78,6 +79,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
         uuidLabelArr = [uuidLabel0, uuidLabel1, uuidLabel2, uuidLabel3, uuidLabel4, uuidLabel5, uuidLabel6, uuidLabel7, uuidLabel8, uuidLabel9]
         rssiLabelArr = [rssiLabel0, rssiLabel1, rssiLabel2, rssiLabel3, rssiLabel4, rssiLabel5, rssiLabel6, rssiLabel7, rssiLabel8, rssiLabel9]
         proximityLabelArr = [proximityLabel0, proximityLabel1, proximityLabel2, proximityLabel3, proximityLabel4, proximityLabel5, proximityLabel6, proximityLabel7, proximityLabel8, proximityLabel9]
+        
+        // Initialize threshold
+        rssiText.text = rssiThresh.description
         
         // Make the bluetooth manager
         centralManager = CBCentralManager(delegate: self, queue: nil, options: nil)
@@ -145,12 +149,16 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
             mMtx.append([Int](repeating: 0, count: M))
             mPtr.append(0)
             nArr.append(0)
-            detArr.append(false)
+            detArr.append(0)
         }
         
         // M-of-N detector. This makes a decision for each sample based on the threshold.
         // If there are at least N samples, and M of the decisions declare detection, then
-        // overall detection is declared.
+        // overall detection is declared. Possible detection values:
+        //      0 - no detection
+        //      1 - not enough info, but suspect no detection
+        //      2 - not enough info, but suspect detection
+        //      3 - detection
         if nArr[uuidIdx!] < N {
             nArr[uuidIdx!] += 1
         }
@@ -164,22 +172,37 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
             mPtr[uuidIdx!] = 0
         }
         let s = mMtx[uuidIdx!].reduce(0, +)
-        if (s >= M) && (nArr[uuidIdx!] == N) {
-            detArr[uuidIdx!] = true
+        if s >= M {
+            if nArr[uuidIdx!] == N {
+                detArr[uuidIdx!] = 3
+            } else {
+                detArr[uuidIdx!] = 2
+            }
         } else {
-            detArr[uuidIdx!] = false
+            if nArr[uuidIdx!] == N {
+                detArr[uuidIdx!] = 0
+            } else {
+                detArr[uuidIdx!] = 1
+            }
         }
-        
+
         // Update screen
         countText.text = count.description
         uuidLabelArr[uuidIdx!].text = String(uuid.prefix(4))
         rssiLabelArr[uuidIdx!].text = RSSI.description
-        if detArr[uuidIdx!] {
-            proximityLabelArr[uuidIdx!].text = "Close"
-            proximityLabelArr[uuidIdx!].textColor = UIColor.red
-        } else {
-            proximityLabelArr[uuidIdx!].text = "Far"
+        let mNstr = "(\(s)/\(nArr[uuidIdx!]))"
+        if detArr[uuidIdx!] == 0 {
+            proximityLabelArr[uuidIdx!].text = "Far! " + mNstr
             proximityLabelArr[uuidIdx!].textColor = UIColor.green
+        } else if detArr[uuidIdx!] == 1 {
+            proximityLabelArr[uuidIdx!].text = "Far? " + mNstr
+            proximityLabelArr[uuidIdx!].textColor = UIColor.orange
+        } else if detArr[uuidIdx!] == 2 {
+            proximityLabelArr[uuidIdx!].text = "Close? " + mNstr
+            proximityLabelArr[uuidIdx!].textColor = UIColor.yellow
+        } else if detArr[uuidIdx!] == 3 {
+            proximityLabelArr[uuidIdx!].text = "Close! " + mNstr
+            proximityLabelArr[uuidIdx!].textColor = UIColor.red
         }
 
     }
