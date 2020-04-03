@@ -7,8 +7,6 @@
 //
 
 // TODO
-// - Fix dectector - store N measurements, not M
-// - Put M and N parameters on the screen
 // - Add hysteresis to decision
 // - Add range estimation
 // - Update table to replace "far" decisions with "close" ones (if we're out of room)
@@ -21,9 +19,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
     
     // Parameters
     var scanEverySec = 0.5          // How often the scan is restarted  (seconds)
-    var rssiThresh = -65            // Threshold RSSI, dBm
     var M = 5                       // Samples that must cross threshold
     var N = 20                      // Total number of samples
+    var rssiThresh = -65            // Threshold RSSI
     
     // Debugging
     var printDebug = false
@@ -33,8 +31,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
     var count = 0
     var scanTimer = Timer()
     var uuids : [String] = []
-    var mMtx : [[Int]] = []
-    var mPtr : [Int] = []
+    var mtx : [[Int]] = []
+    var mtxPtr : [Int] = []
     var nArr : [Int] = []
     var detArr : [Int] = []
     
@@ -42,6 +40,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
     @IBOutlet weak var statusText: UILabel!
     @IBOutlet weak var countText: UILabel!
     @IBOutlet weak var rssiText: UILabel!
+    @IBOutlet weak var nText: UILabel!
+    @IBOutlet weak var mText: UILabel!
     
     @IBOutlet weak var uuidLabel0: UILabel!
     @IBOutlet weak var uuidLabel1: UILabel!
@@ -88,7 +88,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
         rssiLabelArr = [rssiLabel0, rssiLabel1, rssiLabel2, rssiLabel3, rssiLabel4, rssiLabel5, rssiLabel6, rssiLabel7, rssiLabel8, rssiLabel9]
         proximityLabelArr = [proximityLabel0, proximityLabel1, proximityLabel2, proximityLabel3, proximityLabel4, proximityLabel5, proximityLabel6, proximityLabel7, proximityLabel8, proximityLabel9]
         
-        // Initialize threshold
+        // Display parameters
+        nText.text = N.description
+        mText.text = M.description
         rssiText.text = rssiThresh.description
         
         // Make the bluetooth manager
@@ -156,8 +158,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
         if uuidIdx == nil {
             uuids.append(uuid)
             uuidIdx = uuids.count - 1
-            mMtx.append([Int](repeating: 0, count: M))
-            mPtr.append(0)
+            mtx.append([Int](repeating: 0, count: N))
+            mtxPtr.append(0)
             nArr.append(0)
             detArr.append(0)
         }
@@ -170,24 +172,24 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
         //      2 - not enough info, but suspect detection
         //      3 - detection
         
-        // Number of measurements retained for each device
+        // Count up to N measurements for each device
         if nArr[uuidIdx!] < N {
             nArr[uuidIdx!] += 1
         }
         // Filter out erroneous RSSI readings. Sometimes there are very large values, or
         // values that are lower than the receiver sensitivity.
         if (RSSI.intValue >= rssiThresh) && (RSSI.intValue < 0) && (RSSI.intValue > -110) {
-            mMtx[uuidIdx!][mPtr[uuidIdx!]] = 1
+            mtx[uuidIdx!][mtxPtr[uuidIdx!]] = 1
         } else {
-            mMtx[uuidIdx!][mPtr[uuidIdx!]] = 0
+            mtx[uuidIdx!][mtxPtr[uuidIdx!]] = 0
         }
-        // Wrap pointer to the buffer
-        mPtr[uuidIdx!] += 1
-        if mPtr[uuidIdx!] == M {
-            mPtr[uuidIdx!] = 0
+        // Wrap pointer to the buffer when we reach N measurements
+        mtxPtr[uuidIdx!] += 1
+        if mtxPtr[uuidIdx!] == N {
+            mtxPtr[uuidIdx!] = 0
         }
-        // See if there are M positives in N samples
-        let s = mMtx[uuidIdx!].reduce(0, +)
+        // See if there are M positives within the N samples
+        let s = mtx[uuidIdx!].reduce(0, +)
         if s >= M {
             if nArr[uuidIdx!] == N {
                 detArr[uuidIdx!] = 3
