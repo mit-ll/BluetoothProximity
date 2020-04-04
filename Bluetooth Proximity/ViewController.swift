@@ -10,19 +10,21 @@
 // - Add hysteresis to decision
 // - Add range estimation
 // - Update table to replace "far" decisions with "close" ones (if we're out of room)
-// - Log other sensors: location (GPS)
 
 import UIKit
 import CoreBluetooth
 import CoreMotion
+import CoreLocation
 
-class ViewController: UIViewController, CBCentralManagerDelegate {
+class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationManagerDelegate {
     
-    // Parameters
-    var scanEverySec = 0.5          // How often the scan is restarted  (seconds)
+    // Detector parameters
     var M = 5                       // Samples that must cross threshold
     var N = 20                      // Total number of samples
     var rssiThresh = -65            // Threshold RSSI
+    
+    // Sensor parameters
+    var scanRateHz = 2.0            // Number of times per second the Bluetooth scan is restarted
     var accelRateHz = 4.0           // Number of times per second to get accelerometer data
     var gyroRateHz = 4.0            // Number of times per second to get gyroscope data
     
@@ -30,12 +32,14 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
     var enableProximity = true
     var enableAccel = true
     var enableGyto = true
+    var enableLoc = true
     
     // Debugging
     var printDebug = true
     
     // Variables
     var centralManager : CBCentralManager!
+    var locationManager : CLLocationManager!
     var motionManager = CMMotionManager()
     var scanTimer = Timer()
     var accelTimer = Timer()
@@ -116,6 +120,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
         if enableGyto {
             startGyroscope()
         }
+        if enableLoc {
+            startLocation()
+        }
     }
     
     // Start scanning
@@ -136,9 +143,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
         }
     }
     
-    // Calls restartScan() every scanEverySec seconds
+    // Calls restartScan() periodically
     func scanTimerLoop() {
-        scanTimer = Timer.scheduledTimer(timeInterval: scanEverySec, target: self, selector: #selector(ViewController.restartScan), userInfo: nil, repeats: true)
+        scanTimer = Timer.scheduledTimer(timeInterval: (1.0/scanRateHz), target: self, selector: #selector(ViewController.restartScan), userInfo: nil, repeats: true)
     }
     
     // Restarts the scan
@@ -204,7 +211,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
         accelTimer = Timer.scheduledTimer(timeInterval: (1.0/gyroRateHz), target: self, selector: #selector(ViewController.getGyroscope), userInfo: nil, repeats: true)
     }
     
-    // Gets accelerometer data
+    // Gets gyroscope data
     @objc func getGyroscope() {
         let data = self.motionManager.gyroData
         if printDebug {
@@ -214,6 +221,37 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
             print("y: \(data!.rotationRate.y.description)")
             print("z: \(data!.rotationRate.z.description)")
         }
+    }
+    
+    // Start getting location updates
+    func startLocation() {
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestAlwaysAuthorization()
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.startUpdatingLocation()
+        }
+    }
+    
+    // Got a new location
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let userLocation:CLLocation = locations[0] as CLLocation
+        if printDebug {
+            print("[GPS]")
+            printTime()
+            print("Latitude : \(userLocation.coordinate.latitude)")
+            print("Longitude : \(userLocation.coordinate.longitude)")
+            print("Altitude : \(userLocation.altitude)")
+            print("Speed : \(userLocation.speed)")
+            print("Course : \(userLocation.course)")
+        }
+    }
+    
+    // Deal with a location error
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error)
+    {
+        print("Location error : \(error)")
     }
     
     // Main function for Bluetooth processing
