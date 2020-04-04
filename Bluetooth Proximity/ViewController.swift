@@ -10,7 +10,7 @@
 // - Add hysteresis to decision
 // - Add range estimation
 // - Update table to replace "far" decisions with "close" ones (if we're out of room)
-// - Log other sensors: location (GPS), gyroscope
+// - Log other sensors: location (GPS)
 
 import UIKit
 import CoreBluetooth
@@ -24,6 +24,12 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
     var N = 20                      // Total number of samples
     var rssiThresh = -65            // Threshold RSSI
     var accelRateHz = 4.0           // Number of times per second to get accelerometer data
+    var gyroRateHz = 4.0            // Number of times per second to get gyroscope data
+    
+    // Enable/disable sensors
+    var enableProximity = true
+    var enableAccel = true
+    var enableGyto = true
     
     // Debugging
     var printDebug = true
@@ -101,8 +107,15 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
         centralManager = CBCentralManager(delegate: self, queue: nil, options: nil)
         
         // Start sensors
-        startProximitySensor()
-        startAccelerometers()
+        if enableProximity {
+            startProximitySensor()
+        }
+        if enableAccel {
+            startAccelerometers()
+        }
+        if enableGyto {
+            startGyroscope()
+        }
     }
     
     // Start scanning
@@ -181,6 +194,25 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
             print("x: \(data!.acceleration.x.description)")
             print("y: \(data!.acceleration.y.description)")
             print("z: \(data!.acceleration.z.description)")
+        }
+    }
+    
+    // Starts the gyroscope sensor
+    func startGyroscope() {
+        motionManager.gyroUpdateInterval = (1.0/gyroRateHz)
+        motionManager.startGyroUpdates()
+        accelTimer = Timer.scheduledTimer(timeInterval: (1.0/gyroRateHz), target: self, selector: #selector(ViewController.getGyroscope), userInfo: nil, repeats: true)
+    }
+    
+    // Gets accelerometer data
+    @objc func getGyroscope() {
+        let data = self.motionManager.gyroData
+        if printDebug {
+            print("[Gyroscope]")
+            printTime()
+            print("x: \(data!.rotationRate.x.description)")
+            print("y: \(data!.rotationRate.y.description)")
+            print("z: \(data!.rotationRate.z.description)")
         }
     }
     
