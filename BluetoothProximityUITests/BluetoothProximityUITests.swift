@@ -1,6 +1,6 @@
 //
-//  Bluetooth_ProximityUITests.swift
-//  Bluetooth ProximityUITests
+//  BluetoothProximityUITests.swift
+//  BluetoothProximityUITests
 //
 //  Created by Michael Wentz on 4/2/20.
 //  Copyright © 2020 Michael Wentz. All rights reserved.
@@ -8,7 +8,7 @@
 
 import XCTest
 
-class Bluetooth_ProximityUITests: XCTestCase {
+class BluetoothProximityUITests: XCTestCase {
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.

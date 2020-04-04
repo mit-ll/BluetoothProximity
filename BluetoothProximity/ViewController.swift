@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  Bluetooth Proximity
+//  BluetoothProximity
 //
 //  Created by Michael Wentz on 4/2/20.
 //  Copyright © 2020 Michael Wentz. All rights reserved.

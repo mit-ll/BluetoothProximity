@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:Bluetooth Proximity.xcodeproj">
+      location = "self:/Users/mjw/Desktop/Bluetooth Proximity/BluetoothProximity.xcodeproj">
    </FileRef>
 </Workspace>
