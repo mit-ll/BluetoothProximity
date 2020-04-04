@@ -14,6 +14,7 @@
 
 import UIKit
 import CoreBluetooth
+import CoreMotion
 
 class ViewController: UIViewController, CBCentralManagerDelegate {
     
@@ -22,14 +23,17 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
     var M = 5                       // Samples that must cross threshold
     var N = 20                      // Total number of samples
     var rssiThresh = -65            // Threshold RSSI
+    var accelRateHz = 4.0           // Number of times per second to get accelerometer data
     
     // Debugging
     var printDebug = true
     
     // Variables
     var centralManager : CBCentralManager!
-    var count = 0
+    var motionManager = CMMotionManager()
     var scanTimer = Timer()
+    var accelTimer = Timer()
+    var count = 0
     var uuids : [String] = []
     var mtx : [[Int]] = []
     var mtxPtr : [Int] = []
@@ -96,8 +100,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
         // Make the bluetooth manager
         centralManager = CBCentralManager(delegate: self, queue: nil, options: nil)
         
-        // Activate the proximity sensor
-        setupProximitySensor()
+        // Start sensors
+        startProximitySensor()
+        startAccelerometers()
     }
     
     // Start scanning
@@ -142,8 +147,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
         print("Time : " + formatter.string(from: date))
     }
     
-    // Sets up the proximity sensor
-    func setupProximitySensor() {
+    // Starts the proximity sensor
+    func startProximitySensor() {
         let device = UIDevice.current
         device.isProximityMonitoringEnabled = true
         if device.isProximityMonitoringEnabled {
@@ -156,6 +161,23 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
         print("[Proximity]")
         printTime()
         print("\(UIDevice.current.proximityState)")
+    }
+    
+    // Starts the accelerometer sensors
+    func startAccelerometers() {
+        motionManager.accelerometerUpdateInterval = (1.0/accelRateHz)
+        motionManager.startAccelerometerUpdates()
+        accelTimer = Timer.scheduledTimer(timeInterval: (1.0/accelRateHz), target: self, selector: #selector(ViewController.getAccelerometers), userInfo: nil, repeats: true)
+    }
+    
+    // Gets accelerometer data
+    @objc func getAccelerometers() {
+        let data = self.motionManager.accelerometerData
+        print("[Accelerometer]")
+        printTime()
+        print("x: \(data!.acceleration.x.description)")
+        print("y: \(data!.acceleration.y.description)")
+        print("z: \(data!.acceleration.z.description)")
     }
     
     // Main function for Bluetooth processing
