@@ -10,7 +10,7 @@
 // - Add hysteresis to decision
 // - Add range estimation
 // - Update table to replace "far" decisions with "close" ones (if we're out of room)
-// - Log other sensors: location (GPS), ambient light, accelerometer, gyroscope
+// - Log other sensors: location (GPS), gyroscope
 
 import UIKit
 import CoreBluetooth
@@ -158,9 +158,11 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
     
     // Print when proximity sensor is activated
     @objc func proximityChanged(notification: NSNotification) {
-        print("[Proximity]")
-        printTime()
-        print("\(UIDevice.current.proximityState)")
+        if printDebug {
+            print("[Proximity]")
+            printTime()
+            print("\(UIDevice.current.proximityState)")
+        }
     }
     
     // Starts the accelerometer sensors
@@ -173,11 +175,13 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
     // Gets accelerometer data
     @objc func getAccelerometers() {
         let data = self.motionManager.accelerometerData
-        print("[Accelerometer]")
-        printTime()
-        print("x: \(data!.acceleration.x.description)")
-        print("y: \(data!.acceleration.y.description)")
-        print("z: \(data!.acceleration.z.description)")
+        if printDebug {
+            print("[Accelerometer]")
+            printTime()
+            print("x: \(data!.acceleration.x.description)")
+            print("y: \(data!.acceleration.y.description)")
+            print("z: \(data!.acceleration.z.description)")
+        }
     }
     
     // Main function for Bluetooth processing
