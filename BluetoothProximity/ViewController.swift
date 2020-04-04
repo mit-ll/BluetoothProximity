@@ -6,11 +6,6 @@
 //  Copyright © 2020 Michael Wentz. All rights reserved.
 //
 
-// TODO
-// - Add hysteresis to decision
-// - Add range estimation
-// - Update table to replace "far" decisions with "close" ones (if we're out of room)
-
 import UIKit
 import CoreBluetooth
 import CoreMotion
