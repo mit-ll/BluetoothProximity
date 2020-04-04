@@ -18,6 +18,10 @@ import CoreLocation
 
 class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationManagerDelegate {
     
+    // -----------------------------------------------------------------------------
+    // Parameters/options
+    // -----------------------------------------------------------------------------
+    
     // Detector parameters
     var M = 5                       // Samples that must cross threshold
     var N = 20                      // Total number of samples
@@ -34,23 +38,36 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     var enableGyto = true
     var enableLoc = true
     
-    // Debugging
-    var printDebug = true
+    // Logging on device
+    var logToFile = true
+    var logFileName = "log.txt"
     
+    // Printing to console
+    var logToConsole = false
+    
+    // -----------------------------------------------------------------------------
     // Variables
+    // -----------------------------------------------------------------------------
+    
     var centralManager : CBCentralManager!
     var locationManager : CLLocationManager!
     var motionManager = CMMotionManager()
+    var fileManager = FileManager.default
+    var fileUpdater : FileHandle!
     var scanTimer = Timer()
     var accelTimer = Timer()
     var count = 0
+    var logFile : URL!
     var uuids : [String] = []
     var mtx : [[Int]] = []
     var mtxPtr : [Int] = []
     var nArr : [Int] = []
     var detArr : [Int] = []
     
+    // -----------------------------------------------------------------------------
     // Outlets
+    // -----------------------------------------------------------------------------
+    
     @IBOutlet weak var statusText: UILabel!
     @IBOutlet weak var countText: UILabel!
     @IBOutlet weak var rssiText: UILabel!
@@ -93,6 +110,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     @IBOutlet weak var proximityLabel9: UILabel!
     var proximityLabelArr : [UILabel] = []
     
+    @IBOutlet weak var shareButton: UIButton!
+    
     // -----------------------------------------------------------------------------
     // Primary setup
     // -----------------------------------------------------------------------------
@@ -109,6 +128,18 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         nText.text = N.description
         mText.text = M.description
         rssiText.text = rssiThresh.description
+        
+        // Create the log file if necessary
+        if logToFile {
+            logFile = getDir().appendingPathComponent(logFileName)
+            fileManager.createFile(atPath: logFile.path, contents: nil, attributes: nil)
+            do {
+                try fileUpdater = FileHandle(forUpdating: logFile)
+            }
+            catch {
+                print("Error making file updater")
+            }
+        }
         
         // Make the bluetooth manager
         centralManager = CBCentralManager(delegate: self, queue: nil, options: nil)
@@ -132,12 +163,46 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // General helpers
     // -----------------------------------------------------------------------------
     
-    // Prints timestamp
-    func printTime() {
+    // Gets directory to save data
+    func getDir() -> URL {
+        let paths = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
+    }
+    
+    // Gets timestamp
+    func getTimestamp() -> String {
         let date = Date()
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
-        print("Time : " + formatter.string(from: date))
+        return formatter.string(from: date)
+    }
+    
+    // Writes to log file
+    func writeToLogFile(_ s : String) {
+        // Add a line break and write to the end of the file
+        let s = s + "\n"
+        fileUpdater.seekToEndOfFile()
+        fileUpdater.write(s.data(using: .utf8)!)
+    }
+    
+    // Helper for logging to console and/or file
+    func writeToLog(_ s : String) {
+        if logToConsole {
+            print(s)
+        }
+        if logToFile {
+            writeToLogFile(s)
+        }
+    }
+    
+    // Shares the log file when button is pressed - only if we're logging to file
+    @IBAction func shareButtonPressed(_ sender: Any) {
+        print("Share button pressed")
+        if logToFile {
+            let activityItem:NSURL = NSURL(fileURLWithPath:logFile.path)
+            let activityVC = UIActivityViewController(activityItems: [activityItem], applicationActivities: nil)
+            self.present(activityVC, animated: true, completion: nil)
+        }
     }
     
     // -----------------------------------------------------------------------------
@@ -153,13 +218,11 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         }
     }
     
-    // Print when proximity sensor is activated
+    // If proximity sensor is activated
     @objc func proximityChanged(notification: NSNotification) {
-        if printDebug {
-            print("[Proximity]")
-            printTime()
-            print("\(UIDevice.current.proximityState)")
-        }
+        let proxState = UIDevice.current.proximityState ? 1 : 0
+        let proxStr = "Prox," + getTimestamp() + ",\(proxState)"
+        writeToLog(proxStr)
     }
     
     // -----------------------------------------------------------------------------
@@ -176,13 +239,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // Gets accelerometer data
     @objc func getAccelerometers() {
         let data = self.motionManager.accelerometerData
-        if printDebug {
-            print("[Accelerometer]")
-            printTime()
-            print("x: \(data!.acceleration.x.description)")
-            print("y: \(data!.acceleration.y.description)")
-            print("z: \(data!.acceleration.z.description)")
-        }
+        let accelStr = "Accel," + getTimestamp() + ",\(data!.acceleration.x.description)" + ",\(data!.acceleration.y.description)" + ",\(data!.acceleration.z.description)"
+        writeToLog(accelStr)
     }
     
     // -----------------------------------------------------------------------------
@@ -199,13 +257,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // Gets gyroscope data
     @objc func getGyroscope() {
         let data = self.motionManager.gyroData
-        if printDebug {
-            print("[Gyroscope]")
-            printTime()
-            print("x: \(data!.rotationRate.x.description)")
-            print("y: \(data!.rotationRate.y.description)")
-            print("z: \(data!.rotationRate.z.description)")
-        }
+        let gyroStr = "Gyro," + getTimestamp() + ",\(data!.rotationRate.x.description)" + ",\(data!.rotationRate.y.description)" + ",\(data!.rotationRate.z.description)"
+        writeToLog(gyroStr)
     }
     
     // -----------------------------------------------------------------------------
@@ -226,15 +279,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // Got a new location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let userLocation:CLLocation = locations[0] as CLLocation
-        if printDebug {
-            print("[GPS]")
-            printTime()
-            print("Latitude : \(userLocation.coordinate.latitude)")
-            print("Longitude : \(userLocation.coordinate.longitude)")
-            print("Altitude : \(userLocation.altitude)")
-            print("Speed : \(userLocation.speed)")
-            print("Course : \(userLocation.course)")
-        }
+        let locStr = "Loc," + getTimestamp() + ",\(userLocation.coordinate.latitude)" + ",\(userLocation.coordinate.longitude)" + ",\(userLocation.altitude)" + ",\(userLocation.speed)" + ",\(userLocation.course)"
+        writeToLog(locStr)
     }
     
     // Deal with a location error
@@ -252,16 +298,12 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         if central.state == .poweredOn {
             statusText.text = "Running"
             statusText.textColor = UIColor.green
-            if printDebug {
-                print("Bluetooth is on, starting scans")
-            }
+            print("Bluetooth is on, starting scans")
             scanTimerLoop()
         } else {
             statusText.text = "Bluetooth is off"
             statusText.textColor = UIColor.red
-            if printDebug {
-                print("Bluetooth is off")
-            }
+            print("Bluetooth is off")
         }
     }
     
@@ -273,9 +315,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // Restarts the scan
     @objc func restartScan() {
         if centralManager.state == .poweredOn {
-            if printDebug {
-                print("Restarting scan")
-            }
+            print("Restarting scan")
             centralManager.stopScan()
             centralManager.scanForPeripherals(withServices: nil, options: nil)
         }
@@ -284,20 +324,14 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // Main function for Bluetooth processing
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         
-        // Print the current count, time, UUID, RSSI, name, and any advertised data
+        // Update counter for how many we've seen
         count += 1
+        
+        // Get UUID and write to log with RSSI
+        // NOTE: could also include advertisement data, but that kind of clutters things...
         let uuid = peripheral.identifier.uuidString
-        if printDebug {
-            print("[Bluetooth]")
-            printTime()
-            print("Count : " + count.description)
-            print("UUID : " + uuid)
-            print("RSSI : \(RSSI)")
-            print("Name : \(peripheral.name ?? "None")")
-            for (i,j) in advertisementData {
-                print("\(i) : \(j)")
-            }
-        }
+        let btStr = "BT," + getTimestamp() + "," + uuid + ",\(RSSI)"
+        writeToLog(btStr)
         
         // If we haven't seen this UUID, set up storage for it
         var uuidIdx = uuids.index(of: uuid)
