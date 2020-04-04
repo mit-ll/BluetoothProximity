@@ -125,11 +125,13 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
     
     // Restarts the scan
     @objc func restartScan() {
-        if printDebug {
-            print("Restarting scan")
+        if centralManager.state == .poweredOn {
+            if printDebug {
+                print("Restarting scan")
+            }
+            centralManager.stopScan()
+            centralManager.scanForPeripherals(withServices: nil, options: nil)
         }
-        centralManager.stopScan()
-        centralManager.scanForPeripherals(withServices: nil, options: nil)
     }
     
     // Prints timestamp
