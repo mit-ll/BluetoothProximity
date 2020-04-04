@@ -10,7 +10,7 @@
 // - Add hysteresis to decision
 // - Add range estimation
 // - Update table to replace "far" decisions with "close" ones (if we're out of room)
-// - Log GPS, accelerometer, other sensors on a second interval
+// - Log other sensors: location (GPS), ambient light, accelerometer, gyroscope
 
 import UIKit
 import CoreBluetooth
@@ -24,7 +24,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
     var rssiThresh = -65            // Threshold RSSI
     
     // Debugging
-    var printDebug = false
+    var printDebug = true
     
     // Variables
     var centralManager : CBCentralManager!
@@ -95,6 +95,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
         
         // Make the bluetooth manager
         centralManager = CBCentralManager(delegate: self, queue: nil, options: nil)
+        
+        // Activate the proximity sensor
+        setupProximitySensor()
     }
     
     // Start scanning
@@ -137,14 +140,32 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
         print("Time : " + formatter.string(from: date))
     }
     
+    // Sets up the proximity sensor
+    func setupProximitySensor() {
+        let device = UIDevice.current
+        device.isProximityMonitoringEnabled = true
+        if device.isProximityMonitoringEnabled {
+            NotificationCenter.default.addObserver(self, selector: #selector(proximityChanged(notification:)), name: NSNotification.Name(rawValue: "UIDeviceProximityStateDidChangeNotification"), object: device)
+        }
+    }
+    
+    // Print when proximity sensor is activated
+    @objc func proximityChanged(notification: NSNotification) {
+        print("[Proximity]")
+        printTime()
+        print("\(UIDevice.current.proximityState)")
+    }
+    
+    // Main function for Bluetooth processing
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         
         // Print the current count, time, UUID, RSSI, name, and any advertised data
         count += 1
         let uuid = peripheral.identifier.uuidString
         if printDebug {
-            print("Count : " + count.description)
+            print("[Bluetooth]")
             printTime()
+            print("Count : " + count.description)
             print("UUID : " + uuid)
             print("RSSI : \(RSSI)")
             print("Name : \(peripheral.name ?? "None")")
