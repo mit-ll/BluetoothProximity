@@ -93,7 +93,10 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     @IBOutlet weak var proximityLabel9: UILabel!
     var proximityLabelArr : [UILabel] = []
     
+    // -----------------------------------------------------------------------------
     // Primary setup
+    // -----------------------------------------------------------------------------
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -124,6 +127,125 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
             startLocation()
         }
     }
+    
+    // -----------------------------------------------------------------------------
+    // General helpers
+    // -----------------------------------------------------------------------------
+    
+    // Prints timestamp
+    func printTime() {
+        let date = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+        print("Time : " + formatter.string(from: date))
+    }
+    
+    // -----------------------------------------------------------------------------
+    // Proximity sensor functions
+    // -----------------------------------------------------------------------------
+    
+    // Starts the proximity sensor
+    func startProximitySensor() {
+        let device = UIDevice.current
+        device.isProximityMonitoringEnabled = true
+        if device.isProximityMonitoringEnabled {
+            NotificationCenter.default.addObserver(self, selector: #selector(proximityChanged(notification:)), name: NSNotification.Name(rawValue: "UIDeviceProximityStateDidChangeNotification"), object: device)
+        }
+    }
+    
+    // Print when proximity sensor is activated
+    @objc func proximityChanged(notification: NSNotification) {
+        if printDebug {
+            print("[Proximity]")
+            printTime()
+            print("\(UIDevice.current.proximityState)")
+        }
+    }
+    
+    // -----------------------------------------------------------------------------
+    // Accelerometer functions
+    // -----------------------------------------------------------------------------
+    
+    // Starts the accelerometer sensors
+    func startAccelerometers() {
+        motionManager.accelerometerUpdateInterval = (1.0/accelRateHz)
+        motionManager.startAccelerometerUpdates()
+        accelTimer = Timer.scheduledTimer(timeInterval: (1.0/accelRateHz), target: self, selector: #selector(ViewController.getAccelerometers), userInfo: nil, repeats: true)
+    }
+    
+    // Gets accelerometer data
+    @objc func getAccelerometers() {
+        let data = self.motionManager.accelerometerData
+        if printDebug {
+            print("[Accelerometer]")
+            printTime()
+            print("x: \(data!.acceleration.x.description)")
+            print("y: \(data!.acceleration.y.description)")
+            print("z: \(data!.acceleration.z.description)")
+        }
+    }
+    
+    // -----------------------------------------------------------------------------
+    // Gyroscope functions
+    // -----------------------------------------------------------------------------
+    
+    // Starts the gyroscope sensor
+    func startGyroscope() {
+        motionManager.gyroUpdateInterval = (1.0/gyroRateHz)
+        motionManager.startGyroUpdates()
+        accelTimer = Timer.scheduledTimer(timeInterval: (1.0/gyroRateHz), target: self, selector: #selector(ViewController.getGyroscope), userInfo: nil, repeats: true)
+    }
+    
+    // Gets gyroscope data
+    @objc func getGyroscope() {
+        let data = self.motionManager.gyroData
+        if printDebug {
+            print("[Gyroscope]")
+            printTime()
+            print("x: \(data!.rotationRate.x.description)")
+            print("y: \(data!.rotationRate.y.description)")
+            print("z: \(data!.rotationRate.z.description)")
+        }
+    }
+    
+    // -----------------------------------------------------------------------------
+    // Location (GPS) functions
+    // -----------------------------------------------------------------------------
+    
+    // Start getting location updates
+    func startLocation() {
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestAlwaysAuthorization()
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.startUpdatingLocation()
+        }
+    }
+    
+    // Got a new location
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let userLocation:CLLocation = locations[0] as CLLocation
+        if printDebug {
+            print("[GPS]")
+            printTime()
+            print("Latitude : \(userLocation.coordinate.latitude)")
+            print("Longitude : \(userLocation.coordinate.longitude)")
+            print("Altitude : \(userLocation.altitude)")
+            print("Speed : \(userLocation.speed)")
+            print("Course : \(userLocation.course)")
+        }
+    }
+    
+    // Deal with a location error
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error)
+    {
+        print("Location error : \(error)")
+    }
+    
+    // -----------------------------------------------------------------------------
+    // Bluetooth functions
+    // -----------------------------------------------------------------------------
     
     // Start scanning
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -157,101 +279,6 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
             centralManager.stopScan()
             centralManager.scanForPeripherals(withServices: nil, options: nil)
         }
-    }
-    
-    // Prints timestamp
-    func printTime() {
-        let date = Date()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
-        print("Time : " + formatter.string(from: date))
-    }
-    
-    // Starts the proximity sensor
-    func startProximitySensor() {
-        let device = UIDevice.current
-        device.isProximityMonitoringEnabled = true
-        if device.isProximityMonitoringEnabled {
-            NotificationCenter.default.addObserver(self, selector: #selector(proximityChanged(notification:)), name: NSNotification.Name(rawValue: "UIDeviceProximityStateDidChangeNotification"), object: device)
-        }
-    }
-    
-    // Print when proximity sensor is activated
-    @objc func proximityChanged(notification: NSNotification) {
-        if printDebug {
-            print("[Proximity]")
-            printTime()
-            print("\(UIDevice.current.proximityState)")
-        }
-    }
-    
-    // Starts the accelerometer sensors
-    func startAccelerometers() {
-        motionManager.accelerometerUpdateInterval = (1.0/accelRateHz)
-        motionManager.startAccelerometerUpdates()
-        accelTimer = Timer.scheduledTimer(timeInterval: (1.0/accelRateHz), target: self, selector: #selector(ViewController.getAccelerometers), userInfo: nil, repeats: true)
-    }
-    
-    // Gets accelerometer data
-    @objc func getAccelerometers() {
-        let data = self.motionManager.accelerometerData
-        if printDebug {
-            print("[Accelerometer]")
-            printTime()
-            print("x: \(data!.acceleration.x.description)")
-            print("y: \(data!.acceleration.y.description)")
-            print("z: \(data!.acceleration.z.description)")
-        }
-    }
-    
-    // Starts the gyroscope sensor
-    func startGyroscope() {
-        motionManager.gyroUpdateInterval = (1.0/gyroRateHz)
-        motionManager.startGyroUpdates()
-        accelTimer = Timer.scheduledTimer(timeInterval: (1.0/gyroRateHz), target: self, selector: #selector(ViewController.getGyroscope), userInfo: nil, repeats: true)
-    }
-    
-    // Gets gyroscope data
-    @objc func getGyroscope() {
-        let data = self.motionManager.gyroData
-        if printDebug {
-            print("[Gyroscope]")
-            printTime()
-            print("x: \(data!.rotationRate.x.description)")
-            print("y: \(data!.rotationRate.y.description)")
-            print("z: \(data!.rotationRate.z.description)")
-        }
-    }
-    
-    // Start getting location updates
-    func startLocation() {
-        locationManager = CLLocationManager()
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestAlwaysAuthorization()
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.startUpdatingLocation()
-        }
-    }
-    
-    // Got a new location
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let userLocation:CLLocation = locations[0] as CLLocation
-        if printDebug {
-            print("[GPS]")
-            printTime()
-            print("Latitude : \(userLocation.coordinate.latitude)")
-            print("Longitude : \(userLocation.coordinate.longitude)")
-            print("Altitude : \(userLocation.altitude)")
-            print("Speed : \(userLocation.speed)")
-            print("Course : \(userLocation.course)")
-        }
-    }
-    
-    // Deal with a location error
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error)
-    {
-        print("Location error : \(error)")
     }
     
     // Main function for Bluetooth processing
