@@ -14,7 +14,7 @@ import CoreLocation
 class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationManagerDelegate {
     
     // -----------------------------------------------------------------------------
-    // Parameters/options
+    // Parameters
     // -----------------------------------------------------------------------------
     
     // Detector parameters
@@ -23,22 +23,22 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     var rssiThresh = -65            // Threshold RSSI
     
     // Sensor parameters
-    var scanRateHz = 2.0            // Number of times per second the Bluetooth scan is restarted
+    var scanRateHz = 4.0            // Number of times per second the Bluetooth scan is restarted
     var accelRateHz = 4.0           // Number of times per second to get accelerometer data
     var gyroRateHz = 4.0            // Number of times per second to get gyroscope data
     
-    // Enable/disable sensors
-    var enableProximity = true
+    // Enable/disable logging of sensors - all are enabled when the app launches
+    var enableBT = true
+    var enableProx = true
     var enableAccel = true
-    var enableGyto = true
-    var enableLoc = true
+    var enableGyro = true
+    var enableGPS = true
     
-    // Logging on device
+    // Sensor logging - when the app launches, logging is not running yet
+    var enableLog = false
+    var logToConsole = false
     var logToFile = true
     var logFileName = "log.txt"
-    
-    // Printing to console
-    var logToConsole = false
     
     // -----------------------------------------------------------------------------
     // Variables
@@ -72,6 +72,14 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     @IBOutlet weak var nText: UILabel!
     @IBOutlet weak var mText: UILabel!
     
+    // Sensor enable switches (states) and text
+    @IBOutlet weak var btText: UILabel!
+    @IBOutlet weak var proxText: UILabel!
+    @IBOutlet weak var accelText: UILabel!
+    @IBOutlet weak var gyroText: UILabel!
+    @IBOutlet weak var gpsText: UILabel!
+    
+    // UUID label group
     @IBOutlet weak var uuidLabel0: UILabel!
     @IBOutlet weak var uuidLabel1: UILabel!
     @IBOutlet weak var uuidLabel2: UILabel!
@@ -84,6 +92,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     @IBOutlet weak var uuidLabel9: UILabel!
     var uuidLabelArr : [UILabel] = []
     
+    // RSSI label group
     @IBOutlet weak var rssiLabel0: UILabel!
     @IBOutlet weak var rssiLabel1: UILabel!
     @IBOutlet weak var rssiLabel2: UILabel!
@@ -96,6 +105,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     @IBOutlet weak var rssiLabel9: UILabel!
     var rssiLabelArr : [UILabel] = []
     
+    // Proximity label group
     @IBOutlet weak var proximityLabel0: UILabel!
     @IBOutlet weak var proximityLabel1: UILabel!
     @IBOutlet weak var proximityLabel2: UILabel!
@@ -143,16 +153,16 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         centralManager = CBCentralManager(delegate: self, queue: nil, options: nil)
         
         // Start sensors
-        if enableProximity {
+        if enableProx {
             startProximitySensor()
         }
         if enableAccel {
             startAccelerometers()
         }
-        if enableGyto {
+        if enableGyro {
             startGyroscope()
         }
-        if enableLoc {
+        if enableGPS {
             startLocation()
         }
     }
@@ -204,6 +214,51 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         }
     }
     
+    // -----------------------------------------------------------------------------
+    // Button and switch callbacks
+    // -----------------------------------------------------------------------------
+    
+    // Change switch enable text ON/OFF and green/gray
+    func updateSwitchText(s : Bool, u : UILabel) {
+        if s {
+            u.text = "ON"
+            u.textColor = UIColor.green
+        } else {
+            u.text = "OFF"
+            u.textColor = UIColor.gray
+        }
+    }
+    
+    @IBAction func btSwitchChanged(_ sender: Any) {
+        enableBT.toggle()
+        updateSwitchText(s: enableBT, u: btText)
+        print("Bluetooth switch changed to \(enableBT)")
+    }
+    
+    @IBAction func proxSwitchChanged(_ sender: Any) {
+        enableProx.toggle()
+        updateSwitchText(s: enableProx, u: proxText)
+        print("Proximity switch changed to \(enableProx)")
+    }
+    
+    @IBAction func accelSwitchChanged(_ sender: Any) {
+        enableAccel.toggle()
+        updateSwitchText(s: enableAccel, u: accelText)
+        print("Accelerometer switch changed to \(enableAccel)")
+    }
+    
+    @IBAction func gyroSwitchChanged(_ sender: Any) {
+        enableGyro.toggle()
+        updateSwitchText(s: enableGyro, u: gyroText)
+        print("Gyroscope switch changed to \(enableGyro)")
+    }
+    
+    @IBAction func gpsSwitchChanged(_ sender: Any) {
+        enableGPS.toggle()
+        updateSwitchText(s: enableGPS, u: gpsText)
+        print("GPS switch changed to \(enableGPS)")
+    }
+    
     // Shares the log file when button is pressed - only if we're logging to file
     @IBAction func shareButtonPressed(_ sender: Any) {
         print("Share button pressed")
@@ -229,9 +284,11 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     
     // If proximity sensor is activated
     @objc func proximityChanged(notification: NSNotification) {
-        let proxState = UIDevice.current.proximityState ? 1 : 0
-        let proxStr = "Prox," + getTimestamp() + ",\(proxState)"
-        writeToLog(proxStr)
+        if enableProx {
+            let proxState = UIDevice.current.proximityState ? 1 : 0
+            let proxStr = "Prox," + getTimestamp() + ",\(proxState)"
+            writeToLog(proxStr)
+        }
     }
     
     // -----------------------------------------------------------------------------
@@ -247,9 +304,11 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     
     // Gets accelerometer data
     @objc func getAccelerometers() {
-        let data = self.motionManager.accelerometerData
-        let accelStr = "Accel," + getTimestamp() + ",\(data!.acceleration.x.description)" + ",\(data!.acceleration.y.description)" + ",\(data!.acceleration.z.description)"
-        writeToLog(accelStr)
+        if enableAccel {
+            let data = self.motionManager.accelerometerData
+            let accelStr = "Accel," + getTimestamp() + ",\(data!.acceleration.x.description)" + ",\(data!.acceleration.y.description)" + ",\(data!.acceleration.z.description)"
+            writeToLog(accelStr)
+        }
     }
     
     // -----------------------------------------------------------------------------
@@ -265,9 +324,11 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     
     // Gets gyroscope data
     @objc func getGyroscope() {
-        let data = self.motionManager.gyroData
-        let gyroStr = "Gyro," + getTimestamp() + ",\(data!.rotationRate.x.description)" + ",\(data!.rotationRate.y.description)" + ",\(data!.rotationRate.z.description)"
-        writeToLog(gyroStr)
+        if enableGyro {
+            let data = self.motionManager.gyroData
+            let gyroStr = "Gyro," + getTimestamp() + ",\(data!.rotationRate.x.description)" + ",\(data!.rotationRate.y.description)" + ",\(data!.rotationRate.z.description)"
+            writeToLog(gyroStr)
+        }
     }
     
     // -----------------------------------------------------------------------------
@@ -287,9 +348,11 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     
     // Got a new location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let userLocation:CLLocation = locations[0] as CLLocation
-        let locStr = "Loc," + getTimestamp() + ",\(userLocation.coordinate.latitude)" + ",\(userLocation.coordinate.longitude)" + ",\(userLocation.altitude)" + ",\(userLocation.speed)" + ",\(userLocation.course)"
-        writeToLog(locStr)
+        if enableGPS {
+            let userLocation:CLLocation = locations[0] as CLLocation
+            let locStr = "GPS," + getTimestamp() + ",\(userLocation.coordinate.latitude)" + ",\(userLocation.coordinate.longitude)" + ",\(userLocation.altitude)" + ",\(userLocation.speed)" + ",\(userLocation.course)"
+            writeToLog(locStr)
+        }
     }
     
     // Deal with a location error
@@ -323,10 +386,12 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     
     // Restarts the scan
     @objc func restartScan() {
-        if centralManager.state == .poweredOn {
-            print("Restarting scan")
-            centralManager.stopScan()
-            centralManager.scanForPeripherals(withServices: nil, options: nil)
+        if enableBT {
+            if centralManager.state == .poweredOn {
+                print("Restarting scan")
+                centralManager.stopScan()
+                centralManager.scanForPeripherals(withServices: nil, options: nil)
+            }
         }
     }
     
@@ -340,7 +405,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         // NOTE: could also include advertisement data, but that kind of clutters things...
         let uuid = peripheral.identifier.uuidString
         let btStr = "BT," + getTimestamp() + "," + uuid + ",\(RSSI)"
-        writeToLog(btStr)
+        if enableBT {
+            writeToLog(btStr)
+        }
         
         // If we haven't seen this UUID, set up storage for it
         var uuidIdx = uuids.index(of: uuid)
