@@ -27,6 +27,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     var accelRateHz = 4.0           // Number of times per second to get accelerometer data
     var gyroRateHz = 4.0            // Number of times per second to get gyroscope data
     
+    // Range in feet
+    var rangeFt = 10
+    
     // Enable/disable logging of sensors - all are enabled when the app launches
     var enableBT = true
     var enableProx = true
@@ -75,6 +78,10 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     @IBOutlet weak var accelText: UILabel!
     @IBOutlet weak var gyroText: UILabel!
     @IBOutlet weak var gpsText: UILabel!
+    
+    // Range
+    @IBOutlet weak var rangeStepper: UIStepper!
+    @IBOutlet weak var rangeText: UILabel!
     
     // Logger on/off
     @IBOutlet weak var loggerText: UILabel!
@@ -126,9 +133,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     @IBOutlet weak var proximityLabel8: UILabel!
     @IBOutlet weak var proximityLabel9: UILabel!
     var proximityLabelArr : [UILabel] = []
-    
-    @IBOutlet weak var shareButton: UIButton!
-    
+        
     // -----------------------------------------------------------------------------
     // Primary setup
     // -----------------------------------------------------------------------------
@@ -268,9 +273,24 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         print("GPS switch changed to \(enableGPS)")
     }
     
+    // Applies range and writes to log
+    @IBAction func rangeButtonPressed(_ sender: Any) {
+        print("Applying range \(rangeFt)")
+        let rangeStr = "Range," + getTimestamp() + ",\(rangeFt)"
+        writeToLog(rangeStr)
+    }
+    
+    // Updates range text
+    @IBAction func rangeChanged(_ sender: Any) {
+        rangeFt = Int(rangeStepper.value)
+        rangeText.text = rangeFt.description
+        print("Range changed to \(rangeFt)")
+    }
+    
     // Enable/disable logging switch
     @IBAction func loggerSwitchChanged(_ sender: Any) {
         enableLogger.toggle()
+        print("Logger enable changed to \(enableLogger)")
         if enableLogger {
             loggerText.text = "Running"
             loggerText.textColor = UIColor.green
