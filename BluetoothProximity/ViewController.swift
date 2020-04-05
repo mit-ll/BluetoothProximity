@@ -27,9 +27,6 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     var accelRateHz = 4.0           // Number of times per second to get accelerometer data
     var gyroRateHz = 4.0            // Number of times per second to get gyroscope data
     
-    // Range in feet
-    var rangeFt = 10
-    
     // Enable/disable logging of sensors - all are enabled when the app launches
     var enableBT = true
     var enableProx = true
@@ -55,6 +52,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     var scanTimer = Timer()
     var accelTimer = Timer()
     var rssiCount = 0
+    var currRange = 10
+    var appliedRange = -1
     var logFile : URL!
     var uuids : [String] = []
     var mtx : [[Int]] = []
@@ -82,6 +81,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // Range
     @IBOutlet weak var rangeStepper: UIStepper!
     @IBOutlet weak var rangeText: UILabel!
+    @IBOutlet weak var rangeUnitText: UILabel!
+    @IBOutlet weak var rangeAppliedText: UILabel!
     
     // Logger on/off
     @IBOutlet weak var loggerText: UILabel!
@@ -273,18 +274,38 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         print("GPS switch changed to \(enableGPS)")
     }
     
-    // Applies range and writes to log
+    // Applies range (writes to log) and updates range text color to green
     @IBAction func rangeButtonPressed(_ sender: Any) {
-        print("Applying range \(rangeFt)")
-        let rangeStr = "Range," + getTimestamp() + ",\(rangeFt)"
-        writeToLog(rangeStr)
+        if currRange != appliedRange {
+            print("Applying range of \(currRange)")
+            let rangeStr = "Range," + getTimestamp() + ",\(currRange)"
+            writeToLog(rangeStr)
+            appliedRange = currRange
+            rangeText.textColor = UIColor.green
+            rangeUnitText.textColor = UIColor.green
+            rangeAppliedText.text = "Range is applied"
+            rangeAppliedText.textColor = UIColor.green
+        } else {
+            print("Range of \(currRange) is already applied")
+        }
     }
     
-    // Updates range text
+    // Updates range text. Anytime the range has not been applied it is red.
     @IBAction func rangeChanged(_ sender: Any) {
-        rangeFt = Int(rangeStepper.value)
-        rangeText.text = rangeFt.description
-        print("Range changed to \(rangeFt)")
+        currRange = Int(rangeStepper.value)
+        print("Range changed to \(currRange)")
+        rangeText.text = currRange.description
+        if currRange != appliedRange {
+            rangeText.textColor = UIColor.red
+            rangeUnitText.textColor = UIColor.red
+            rangeAppliedText.text = "Range is not applied!"
+            rangeAppliedText.textColor = UIColor.red
+        } else {
+            rangeText.textColor = UIColor.green
+            rangeUnitText.textColor = UIColor.green
+            rangeAppliedText.text = "Range is applied"
+            rangeAppliedText.textColor = UIColor.green
+        }
     }
     
     // Enable/disable logging switch
