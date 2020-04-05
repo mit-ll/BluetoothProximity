@@ -87,7 +87,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     
     // Enable/disable logging of sensors - all are enabled when the app launches
     var enableBT = true
-    var enableProx = true
+    var enableProx = false
     var enableAccel = true
     var enableGyro = true
     var enableGPS = true
