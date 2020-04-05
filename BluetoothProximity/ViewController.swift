@@ -63,6 +63,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // Outlets
     // -----------------------------------------------------------------------------
     
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var contentView: UIView!
+    
     @IBOutlet weak var statusText: UILabel!
     @IBOutlet weak var countText: UILabel!
     @IBOutlet weak var rssiText: UILabel!
@@ -152,6 +155,17 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         if enableLoc {
             startLocation()
         }
+    }
+    
+    // Set up the scroll view
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        scrollView.contentSize = contentView.frame.size;
+    }
+    
+    // Hide the top status bar
+    override var prefersStatusBarHidden: Bool {
+        return true
     }
     
     // -----------------------------------------------------------------------------
