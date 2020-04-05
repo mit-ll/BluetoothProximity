@@ -35,7 +35,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     var enableGPS = true
     
     // Sensor logging - when the app launches, logging is not running yet
-    var enableLog = false
+    var enableLogger = false
     var logToConsole = false
     var logToFile = true
     var logFileName = "log.txt"
@@ -51,7 +51,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     var fileUpdater : FileHandle!
     var scanTimer = Timer()
     var accelTimer = Timer()
-    var count = 0
+    var rssiCount = 0
     var logFile : URL!
     var uuids : [String] = []
     var mtx : [[Int]] = []
@@ -66,18 +66,27 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
     
-    @IBOutlet weak var statusText: UILabel!
-    @IBOutlet weak var countText: UILabel!
-    @IBOutlet weak var rssiText: UILabel!
-    @IBOutlet weak var nText: UILabel!
-    @IBOutlet weak var mText: UILabel!
+    // Bluetooth radio status
+    @IBOutlet weak var btStatusText: UILabel!
     
-    // Sensor enable switches (states) and text
+    // Sensor enables
     @IBOutlet weak var btText: UILabel!
     @IBOutlet weak var proxText: UILabel!
     @IBOutlet weak var accelText: UILabel!
     @IBOutlet weak var gyroText: UILabel!
     @IBOutlet weak var gpsText: UILabel!
+    
+    // Logger on/off
+    @IBOutlet weak var loggerText: UILabel!
+    
+    // Bluetooth counters
+    @IBOutlet weak var rssiCountText: UILabel!
+    @IBOutlet weak var deviceCountText: UILabel!
+    
+    // Detector parameters
+    @IBOutlet weak var rssiText: UILabel!
+    @IBOutlet weak var nText: UILabel!
+    @IBOutlet weak var mText: UILabel!
     
     // UUID label group
     @IBOutlet weak var uuidLabel0: UILabel!
@@ -132,12 +141,12 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         rssiLabelArr = [rssiLabel0, rssiLabel1, rssiLabel2, rssiLabel3, rssiLabel4, rssiLabel5, rssiLabel6, rssiLabel7, rssiLabel8, rssiLabel9]
         proximityLabelArr = [proximityLabel0, proximityLabel1, proximityLabel2, proximityLabel3, proximityLabel4, proximityLabel5, proximityLabel6, proximityLabel7, proximityLabel8, proximityLabel9]
         
-        // Display parameters
+        // Display the detector parameters
         nText.text = N.description
         mText.text = M.description
         rssiText.text = rssiThresh.description
         
-        // Create the log file if necessary
+        // Create the log file
         if logToFile {
             logFile = getDir().appendingPathComponent(logFileName)
             fileManager.createFile(atPath: logFile.path, contents: nil, attributes: nil)
@@ -179,7 +188,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     }
     
     // -----------------------------------------------------------------------------
-    // General helpers
+    // Logging functions
     // -----------------------------------------------------------------------------
     
     // Gets directory to save data
@@ -204,7 +213,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         fileUpdater.write(s.data(using: .utf8)!)
     }
     
-    // Helper for logging to console and/or file
+    // Log to console and/or file
     func writeToLog(_ s : String) {
         if logToConsole {
             print(s)
@@ -218,13 +227,13 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // Button and switch callbacks
     // -----------------------------------------------------------------------------
     
-    // Change switch enable text ON/OFF and green/gray
+    // Changes sensor switch enable text and color
     func updateSwitchText(s : Bool, u : UILabel) {
         if s {
-            u.text = "ON"
+            u.text = "Yes"
             u.textColor = UIColor.green
         } else {
-            u.text = "OFF"
+            u.text = "No"
             u.textColor = UIColor.gray
         }
     }
@@ -259,7 +268,19 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         print("GPS switch changed to \(enableGPS)")
     }
     
-    // Shares the log file when button is pressed - only if we're logging to file
+    // Enable/disable logging switch
+    @IBAction func loggerSwitchChanged(_ sender: Any) {
+        enableLogger.toggle()
+        if enableLogger {
+            loggerText.text = "Running"
+            loggerText.textColor = UIColor.green
+        } else {
+            loggerText.text = "Off"
+            loggerText.textColor = UIColor.gray
+        }
+    }
+    
+    // Shares the log file (only if one exists)
     @IBAction func shareButtonPressed(_ sender: Any) {
         print("Share button pressed")
         if logToFile {
@@ -284,7 +305,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     
     // If proximity sensor is activated
     @objc func proximityChanged(notification: NSNotification) {
-        if enableProx {
+        if enableProx && enableLogger {
             let proxState = UIDevice.current.proximityState ? 1 : 0
             let proxStr = "Prox," + getTimestamp() + ",\(proxState)"
             writeToLog(proxStr)
@@ -304,7 +325,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     
     // Gets accelerometer data
     @objc func getAccelerometers() {
-        if enableAccel {
+        if enableAccel && enableLogger {
             let data = self.motionManager.accelerometerData
             let accelStr = "Accel," + getTimestamp() + ",\(data!.acceleration.x.description)" + ",\(data!.acceleration.y.description)" + ",\(data!.acceleration.z.description)"
             writeToLog(accelStr)
@@ -324,7 +345,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     
     // Gets gyroscope data
     @objc func getGyroscope() {
-        if enableGyro {
+        if enableGyro && enableLogger {
             let data = self.motionManager.gyroData
             let gyroStr = "Gyro," + getTimestamp() + ",\(data!.rotationRate.x.description)" + ",\(data!.rotationRate.y.description)" + ",\(data!.rotationRate.z.description)"
             writeToLog(gyroStr)
@@ -348,7 +369,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     
     // Got a new location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if enableGPS {
+        if enableGPS && enableLogger {
             let userLocation:CLLocation = locations[0] as CLLocation
             let locStr = "GPS," + getTimestamp() + ",\(userLocation.coordinate.latitude)" + ",\(userLocation.coordinate.longitude)" + ",\(userLocation.altitude)" + ",\(userLocation.speed)" + ",\(userLocation.course)"
             writeToLog(locStr)
@@ -368,13 +389,13 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // Start scanning
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         if central.state == .poweredOn {
-            statusText.text = "Running"
-            statusText.textColor = UIColor.green
+            btStatusText.text = "Bluetooth Radio is on"
+            btStatusText.textColor = UIColor.green
             print("Bluetooth is on, starting scans")
             scanTimerLoop()
         } else {
-            statusText.text = "Bluetooth is off"
-            statusText.textColor = UIColor.red
+            btStatusText.text = "Bluetooth Radio is off!"
+            btStatusText.textColor = UIColor.red
             print("Bluetooth is off")
         }
     }
@@ -398,14 +419,12 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // Main function for Bluetooth processing
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         
-        // Update counter for how many we've seen
-        count += 1
-        
         // Get UUID and write to log with RSSI
         // NOTE: could also include advertisement data, but that kind of clutters things...
+        rssiCount += 1
         let uuid = peripheral.identifier.uuidString
-        let btStr = "BT," + getTimestamp() + "," + uuid + ",\(RSSI)"
-        if enableBT {
+        if enableBT && enableLogger {
+            let btStr = "BT," + getTimestamp() + "," + uuid + ",\(RSSI)"
             writeToLog(btStr)
         }
         
@@ -418,6 +437,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
             mtxPtr.append(0)
             nArr.append(0)
             detArr.append(0)
+            deviceCountText.text = uuids.count.description
         }
         
         // M-of-N detector. This makes a decision for each sample based on the threshold.
@@ -461,7 +481,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         }
         
         // Update screen
-        countText.text = count.description
+        rssiCountText.text = rssiCount.description
         if uuidIdx! < uuidLabelArr.count {
             uuidLabelArr[uuidIdx!].text = String(uuid.prefix(4))
             rssiLabelArr[uuidIdx!].text = RSSI.description
