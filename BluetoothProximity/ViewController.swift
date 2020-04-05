@@ -200,6 +200,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Prevent screen from turning off
+        UIApplication.shared.isIdleTimerDisabled = true
+        
         // Pack labels into arrays
         uuidLabelArr = [uuidLabel0, uuidLabel1, uuidLabel2, uuidLabel3, uuidLabel4, uuidLabel5, uuidLabel6, uuidLabel7, uuidLabel8, uuidLabel9]
         rssiLabelArr = [rssiLabel0, rssiLabel1, rssiLabel2, rssiLabel3, rssiLabel4, rssiLabel5, rssiLabel6, rssiLabel7, rssiLabel8, rssiLabel9]
