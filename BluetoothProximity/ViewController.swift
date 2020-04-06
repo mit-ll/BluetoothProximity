@@ -69,6 +69,22 @@ public extension UIDevice {
     }()
 }
 
+// Helper to get file size
+extension URL {
+    var attributes: [FileAttributeKey : Any]? {
+        do {
+            return try FileManager.default.attributesOfItem(atPath: path)
+        } catch let error as NSError {
+            print("FileAttribute error: \(error)")
+        }
+        return nil
+    }
+    
+    var fileSize: UInt64 {
+        return attributes?[.size] as? UInt64 ?? UInt64(0)
+    }
+}
+
 class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationManagerDelegate {
     
     // -----------------------------------------------------------------------------
@@ -109,6 +125,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     var fileUpdater : FileHandle!
     var scanTimer = Timer()
     var accelTimer = Timer()
+    var logTimer = Timer()
     var rssiCount = 0
     var currRange = 10
     var appliedRange = -1
@@ -123,6 +140,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // Outlets
     // -----------------------------------------------------------------------------
     
+    // Top level containers
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
     
@@ -142,8 +160,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     @IBOutlet weak var rangeUnitText: UILabel!
     @IBOutlet weak var rangeAppliedText: UILabel!
     
-    // Logger on/off
+    // Logger on/off and file size
     @IBOutlet weak var loggerText: UILabel!
+    @IBOutlet weak var logSizeText: UILabel!
     
     // Bluetooth counters
     @IBOutlet weak var rssiCountText: UILabel!
@@ -231,6 +250,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         let modelStr = "Device," + getTimestamp() + "," + modelName
         writeToLog(modelStr)
         
+        // Show log file size every second
+        logSizeLoop()
+        
         // Make the bluetooth manager
         centralManager = CBCentralManager(delegate: self, queue: nil, options: nil)
         
@@ -294,6 +316,17 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         if logToFile {
             writeToLogFile(s)
         }
+    }
+    
+    // Timer for checking the log size every second
+    func logSizeLoop() {
+        logTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(ViewController.updateLogSize), userInfo: nil, repeats: true)
+    }
+    
+    // Updates log size text
+    @objc func updateLogSize() {
+        let logSize = logFile.fileSize/1000
+        logSizeText.text = logSize.description
     }
     
     // -----------------------------------------------------------------------------
