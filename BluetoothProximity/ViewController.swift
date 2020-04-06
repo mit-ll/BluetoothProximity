@@ -531,8 +531,18 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         // NOTE: could also include advertisement data, but that kind of clutters things...
         rssiCount += 1
         let uuid = peripheral.identifier.uuidString
+        var advTime = -1.0
+        var advPower = -999.0
         if enableBT && enableLogger {
-            let btStr = "BT," + getTimestamp() + "," + uuid + ",\(RSSI)"
+            // Get time and power level if available
+            for (i, j) in advertisementData {
+                if i == "kCBAdvDataTimestamp" {
+                    advTime = j as! Double
+                } else if i == "kCBAdvDataTxPowerLevel" {
+                    advPower = j as! Double
+                }
+            }
+            let btStr = "BT," + getTimestamp() + "," + uuid + ",\(RSSI)" + ",\(advTime)" + ",\(advPower)"
             writeToLog(btStr)
         }
         
