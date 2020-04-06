@@ -161,6 +161,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     @IBOutlet weak var rangeAppliedText: UILabel!
     
     // Logger on/off and file size
+    @IBOutlet weak var loggerSwitch: UISwitch!
     @IBOutlet weak var loggerText: UILabel!
     @IBOutlet weak var logSizeText: UILabel!
     
@@ -231,6 +232,9 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         nText.text = N.description
         mText.text = M.description
         rssiText.text = rssiThresh.description
+        
+        // Logger switch initially disabled
+        loggerSwitch.isEnabled = false
         
         // Create the log file
         if logToFile {
@@ -374,7 +378,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         print("GPS switch changed to \(enableGPS)")
     }
     
-    // Applies range (writes to log) and updates range text color to green
+    // Applies range (writes to log) and updates range text color to green. Once
+    // this has been done, the logger is able to be started.
     @IBAction func rangeButtonPressed(_ sender: Any) {
         if currRange != appliedRange {
             print("Applying range of \(currRange)")
@@ -385,12 +390,14 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
             rangeUnitText.textColor = UIColor.green
             rangeAppliedText.text = "Range is applied"
             rangeAppliedText.textColor = UIColor.green
+            loggerSwitch.isEnabled = true
         } else {
             print("Range of \(currRange) is already applied")
         }
     }
     
     // Updates range text. Anytime the range has not been applied it is red.
+    // The logger is able to be started only when the range is not red.
     @IBAction func rangeChanged(_ sender: Any) {
         currRange = Int(rangeStepper.value)
         print("Range changed to \(currRange)")
@@ -400,24 +407,35 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
             rangeUnitText.textColor = UIColor.red
             rangeAppliedText.text = "Range is not applied!"
             rangeAppliedText.textColor = UIColor.red
+            loggerSwitch.isEnabled = false
         } else {
             rangeText.textColor = UIColor.green
             rangeUnitText.textColor = UIColor.green
             rangeAppliedText.text = "Range is applied"
             rangeAppliedText.textColor = UIColor.green
+            loggerSwitch.isEnabled = true
         }
     }
     
-    // Enable/disable logging switch
+    // Enable/disable logging switch. While we are logging the range cannot be changed.
+    // And once logging is disabled, the range must be set again.
     @IBAction func loggerSwitchChanged(_ sender: Any) {
         enableLogger.toggle()
         print("Logger enable changed to \(enableLogger)")
         if enableLogger {
             loggerText.text = "Running"
             loggerText.textColor = UIColor.green
+            rangeStepper.isEnabled = false
         } else {
             loggerText.text = "Off"
             loggerText.textColor = UIColor.gray
+            appliedRange = -1
+            rangeText.textColor = UIColor.red
+            rangeUnitText.textColor = UIColor.red
+            rangeAppliedText.text = "Range is not applied!"
+            rangeAppliedText.textColor = UIColor.red
+            loggerSwitch.isEnabled = false
+            rangeStepper.isEnabled = true
         }
     }
     
@@ -550,7 +568,6 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     @objc func restartScan() {
         if enableBT {
             if centralManager.state == .poweredOn {
-                print("Restarting scan")
                 centralManager.stopScan()
                 centralManager.scanForPeripherals(withServices: nil, options: nil)
             }

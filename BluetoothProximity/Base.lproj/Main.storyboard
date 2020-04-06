@@ -602,6 +602,7 @@
                         <outlet property="gpsText" destination="JLa-z4-ayb" id="Q8N-N0-CUi"/>
                         <outlet property="gyroText" destination="SHG-He-Cr9" id="Cy0-xO-OSu"/>
                         <outlet property="logSizeText" destination="4hY-eF-59Y" id="DbK-i6-Kzf"/>
+                        <outlet property="loggerSwitch" destination="CKp-6U-3kX" id="sS3-Og-HKp"/>
                         <outlet property="loggerText" destination="F0O-so-WhL" id="ehA-5t-vHG"/>
                         <outlet property="mText" destination="3YD-6c-Rc0" id="OKD-Vs-qPa"/>
                         <outlet property="nText" destination="Jhn-fm-NgZ" id="d8G-x1-VDF"/>
