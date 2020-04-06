@@ -145,14 +145,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     @IBOutlet weak var contentView: UIView!
     
     // Bluetooth radio status
-    @IBOutlet weak var btStatusText: UILabel!
-    
-    // Sensor enables
-    @IBOutlet weak var btText: UILabel!
-    @IBOutlet weak var proxText: UILabel!
-    @IBOutlet weak var accelText: UILabel!
-    @IBOutlet weak var gyroText: UILabel!
-    @IBOutlet weak var gpsText: UILabel!
+    @IBOutlet weak var btSwitch: UISwitch!
+    @IBOutlet weak var btSwitchText: UILabel!
     
     // Range
     @IBOutlet weak var rangeStepper: UIStepper!
@@ -337,44 +331,28 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // Button and switch callbacks
     // -----------------------------------------------------------------------------
     
-    // Changes sensor switch enable text and color
-    func updateSwitchText(s : Bool, u : UILabel) {
-        if s {
-            u.text = "Yes"
-            u.textColor = UIColor.green
-        } else {
-            u.text = "No"
-            u.textColor = UIColor.gray
-        }
-    }
-    
     @IBAction func btSwitchChanged(_ sender: Any) {
         enableBT.toggle()
-        updateSwitchText(s: enableBT, u: btText)
         print("Bluetooth switch changed to \(enableBT)")
     }
     
     @IBAction func proxSwitchChanged(_ sender: Any) {
         enableProx.toggle()
-        updateSwitchText(s: enableProx, u: proxText)
         print("Proximity switch changed to \(enableProx)")
     }
     
     @IBAction func accelSwitchChanged(_ sender: Any) {
         enableAccel.toggle()
-        updateSwitchText(s: enableAccel, u: accelText)
         print("Accelerometer switch changed to \(enableAccel)")
     }
     
     @IBAction func gyroSwitchChanged(_ sender: Any) {
         enableGyro.toggle()
-        updateSwitchText(s: enableGyro, u: gyroText)
         print("Gyroscope switch changed to \(enableGyro)")
     }
     
     @IBAction func gpsSwitchChanged(_ sender: Any) {
         enableGPS.toggle()
-        updateSwitchText(s: enableGPS, u: gpsText)
         print("GPS switch changed to \(enableGPS)")
     }
     
@@ -548,13 +526,17 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // Start scanning
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         if central.state == .poweredOn {
-            btStatusText.text = "Bluetooth Radio is on"
-            btStatusText.textColor = UIColor.green
+            enableBT = true
+            btSwitch.setOn(true, animated: true)
+            btSwitch.isEnabled = true
+            btSwitchText.textColor = UIColor.white
             print("Bluetooth is on, starting scans")
             scanTimerLoop()
         } else {
-            btStatusText.text = "Bluetooth Radio is off!"
-            btStatusText.textColor = UIColor.red
+            enableBT = false
+            btSwitch.setOn(false, animated: true)
+            btSwitch.isEnabled = false
+            btSwitchText.textColor = UIColor.gray
             print("Bluetooth is off")
         }
     }
