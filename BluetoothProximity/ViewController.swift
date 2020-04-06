@@ -144,9 +144,13 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
     
-    // Bluetooth radio status
+    // Bluetooth switch
     @IBOutlet weak var btSwitch: UISwitch!
     @IBOutlet weak var btSwitchText: UILabel!
+    
+    // Proximity sensor switch
+    @IBOutlet weak var proxSwitch: UISwitch!
+    @IBOutlet weak var proxSwitchText: UILabel!
     
     // Range
     @IBOutlet weak var rangeStepper: UIStepper!
@@ -253,6 +257,11 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         
         // Make the bluetooth manager
         centralManager = CBCentralManager(delegate: self, queue: nil, options: nil)
+        
+        // Proximity sensor is always disabled for now
+        proxSwitch.setOn(false, animated: true)
+        proxSwitch.isEnabled = false
+        proxSwitchText.textColor = UIColor.gray
         
         // Start sensors
         if enableProx {
