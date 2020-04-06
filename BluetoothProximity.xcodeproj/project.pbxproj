@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		757BF3612437FE0D000C3736 /* icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 757BF3602437FE0D000C3736 /* icon.jpg */; };
 		759DA83B2439224D00C0D35B /* BluetoothProximity.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 759DA8392439224C00C0D35B /* BluetoothProximity.xcdatamodeld */; };
 		75C515DF243697FE0071BE11 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C515DE243697FE0071BE11 /* AppDelegate.swift */; };
 		75C515E1243697FE0071BE11 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C515E0243697FE0071BE11 /* ViewController.swift */; };
@@ -36,7 +35,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		757BF3602437FE0D000C3736 /* icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = icon.jpg; sourceTree = "<group>"; };
 		759DA83A2439224C00C0D35B /* BluetoothProximity.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BluetoothProximity.xcdatamodel; sourceTree = "<group>"; };
 		75C515DB243697FE0071BE11 /* BluetoothProximity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BluetoothProximity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75C515DE243697FE0071BE11 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -81,7 +79,6 @@
 		75C515D2243697FE0071BE11 = {
 			isa = PBXGroup;
 			children = (
-				757BF3602437FE0D000C3736 /* icon.jpg */,
 				75C515DD243697FE0071BE11 /* BluetoothProximity */,
 				75C515F5243697FF0071BE11 /* BluetoothProximityTests */,
 				75C51600243697FF0071BE11 /* BluetoothProximityUITests */,
@@ -235,7 +232,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				757BF3612437FE0D000C3736 /* icon.jpg in Resources */,
 				75C515EC243697FE0071BE11 /* LaunchScreen.storyboard in Resources */,
 				75C515E9243697FE0071BE11 /* Assets.xcassets in Resources */,
 				75C515E4243697FE0071BE11 /* Main.storyboard in Resources */,
@@ -443,14 +439,15 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L96QFTMN9G;
 				INFOPLIST_FILE = BluetoothProximity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "Michael-Wentz.BluetoothProximity";
+				PRODUCT_BUNDLE_IDENTIFIER = com.mwentz.bluetoothproximity;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -461,14 +458,15 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L96QFTMN9G;
 				INFOPLIST_FILE = BluetoothProximity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "Michael-Wentz.BluetoothProximity";
+				PRODUCT_BUNDLE_IDENTIFIER = com.mwentz.bluetoothproximity;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

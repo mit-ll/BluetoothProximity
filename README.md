@@ -33,7 +33,14 @@ Note that with the recent versions of Xcode, you can deploy and run the app on y
 ## Known Issues
 
 These messages appear in the Xcode console when using the "Send Log" button to email the log file to yourself. They do not appear to affect anything, as the log file still goes through.
+
 ```
 [core] SLRemoteComposeViewController: (this may be harmless) viewServiceDidTerminateWithError: Error Domain=_UIViewServiceErrorDomain Code=1 "(null)" UserInfo={Terminated=disconnect method}
 [ShareSheet] connection invalidated
+```
+
+After adding the UI switches, the following error is also appearing (from any of them). This appears to be a Swift UI bug and does not affect anything.
+
+```
+invalid mode 'kCFRunLoopCommonModes' provided to CFRunLoopRunSpecific - break on _CFRunLoopError_RunCalledWithInvalidMode to debug. This message will only appear once per execution.
 ```
