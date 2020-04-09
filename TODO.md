@@ -16,3 +16,4 @@
 - Add range estimation
 - Log battery state (charging vs. not)
 - Log screen state
+- If we're no longer getting measurements from a device, it gets stuck close/far. add last contact in seconds.

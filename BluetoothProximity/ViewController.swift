@@ -172,18 +172,18 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     @IBOutlet weak var nText: UILabel!
     @IBOutlet weak var mText: UILabel!
     
-    // UUID label group
-    @IBOutlet weak var uuidLabel0: UILabel!
-    @IBOutlet weak var uuidLabel1: UILabel!
-    @IBOutlet weak var uuidLabel2: UILabel!
-    @IBOutlet weak var uuidLabel3: UILabel!
-    @IBOutlet weak var uuidLabel4: UILabel!
-    @IBOutlet weak var uuidLabel5: UILabel!
-    @IBOutlet weak var uuidLabel6: UILabel!
-    @IBOutlet weak var uuidLabel7: UILabel!
-    @IBOutlet weak var uuidLabel8: UILabel!
-    @IBOutlet weak var uuidLabel9: UILabel!
-    var uuidLabelArr : [UILabel] = []
+    // Name label group
+    @IBOutlet weak var nameLabel0: UILabel!
+    @IBOutlet weak var nameLabel1: UILabel!
+    @IBOutlet weak var nameLabel2: UILabel!
+    @IBOutlet weak var nameLabel3: UILabel!
+    @IBOutlet weak var nameLabel4: UILabel!
+    @IBOutlet weak var nameLabel5: UILabel!
+    @IBOutlet weak var nameLabel6: UILabel!
+    @IBOutlet weak var nameLabel7: UILabel!
+    @IBOutlet weak var nameLabel8: UILabel!
+    @IBOutlet weak var nameLabel9: UILabel!
+    var nameLabelArr : [UILabel] = []
     
     // RSSI label group
     @IBOutlet weak var rssiLabel0: UILabel!
@@ -222,7 +222,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         UIApplication.shared.isIdleTimerDisabled = true
         
         // Pack labels into arrays
-        uuidLabelArr = [uuidLabel0, uuidLabel1, uuidLabel2, uuidLabel3, uuidLabel4, uuidLabel5, uuidLabel6, uuidLabel7, uuidLabel8, uuidLabel9]
+        nameLabelArr = [nameLabel0, nameLabel1, nameLabel2, nameLabel3, nameLabel4, nameLabel5, nameLabel6, nameLabel7, nameLabel8, nameLabel9]
         rssiLabelArr = [rssiLabel0, rssiLabel1, rssiLabel2, rssiLabel3, rssiLabel4, rssiLabel5, rssiLabel6, rssiLabel7, rssiLabel8, rssiLabel9]
         proximityLabelArr = [proximityLabel0, proximityLabel1, proximityLabel2, proximityLabel3, proximityLabel4, proximityLabel5, proximityLabel6, proximityLabel7, proximityLabel8, proximityLabel9]
         
@@ -568,22 +568,26 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
     // Main function for Bluetooth processing
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         
-        // Get UUID and write to log with RSSI
-        // NOTE: could also include advertisement data, but that kind of clutters things...
-        rssiCount += 1
+        // Get UUID
         let uuid = peripheral.identifier.uuidString
-        var advTime = -1.0
+        
+        // Parse advertisement data
+        var advName = "None"
         var advPower = -999.0
-        if enableBT && enableLogger {
-            // Get time and power level if available
-            for (i, j) in advertisementData {
-                if i == "kCBAdvDataTimestamp" {
-                    advTime = j as! Double
-                } else if i == "kCBAdvDataTxPowerLevel" {
-                    advPower = j as! Double
-                }
+        var advTime = -1.0
+        for (i, j) in advertisementData {
+            if i == "kCBAdvDataLocalName" {
+                advName = j as! String
+            } else if i == "kCBAdvDataTxPowerLevel" {
+                advPower = j as! Double
+            } else if i == "kCBAdvDataTimestamp" {
+                advTime = j as! Double
             }
-            let btStr = "BT," + getTimestamp() + "," + uuid + ",\(RSSI)" + ",\(advTime)" + ",\(advPower)"
+        }
+        
+        // Log if enabled
+        if enableBT && enableLogger {
+            let btStr = "BT," + getTimestamp() + "," + uuid + ",\(RSSI)" + "," + advName + ",\(advPower)" + ",\(advTime)"
             writeToLog(btStr)
         }
         
@@ -640,9 +644,10 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CLLocationMana
         }
         
         // Update screen
+        rssiCount += 1
         rssiCountText.text = rssiCount.description
-        if uuidIdx! < uuidLabelArr.count {
-            uuidLabelArr[uuidIdx!].text = String(uuid.prefix(4))
+        if uuidIdx! < nameLabelArr.count {
+            nameLabelArr[uuidIdx!].text = String(advName.prefix(10))
             rssiLabelArr[uuidIdx!].text = RSSI.description
             let mNstr = "(\(s)/\(nArr[uuidIdx!]))"
             if detArr[uuidIdx!] == 0 {
