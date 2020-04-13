@@ -75,7 +75,7 @@ class LoggerViewController: UIViewController {
     @IBOutlet weak var runStopButton: UIButton!
     @IBAction func runStopButtonPressed(_ sender: Any) {
         if isRunning {
-            //sensors.stop()
+            sensors.stop()
             advertiser.stop()
             scanner.stop()
             isRunning = false
@@ -85,7 +85,7 @@ class LoggerViewController: UIViewController {
             sendButton.isEnabled = true
             runStopButton.setTitle("Run", for: .normal)
         } else {
-            //sensors.start()
+            sensors.start()
             advertiser.start()
             scanner.startScanForAll()
             isRunning = true
