@@ -26,6 +26,11 @@ class LoggerViewController: UIViewController {
         advertiser = delegate.advertiser
         scanner = delegate.scanner
         
+        // Notifications for when app transitions between background and foreground
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(didEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(willEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+        
         // Initial states
         logGPS = gpsSwitch.isOn
         range = Int(rangeStepper.value)
@@ -70,7 +75,7 @@ class LoggerViewController: UIViewController {
     @IBOutlet weak var runStopButton: UIButton!
     @IBAction func runStopButtonPressed(_ sender: Any) {
         if isRunning {
-            sensors.stop()
+            //sensors.stop()
             advertiser.stop()
             scanner.stop()
             isRunning = false
@@ -80,8 +85,7 @@ class LoggerViewController: UIViewController {
             sendButton.isEnabled = true
             runStopButton.setTitle("Run", for: .normal)
         } else {
-            print("START!")
-            sensors.start()
+            //sensors.start()
             advertiser.start()
             scanner.startScanForAll()
             isRunning = true
@@ -100,5 +104,35 @@ class LoggerViewController: UIViewController {
     // Send button
     @IBOutlet weak var sendButton: UIButton!
     @IBAction func sendButtonPressed(_ sender: Any) {
+    }
+    
+    // When application moves to the background we need to make some adjustments to
+    // the Bluetooth operation so it stays alive.
+    @objc func didEnterBackground() {
+        if isRunning {
+            
+            // Cycle the advertister
+            advertiser.stop()
+            advertiser.start()
+            
+            // Scanner can only scan for one service, and must do so in a timed loop
+            scanner.stop()
+            scanner.startScanForServiceLoop()
+        }
+    }
+    
+    // When application moves to the foreground, we can restore the original Bluetooth
+    // operation
+    @objc func willEnterForeground() {
+        if isRunning {
+            
+            // Cycle the advertister
+            advertiser.stop()
+            advertiser.start()
+            
+            // Switch scanner from one service to everything
+            scanner.stopScanForServiceLoop()
+            scanner.startScanForAll()
+        }
     }
 }

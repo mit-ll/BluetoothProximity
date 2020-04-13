@@ -35,6 +35,7 @@ class BluetoothAdvertiser: NSObject, CBPeripheralManagerDelegate {
     }
     
     // Starts advertising
+    // This can run in the background, but the local name is ignored and the frequency may decrease
     func start() {
         if advertiser.state == .poweredOn {
             advertiser.add(service)
