@@ -13,10 +13,17 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var logger: Logger!
+    var sensors: Sensors!
+    var advertiser: BluetoothAdvertiser!
+    var scanner: BluetoothScanner!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        logger = Logger()
+        sensors = Sensors()
+        advertiser = BluetoothAdvertiser()
+        scanner = BluetoothScanner()
         return true
     }
 
