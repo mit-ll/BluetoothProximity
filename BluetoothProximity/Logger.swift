@@ -54,7 +54,10 @@ class Logger {
     init() {
         
         // Create the log file
-        fileName = getTimestamp() + ".csv"
+        var timeStamp = getTimestamp()
+        timeStamp = timeStamp.replacingOccurrences(of: " ", with: "_")
+        timeStamp = timeStamp.replacingOccurrences(of: ":", with: ".")
+        fileName = "log_" + timeStamp + ".txt"
         fileURL = getDir().appendingPathComponent(fileName)
         fileManager.createFile(atPath: fileURL.path, contents: nil, attributes: nil)
         do {

@@ -104,6 +104,9 @@ class LoggerViewController: UIViewController {
     // Send button
     @IBOutlet weak var sendButton: UIButton!
     @IBAction func sendButtonPressed(_ sender: Any) {
+        let activityItem:NSURL = NSURL(fileURLWithPath:logger.fileURL.path)
+        let activityVC = UIActivityViewController(activityItems: [activityItem], applicationActivities: nil)
+        present(activityVC, animated: true, completion: nil)
     }
     
     // When application moves to the background we need to make some adjustments to
