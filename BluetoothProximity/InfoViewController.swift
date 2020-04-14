@@ -1,5 +1,5 @@
 //
-//  LiveViewController.swift
+//  InfoViewController.swift
 //  BluetoothProximity
 //
 //  Created by Michael Wentz on 4/13/20.
@@ -8,7 +8,12 @@
 
 import UIKit
 
-class LiveViewController: UIViewController {
+class InfoViewController: UIViewController {
+    
+    // Make status bar light
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

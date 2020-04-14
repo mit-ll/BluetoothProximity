@@ -10,6 +10,11 @@ import UIKit
 
 class LoggerViewController: UIViewController {
     
+    // Make status bar light
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     // Objects from the AppDelegate
     var logger: Logger!
     var sensors: Sensors!
@@ -34,12 +39,37 @@ class LoggerViewController: UIViewController {
         notificationCenter.addObserver(self, selector: #selector(willEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
         
         // Initial states
+        haveInitialLog = false
         range = Int(rangeStepper.value)
         rangeLabel.text = range.description
         angle = Int(angleStepper.value)
         angleLabel.text = angle.description
         isRunning = false
         rssiCount = 0
+    }
+    
+    // Create new log. For the first log, just do it - but for subsequent ones, ask,
+    // since this will also delete them.
+    var haveInitialLog: Bool!
+    @IBOutlet weak var createNewLogButton: UIButton!
+    @IBAction func createNewLogButtonPressed(_ sender: Any) {
+        if haveInitialLog {
+            
+            // Warn before deleting old log
+            let alert = UIAlertController(title: "Warning", message: "Creating a new log will delete the old log. To avoid losing data, make sure the old log has been sent off of this device before continuing.", preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
+                self.logger.createNewLog()
+            }))
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
+                // Nothing to do here
+            }))
+            present(alert, animated: true, completion: nil)
+            
+        } else {
+            logger.createNewLog()
+            haveInitialLog = true
+            print("haveInitialLog")
+        }
     }
     
     // GPS enable/disable
@@ -67,7 +97,7 @@ class LoggerViewController: UIViewController {
     var isRunning: Bool!
     @IBOutlet weak var runStopButton: UIButton!
     @IBAction func runStopButtonPressed(_ sender: Any) {
-        if isRunning {
+        if haveInitialLog && isRunning {
             
             // Stop any processes
             if gpsSwitch.isOn {
@@ -78,16 +108,17 @@ class LoggerViewController: UIViewController {
             scanner.stop()
             
             // Unlock UI
+            createNewLogButton.isEnabled = true
             gpsSwitch.isEnabled = true
             rangeStepper.isEnabled = true
             angleStepper.isEnabled = true
-            sendButton.isEnabled = true
+            sendLogButton.isEnabled = true
             runStopButton.setTitle("Run", for: .normal)
             
             // Update state
             isRunning = false
 
-        } else {
+        } else if haveInitialLog {
             
             // Write range and angle to the log file
             logger.write("Range,\(range!)")
@@ -102,14 +133,22 @@ class LoggerViewController: UIViewController {
             scanner.startScanForAll()
             
             // Lock UI
+            createNewLogButton.isEnabled = false
             gpsSwitch.isEnabled = false
             rangeStepper.isEnabled = false
             angleStepper.isEnabled = false
-            sendButton.isEnabled = false
+            sendLogButton.isEnabled = false
             runStopButton.setTitle("Stop", for: .normal)
             
             // Update state
             isRunning = true
+        } else {
+            // No log file to write to
+            let alert = UIAlertController(title: "Warning", message: "No log file exists. Create a log, then come back here.", preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
+                // Nothing to do here
+            }))
+            present(alert, animated: true, completion: nil)
         }
     }
     
@@ -117,12 +156,22 @@ class LoggerViewController: UIViewController {
     var rssiCount: Int!
     @IBOutlet weak var rssiLabel: UILabel!
     
-    // Send button
-    @IBOutlet weak var sendButton: UIButton!
-    @IBAction func sendButtonPressed(_ sender: Any) {
-        let activityItem:NSURL = NSURL(fileURLWithPath:logger.fileURL.path)
-        let activityVC = UIActivityViewController(activityItems: [activityItem], applicationActivities: nil)
-        present(activityVC, animated: true, completion: nil)
+    // Send log button
+    @IBOutlet weak var sendLogButton: UIButton!
+    @IBAction func sendLogButtonPressed(_ sender: Any) {
+        if haveInitialLog {
+            let activityItem:NSURL = NSURL(fileURLWithPath:logger.fileURL.path)
+            let activityVC = UIActivityViewController(activityItems: [activityItem], applicationActivities: nil)
+            present(activityVC, animated: true, completion: nil)
+        }
+        else {
+            // No log file to send yet
+            let alert = UIAlertController(title: "Warning", message: "No log file exists. Create a log and collect data, then come back here.", preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
+                // Nothing to do here
+            }))
+            present(alert, animated: true, completion: nil)
+        }
     }
     
     // When application moves to the background we need to make some adjustments to

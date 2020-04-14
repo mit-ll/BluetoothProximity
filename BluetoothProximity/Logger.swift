@@ -25,6 +25,43 @@ class Logger {
         return paths[0]
     }
     
+    // Creates a new log file. Whenever this is done, any old files are also wiped.
+    func createNewLog() {
+        
+        // Delete any old log files
+        let fileURLs = FileManager.default.urls(for: .documentDirectory)
+        for u in fileURLs! {
+            do {
+                try fileManager.removeItem(atPath: u.path)
+            } catch {
+                #if DEBUG
+                print("fileManager.removeItem error")
+                #endif
+            }
+        }
+        
+        // Create the log file with its name as a timestamp
+        var timeStamp = getTimestamp()
+        timeStamp = timeStamp.replacingOccurrences(of: " ", with: "_")
+        timeStamp = timeStamp.replacingOccurrences(of: ":", with: ".")
+        fileName = "log_" + timeStamp + ".txt"
+        fileURL = getDir().appendingPathComponent(fileName)
+        fileManager.createFile(atPath: fileURL.path, contents: nil, attributes: nil)
+        do {
+            try fileUpdater = FileHandle(forUpdating: fileURL)
+        }
+        catch {
+            #if DEBUG
+            print("fileUpdater = FileHandle error")
+            #endif
+            return
+        }
+        
+        // Log the device type and name
+        let deviceStr = "Device," + UIDevice.modelName + "," + UIDevice.current.name
+        write(deviceStr)
+    }
+    
     // Gets timestamp
     func getTimestamp() -> String {
         let date = Date()
@@ -49,30 +86,14 @@ class Logger {
         fileUpdater.seekToEndOfFile()
         fileUpdater.write(dataLine.data(using: .utf8)!)
     }
-    
-    // Initialize
-    init() {
-        
-        // Create the log file
-        var timeStamp = getTimestamp()
-        timeStamp = timeStamp.replacingOccurrences(of: " ", with: "_")
-        timeStamp = timeStamp.replacingOccurrences(of: ":", with: ".")
-        fileName = "log_" + timeStamp + ".txt"
-        fileURL = getDir().appendingPathComponent(fileName)
-        fileManager.createFile(atPath: fileURL.path, contents: nil, attributes: nil)
-        do {
-            try fileUpdater = FileHandle(forUpdating: fileURL)
-        }
-        catch {
-            #if DEBUG
-            print("fileUpdater error during Logger init")
-            #endif
-            return
-        }
-        
-        // Log the device type and name
-        let deviceStr = "Device," + UIDevice.modelName + "," + UIDevice.current.name
-        write(deviceStr)
+}
+
+// Lists all files in the directory
+// usage: print(FileManager.default.urls(for: .documentDirectory) ?? "none")
+extension FileManager {
+    func urls(for directory: FileManager.SearchPathDirectory, skipsHiddenFiles: Bool = true ) -> [URL]? {
+        let documentsURL = urls(for: directory, in: .userDomainMask)[0]
+        let fileURLs = try? contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil, options: skipsHiddenFiles ? .skipsHiddenFiles : [] )
+        return fileURLs
     }
-    
 }
