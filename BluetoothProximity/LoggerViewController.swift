@@ -46,6 +46,8 @@ class LoggerViewController: UIViewController {
         angle = Int(angleStepper.value)
         angleLabel.text = angle.description
         isRunning = false
+        runStopButton.isEnabled = false
+        sendLogButton.isEnabled = false
     }
     
     // Create new log. For the first log, just do it - but for subsequent ones, ask,
@@ -69,6 +71,8 @@ class LoggerViewController: UIViewController {
         } else {
             logger.createNewLog()
             haveInitialLog = true
+            runStopButton.isEnabled = true
+            sendLogButton.isEnabled = true
         }
     }
     
@@ -97,18 +101,10 @@ class LoggerViewController: UIViewController {
     var isRunning: Bool!
     @IBOutlet weak var runStopButton: UIButton!
     @IBAction func runStopButtonPressed(_ sender: Any) {
-        if haveInitialLog && isRunning {
+        if isRunning {
             stopRun()
-        } else if haveInitialLog {
-            startRun()
         } else {
-            
-            // Not ready to run - no log file
-            let alert = UIAlertController(title: "Warning", message: "No log file exists. Create a log, then come back here.", preferredStyle: UIAlertController.Style.alert)
-            alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
-                // Nothing to do here
-            }))
-            present(alert, animated: true, completion: nil)
+            startRun()
         }
     }
     
@@ -189,19 +185,9 @@ class LoggerViewController: UIViewController {
     // Send log button
     @IBOutlet weak var sendLogButton: UIButton!
     @IBAction func sendLogButtonPressed(_ sender: Any) {
-        if haveInitialLog {
-            let activityItem:NSURL = NSURL(fileURLWithPath:logger.fileURL.path)
-            let activityVC = UIActivityViewController(activityItems: [activityItem], applicationActivities: nil)
-            present(activityVC, animated: true, completion: nil)
-        }
-        else {
-            // No log file to send yet
-            let alert = UIAlertController(title: "Warning", message: "No log file exists. Create a log and collect data, then come back here.", preferredStyle: UIAlertController.Style.alert)
-            alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
-                // Nothing to do here
-            }))
-            present(alert, animated: true, completion: nil)
-        }
+        let activityItem:NSURL = NSURL(fileURLWithPath:logger.fileURL.path)
+        let activityVC = UIActivityViewController(activityItems: [activityItem], applicationActivities: nil)
+        present(activityVC, animated: true, completion: nil)
     }
     
     // When application moves to the background we need to make some adjustments to
