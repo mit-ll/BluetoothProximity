@@ -1,46 +1,92 @@
 # BluetoothProximity
 
-This is an iOS application built to primarily log information from the Bluetooth receiver on iPhones. In addition, it can log the state of the proximity sensor, accelerometers, gyroscope, and location services.
+This is a basic iOS application that was built to log information from the Bluetooth receiver and other sensors on iPhones. The purpose of logging the data is to undertand the Bluetooth radio propagation channel between devices in everyday use. By collecting this data, algorithms can be developed that use knowledge of the phone's state, along with the Bluetooth Received Signal Strength Indicator (RSSI), to determine if a Bluetooth device is close or far away.
 
-The logged data will be used to develop detection algorithms to determine if you have been in proximity of another Bluetooth device for a certain period. The intent is to do so with completely anonymized data.
+At a basic level, the RSSI decreases proportionally to the square of the distance between the transmitter and receiver. With knowledge of the transmitter power, the RSSI gives insight into the path loss, and thus the range. However, when a phone is in a pocket or masked by the body, the path loss can be much larger. By using this app to collect data in different scenarios, we hope to design a proximity detector with a high probably of detection and low probability of false alarm.
 
-A very basic version of the detection logic also runs on the iPhone on live data, updating on the screen as it comes in. This information is strictly for debugging.
+One first launch, approve the use of Bluetooth and allow location services (logging GPS is optional, as you will notice).
+
+## Logger Tab
+
+The logger tab is the main interface for collecting data, and requires using two phones for controlled measurements. The basic process (on both phones) is:
+
+1. Create a new log using the button at the top
+2. Configure a collection:
+	- Optionally enable recording of raw GPS data
+	- Set the range between the two phones (measure it!)
+	- Set the angle between the two phones, from the receiver's prospective (0 degrees = facing the transmitter) (measure it!)
+	- Hit the run button to start collecting data. 
+	- The counters below the button should start incrementing when both phones are running. BlueProx shows an RSSI count for the transmitting device under test, and Other shows the RSSI count for all other Bluetooth devices discovered.
+	- Hit the button again to stop collecting data
+3. Repeat step 2 as many times as desired, at various ranges and angles
+4. Click the send log button at the bottom to open the sharing interface, where you can email the data to yourself or someone else. Make sure to include a description of what the test was in the email (indoor, outdoor, phone in a pocket, etc.).
+5. Start over from step 1 to carry out another test, for example in a different environment.
+
+See below for a description of the log file format (or take a look at the source code!).
+
+<img src="Screenshots/logger.jpg" width="30%">
+
+## Detector Tab
+
+The detector tab shows a table of devices, their current RSSI, and if they are predicted to be close or far. Start and stop the live view using the button at the top. While the live view is running, the device will advertise the BlueProxTx name (in addition to scanning), so you can use this screen as the "transmit" phone during logging experiments if desired.
+
+A close/far decision with a ? indicates that there isn't enough data to make a decision yet. Please note that the decisions reported here are the example of a toy algorithm (an M-of-N detector with low value of N) and the primary purpose is for debugging. The detector tab will serve as a playground of sorts to prototype new algorithms, some of which may use sensor information along with the RSSIs for an improved result.
+
+<img src="Screenshots/detector.jpg" width="30%">
+
+## Log Format
+
+Timestamped data is written to the log in a comma separated way. The general format is:
+
+```
+Timestamp, sensor Name, sensor values
+```
+
+Here's a description of the data after a timestamp:
+
+```
+Device, device model, device name
+Range, value in feet
+Angle, value in degrees
+Bluetooth, UUID, RSSI, advertised name, TX power level, advertised timestamp
+Accelerometer, x, y, z
+Gyroscope, x, y, z
+Proximity, enabled or disabled
+GPS, latitude, longitude, altitude, speed, course
+```
+
+## Installation
+
+The methods to install the app are:
+- Build from source (with Xcode)
+- Ad-hoc distribution (send me your device ID)
+	- Once I have your device ID I'll upload a new build, and you can visit the [Wiki](https://github.com/mchlwntz/BluetoothProximity/wiki) on your phone to install the app over-the-air
+- TestFlight (submitted for beta testing, but is not yet available)
 
 ## Supported Devices
 
-It's very likely this application will run on all newer iPhones, but has only been tested thus far on an iPhone SE. More devices coming soon. 
+This app has been tested on the following iPhone models:
+- SE
+- 5S
+- 6
+- 6S
+- 8
+- 8 Plus
+- 10
+- XR
+- 11 Pro
 
-The debugging interface displayed on the phone's screen may not scale well for larger/smaller screens (relative to the iPhone SE).
-
-## Instructions
-
-Running this app may be denied since it is not trusted. Go to settings, general, profiles & device management. Under developer app click mchlwntz@gmail.com and trust it.
-
-On first launch, approve use of Bluetooth and allow use of location while using the app. When you close the app you will also get a notification about using location even when the app is not in use; change to always allow.
-
-Upon launching the app, data will immediately start logging to a text file on the phone. The top of the app shows a status message and will indicate if the Bluetooth radio is off - if it is off, please turn it on. You can do this by swiping up and clicking the Bluetooth icon while the app is running, no need to restart it. 
-
-The app will display the total number of Bluetooth messages logged. Keep the app open and on screen while you are doing measurements - do not put it in the background. After you have done your measurements, click the "Send Log" button to share the data. Typically I email the data to myself to process on my computer. Afer you are done, close it like you would any normal app.
-
-The app currently logs to a file always named log.txt, and this file is created each time the app is launched. If you forget to send your log file and close the app, the next opening of the app will immediately overwrite the log file!
-
-## Building
-
-This appplication was built using Xcode 10.1 on macOS 10.13.6, but is likely to work with other versions (possibly with syntax changes). By default you should be able to build the project and run it on an iPhone attached to a computer. Building and running is as simple as clicking the play arrow in the Xcode IDE.
-
-Note that with the recent versions of Xcode, you can deploy and run the app on your device over a WiFi network. To do so, attach your phone using the USB cable and go to Window and then Devices and Simulators. Select your device on the left, then in the top right panel check the box to Connect via network. You should see now see the network icon next to your device.
+There may be layout/interface issues, especially on devices with larger screens.
 
 ## Known Issues
 
-These messages appear in the Xcode console when using the "Send Log" button to email the log file to yourself. They do not appear to affect anything, as the log file still goes through.
+There are some autolayout warnings when building the project. Further there are some warnings in the console when using the UI switch (GPS enable/disble) and button to share data. These appear to be Swift UI bugs and do not affect anything.
+
+```
+invalid mode 'kCFRunLoopCommonModes' provided to CFRunLoopRunSpecific - break on _CFRunLoopError_RunCalledWithInvalidMode to debug. This message will only appear once per execution.
+```
 
 ```
 [core] SLRemoteComposeViewController: (this may be harmless) viewServiceDidTerminateWithError: Error Domain=_UIViewServiceErrorDomain Code=1 "(null)" UserInfo={Terminated=disconnect method}
 [ShareSheet] connection invalidated
-```
-
-After adding the UI switches, the following error is also appearing (from any of them). This appears to be a Swift UI bug and does not affect anything.
-
-```
-invalid mode 'kCFRunLoopCommonModes' provided to CFRunLoopRunSpecific - break on _CFRunLoopError_RunCalledWithInvalidMode to debug. This message will only appear once per execution.
 ```
