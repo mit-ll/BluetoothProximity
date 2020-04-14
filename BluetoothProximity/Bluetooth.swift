@@ -64,6 +64,9 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     var scanner: CBCentralManager!
     var scanTimer: Timer?
     
+    // Variables
+    var rssiCount: Int!
+    
     override init() {
         super.init()
         
@@ -73,6 +76,9 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         
         // Create scanner
         scanner = CBCentralManager(delegate: self, queue: nil, options: nil)
+        
+        // RSSI counter
+        rssiCount = 0
     }
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -135,12 +141,16 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         let uuid = peripheral.identifier.uuidString
         
         // Parse advertisement data
+        // Any time we see the desired name, increase the RSSI counter
         var advName = "None"
         var advPower = -999.0
         var advTime = -1.0
         for (i, j) in advertisementData {
             if i == "kCBAdvDataLocalName" {
                 advName = j as! String
+                if advName == localName {
+                    rssiCount += 1
+                }
             } else if i == "kCBAdvDataTxPowerLevel" {
                 advPower = j as! Double
             } else if i == "kCBAdvDataTimestamp" {
@@ -151,6 +161,11 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         // Write to log
         let s = "Bluetooth," + uuid + ",\(RSSI)" + "," + advName + ",\(advPower)" + ",\(advTime)"
         logger.write(s)
+    }
+    
+    // Reset RSSI counter
+    func resetRSSICount() {
+        rssiCount = 0
     }
     
 }

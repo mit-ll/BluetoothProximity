@@ -45,7 +45,6 @@ class LoggerViewController: UIViewController {
         angle = Int(angleStepper.value)
         angleLabel.text = angle.description
         isRunning = false
-        rssiCount = 0
     }
     
     // Create new log. For the first log, just do it - but for subsequent ones, ask,
@@ -58,6 +57,7 @@ class LoggerViewController: UIViewController {
             // Warn before deleting old log
             let alert = UIAlertController(title: "Warning", message: "Creating a new log will delete the old log. To avoid losing data, make sure the old log has been sent off of this device before continuing.", preferredStyle: UIAlertController.Style.alert)
             alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
+                self.logger.deleteLogs()
                 self.logger.createNewLog()
             }))
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
@@ -68,7 +68,6 @@ class LoggerViewController: UIViewController {
         } else {
             logger.createNewLog()
             haveInitialLog = true
-            print("haveInitialLog")
         }
     }
     
@@ -97,7 +96,10 @@ class LoggerViewController: UIViewController {
     var isRunning: Bool!
     @IBOutlet weak var runStopButton: UIButton!
     @IBAction func runStopButtonPressed(_ sender: Any) {
+        
         if haveInitialLog && isRunning {
+            
+            // Stop running
             
             // Stop any processes
             if gpsSwitch.isOn {
@@ -106,6 +108,7 @@ class LoggerViewController: UIViewController {
             sensors.stop()
             advertiser.stop()
             scanner.stop()
+            stopUpdatingRSSICount()
             
             // Unlock UI
             createNewLogButton.isEnabled = true
@@ -120,6 +123,8 @@ class LoggerViewController: UIViewController {
 
         } else if haveInitialLog {
             
+            // Start running
+            
             // Write range and angle to the log file
             logger.write("Range,\(range!)")
             logger.write("Angle,\(angle!)")
@@ -131,6 +136,8 @@ class LoggerViewController: UIViewController {
             sensors.start()
             advertiser.start()
             scanner.startScanForAll()
+            scanner.resetRSSICount()
+            startUpdatingRSSICount()
             
             // Lock UI
             createNewLogButton.isEnabled = false
@@ -142,19 +149,32 @@ class LoggerViewController: UIViewController {
             
             // Update state
             isRunning = true
+            
         } else {
-            // No log file to write to
+            
+            // Not ready to run - no log file
             let alert = UIAlertController(title: "Warning", message: "No log file exists. Create a log, then come back here.", preferredStyle: UIAlertController.Style.alert)
             alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
                 // Nothing to do here
             }))
             present(alert, animated: true, completion: nil)
+            
         }
     }
     
-    // RSSI counter
-    var rssiCount: Int!
+    // RSSI counter - updated every second
+    var rsssiTimer: Timer?
     @IBOutlet weak var rssiLabel: UILabel!
+    func startUpdatingRSSICount() {
+        rsssiTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateRSSICount), userInfo: nil, repeats: true)
+    }
+    @objc func updateRSSICount() {
+        rssiLabel.text = scanner.rssiCount.description
+    }
+    func stopUpdatingRSSICount() {
+        rsssiTimer?.invalidate()
+        rsssiTimer = nil
+    }
     
     // Send log button
     @IBOutlet weak var sendLogButton: UIButton!

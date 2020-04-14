@@ -25,10 +25,8 @@ class Logger {
         return paths[0]
     }
     
-    // Creates a new log file. Whenever this is done, any old files are also wiped.
-    func createNewLog() {
-        
-        // Delete any old log files
+    // Delete all old log files
+    func deleteLogs() {
         let fileURLs = FileManager.default.urls(for: .documentDirectory)
         for u in fileURLs! {
             do {
@@ -39,6 +37,10 @@ class Logger {
                 #endif
             }
         }
+    }
+    
+    // Creates a new log file
+    func createNewLog() {
         
         // Create the log file with its name as a timestamp
         var timeStamp = getTimestamp()
