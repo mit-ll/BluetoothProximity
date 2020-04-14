@@ -130,24 +130,26 @@ class DetectorViewController: UIViewController {
     }
     @objc func updateTable() {
         let n = min(scanner.uuidArr.count, nRows)
-        for i in 0...(n-1) {
-            nameLabelArr[i].text = String(scanner.nameArr[i].prefix(10))
-            rssiLabelArr[i].text = scanner.rssiArr[i].description
-            if scanner.detArr[i] == 0 {
-                proxLabelArr[i].text = "Far"
-                proxLabelArr[i].textColor = UIColor.green
-            } else if scanner.detArr[i] == 1 {
-                proxLabelArr[i].text = "Far?"
-                proxLabelArr[i].textColor = UIColor.orange
-            } else if scanner.detArr[i] == 2 {
-                proxLabelArr[i].text = "Close?"
-                proxLabelArr[i].textColor = UIColor.yellow
-            } else if scanner.detArr[i] == 3 {
-                proxLabelArr[i].text = "Close"
-                proxLabelArr[i].textColor = UIColor.red
-            } else {
-                proxLabelArr[i].text = "?"
-                proxLabelArr[i].textColor = UIColor.white
+        if n > 0 {
+            for i in 0...(n-1) {
+                nameLabelArr[i].text = String(scanner.nameArr[i].prefix(10))
+                rssiLabelArr[i].text = scanner.rssiArr[i].description
+                if scanner.detArr[i] == 0 {
+                    proxLabelArr[i].text = "Far"
+                    proxLabelArr[i].textColor = UIColor.green
+                } else if scanner.detArr[i] == 1 {
+                    proxLabelArr[i].text = "Far?"
+                    proxLabelArr[i].textColor = UIColor.orange
+                } else if scanner.detArr[i] == 2 {
+                    proxLabelArr[i].text = "Close?"
+                    proxLabelArr[i].textColor = UIColor.yellow
+                } else if scanner.detArr[i] == 3 {
+                    proxLabelArr[i].text = "Close"
+                    proxLabelArr[i].textColor = UIColor.red
+                } else {
+                    proxLabelArr[i].text = "?"
+                    proxLabelArr[i].textColor = UIColor.white
+                }
             }
         }
     }

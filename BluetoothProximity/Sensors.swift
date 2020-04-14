@@ -92,8 +92,13 @@ class Sensors {
     // Called when there is new accelerometer data
     @objc func newAccelData() {
         let data = motion.accelerometerData
-        let s = "Accelerometer,\(data!.acceleration.x),\(data!.acceleration.y),\(data!.acceleration.z)"
-        logger.write(s)
+        let x = data?.acceleration.x
+        let y = data?.acceleration.y
+        let z = data?.acceleration.z
+        if x != nil && y != nil && z != nil {
+            let s = "Accelerometer,\(x!),\(y!),\(z!)"
+            logger.write(s)
+        }
     }
     
     // -----------------------------------------------------------------------------
@@ -120,7 +125,12 @@ class Sensors {
     // Called when there is new gyroscope data
     @objc func newGyroData() {
         let data = motion.gyroData
-        let s = "Gyroscope,\(data!.rotationRate.x),\(data!.rotationRate.y),\(data!.rotationRate.z)"
-        logger.write(s)
+        let x = data?.rotationRate.x
+        let y = data?.rotationRate.y
+        let z = data?.rotationRate.z
+        if x != nil && y != nil && z != nil {
+            let s = "Gyroscope,\(x!),\(y!),\(z!)"
+            logger.write(s)
+        }
     }
 }
