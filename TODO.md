@@ -1,21 +1,21 @@
 # TODOs
 
-- Add ability to annotate test
-- Button to clear log file
-- Tabbed UI with more clear test procedures
-- Any RSSI > 20 is invalid per Bluetooth spec - maybe don't log those
+- Finish auto layout
+- Wait a few seconds before logging (for phones to get in position)
+- Make sure all data is safely unwrapped (can use simulator)
+- Make button corners rounded
+- Disable run/send buttons until log exits
+- Complete info page
 - Get app in TestFlight
-- If using the proximity sensor, no Bluetooth data will be recorded, since we can't scan in the background other than for a specific UUID
-	- Example here: https://scribles.net/enabling-background-ble-scanning-on-iphone/
-- Add TX mode
-	- Specific UUID so RX can only scan for that
-	- iBeacon
+
+- Add ability to annotate test
+- Experiment with iBeacon TX and ranging
 - Sort detector table by results (close, far)
-- Name log file with timestamp and automate sending it to a shared folder somewhere
+- Automate sending log to a shared folder somewhere
 - Add confidence metric
 - Add range estimation
 - Log battery state (charging vs. not)
 - Log screen state
-- If we're no longer getting measurements from a device, it gets stuck close/far. add last contact in seconds.
+- If we're no longer getting measurements from a device, it gets stuck close/far - add last contact in seconds.
 - Button for H0/H1 for labeling test
 - Log pedometer
