@@ -123,8 +123,8 @@ class LoggerViewController: UIViewController {
         advertiser.start()
         scanner.logToFile = true
         scanner.startScanForAll()
-        scanner.resetRSSICount()
-        startUpdatingRSSICount()
+        scanner.resetRSSICounts()
+        startUpdatingRSSICounts()
         
         // Lock UI
         createNewLogButton.isEnabled = false
@@ -149,7 +149,7 @@ class LoggerViewController: UIViewController {
         advertiser.stop()
         scanner.logToFile = false
         scanner.stop()
-        stopUpdatingRSSICount()
+        stopUpdatingRSSICounts()
         
         // Unlock UI
         createNewLogButton.isEnabled = true
@@ -168,16 +168,19 @@ class LoggerViewController: UIViewController {
         stopRun()
     }
     
-    // RSSI counter - updated every second
+    // RSSI counters - updated every second
     var rsssiTimer: Timer?
     @IBOutlet weak var rssiLabel: UILabel!
-    func startUpdatingRSSICount() {
-        rsssiTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateRSSICount), userInfo: nil, repeats: true)
+    @IBOutlet weak var proxRSSILabel: UILabel!
+    @IBOutlet weak var otherRSSILabel: UILabel!
+    func startUpdatingRSSICounts() {
+        rsssiTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateRSSICounts), userInfo: nil, repeats: true)
     }
-    @objc func updateRSSICount() {
-        rssiLabel.text = scanner.rssiCount.description
+    @objc func updateRSSICounts() {
+        proxRSSILabel.text = scanner.proxRSSICount.description
+        otherRSSILabel.text = scanner.otherRSSICount.description
     }
-    func stopUpdatingRSSICount() {
+    func stopUpdatingRSSICounts() {
         rsssiTimer?.invalidate()
         rsssiTimer = nil
     }

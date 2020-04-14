@@ -65,7 +65,8 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     var scanTimer: Timer?
     
     // Variables
-    var rssiCount: Int!
+    var proxRSSICount: Int!
+    var otherRSSICount: Int!
     var logToFile: Bool!
     var runDetector: Bool!
     
@@ -95,7 +96,8 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         scanner = CBCentralManager(delegate: self, queue: nil, options: nil)
         
         // Initialize
-        rssiCount = 0
+        proxRSSICount = 0
+        otherRSSICount = 0
         logToFile = false
         runDetector = false
     }
@@ -160,7 +162,7 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         let uuid = peripheral.identifier.uuidString
         
         // Parse advertisement data
-        // Any time we see the desired name, increase the RSSI counter
+        // Any time we see the desired name, increase the proximity RSSI counter
         var advName = "None"
         var advPower = -999.0
         var advTime = -1.0
@@ -168,13 +170,18 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
             if i == "kCBAdvDataLocalName" {
                 advName = j as! String
                 if advName == localName {
-                    rssiCount += 1
+                    proxRSSICount += 1
                 }
             } else if i == "kCBAdvDataTxPowerLevel" {
                 advPower = j as! Double
             } else if i == "kCBAdvDataTimestamp" {
                 advTime = j as! Double
             }
+        }
+        
+        // If this wasn't the desired name, increase the other RSSI counter
+        if advName == "None" {
+            otherRSSICount += 1
         }
         
         // Write to log if enabled
@@ -263,9 +270,10 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         runDetector = false
     }
     
-    // Reset RSSI counter
-    func resetRSSICount() {
-        rssiCount = 0
+    // Reset RSSI counters
+    func resetRSSICounts() {
+        proxRSSICount = 0
+        otherRSSICount = 0
     }
     
 }
