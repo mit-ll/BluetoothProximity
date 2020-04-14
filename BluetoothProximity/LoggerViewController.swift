@@ -96,60 +96,10 @@ class LoggerViewController: UIViewController {
     var isRunning: Bool!
     @IBOutlet weak var runStopButton: UIButton!
     @IBAction func runStopButtonPressed(_ sender: Any) {
-        
         if haveInitialLog && isRunning {
-            
-            // Stop running
-            
-            // Stop any processes
-            if gpsSwitch.isOn {
-                gps.stop()
-            }
-            sensors.stop()
-            advertiser.stop()
-            scanner.stop()
-            stopUpdatingRSSICount()
-            
-            // Unlock UI
-            createNewLogButton.isEnabled = true
-            gpsSwitch.isEnabled = true
-            rangeStepper.isEnabled = true
-            angleStepper.isEnabled = true
-            sendLogButton.isEnabled = true
-            runStopButton.setTitle("Run", for: .normal)
-            
-            // Update state
-            isRunning = false
-
+            stopRun()
         } else if haveInitialLog {
-            
-            // Start running
-            
-            // Write range and angle to the log file
-            logger.write("Range,\(range!)")
-            logger.write("Angle,\(angle!)")
-            
-            // Start any processes
-            if gpsSwitch.isOn {
-                gps.start()
-            }
-            sensors.start()
-            advertiser.start()
-            scanner.startScanForAll()
-            scanner.resetRSSICount()
-            startUpdatingRSSICount()
-            
-            // Lock UI
-            createNewLogButton.isEnabled = false
-            gpsSwitch.isEnabled = false
-            rangeStepper.isEnabled = false
-            angleStepper.isEnabled = false
-            sendLogButton.isEnabled = false
-            runStopButton.setTitle("Stop", for: .normal)
-            
-            // Update state
-            isRunning = true
-            
+            startRun()
         } else {
             
             // Not ready to run - no log file
@@ -158,8 +108,65 @@ class LoggerViewController: UIViewController {
                 // Nothing to do here
             }))
             present(alert, animated: true, completion: nil)
-            
         }
+    }
+    
+    // Starts running
+    func startRun() {
+        
+        // Write range and angle to the log file
+        logger.write("Range,\(range!)")
+        logger.write("Angle,\(angle!)")
+        
+        // Start any processes
+        if gpsSwitch.isOn {
+            gps.start()
+        }
+        sensors.start()
+        advertiser.start()
+        scanner.startScanForAll()
+        scanner.resetRSSICount()
+        startUpdatingRSSICount()
+        
+        // Lock UI
+        createNewLogButton.isEnabled = false
+        gpsSwitch.isEnabled = false
+        rangeStepper.isEnabled = false
+        angleStepper.isEnabled = false
+        sendLogButton.isEnabled = false
+        runStopButton.setTitle("Stop", for: .normal)
+        
+        // Update state
+        isRunning = true
+    }
+    
+    // Stops running
+    func stopRun() {
+        
+        // Stop any processes
+        if gpsSwitch.isOn {
+            gps.stop()
+        }
+        sensors.stop()
+        advertiser.stop()
+        scanner.stop()
+        stopUpdatingRSSICount()
+        
+        // Unlock UI
+        createNewLogButton.isEnabled = true
+        gpsSwitch.isEnabled = true
+        rangeStepper.isEnabled = true
+        angleStepper.isEnabled = true
+        sendLogButton.isEnabled = true
+        runStopButton.setTitle("Run", for: .normal)
+        
+        // Update state
+        isRunning = false
+    }
+    
+    // Stop any run when we leave the tab
+    override func viewWillDisappear(_ animated: Bool) {
+        stopRun()
     }
     
     // RSSI counter - updated every second
