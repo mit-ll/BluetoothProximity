@@ -11,7 +11,7 @@ import CoreBluetooth
 
 // Service UUID (0x1800 = generic access) and local name
 let serviceCBUUID = CBUUID(string: "1800")
-let localName = "COVID-19"
+let localName = "BlueProxTx"
 
 // Advertiser - broadcasts signals
 class BluetoothAdvertiser: NSObject, CBPeripheralManagerDelegate {
