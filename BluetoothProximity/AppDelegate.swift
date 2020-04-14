@@ -15,6 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var logger: Logger!
     var sensors: Sensors!
+    var gps: GPS!
     var advertiser: BluetoothAdvertiser!
     var scanner: BluetoothScanner!
 
@@ -22,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         logger = Logger()
         sensors = Sensors()
+        gps = GPS()
         advertiser = BluetoothAdvertiser()
         scanner = BluetoothScanner()
         return true

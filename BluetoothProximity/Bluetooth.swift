@@ -56,7 +56,7 @@ class BluetoothAdvertiser: NSObject, CBPeripheralManagerDelegate {
     }
 }
 
-// Scanner - receives advertisements
+// Scanner - receives advertisements and logs data
 class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     
     // Objects

@@ -13,6 +13,7 @@ class LoggerViewController: UIViewController {
     // Objects from the AppDelegate
     var logger: Logger!
     var sensors: Sensors!
+    var gps: GPS!
     var advertiser: BluetoothAdvertiser!
     var scanner: BluetoothScanner!
         
@@ -23,6 +24,7 @@ class LoggerViewController: UIViewController {
         let delegate = UIApplication.shared.delegate as! AppDelegate
         logger = delegate.logger
         sensors = delegate.sensors
+        gps = delegate.gps
         advertiser = delegate.advertiser
         scanner = delegate.scanner
         
@@ -32,7 +34,6 @@ class LoggerViewController: UIViewController {
         notificationCenter.addObserver(self, selector: #selector(willEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
         
         // Initial states
-        logGPS = gpsSwitch.isOn
         range = Int(rangeStepper.value)
         rangeLabel.text = range.description
         angle = Int(angleStepper.value)
@@ -42,15 +43,7 @@ class LoggerViewController: UIViewController {
     }
     
     // GPS enable/disable
-    var logGPS: Bool!
     @IBOutlet weak var gpsSwitch: UISwitch!
-    @IBAction func gpsSwitchChanged(_ sender: Any) {
-        if gpsSwitch.isOn {
-            logGPS = true
-        } else {
-            logGPS = false
-        }
-    }
     
     // Range in feet
     var range: Int!
@@ -75,6 +68,9 @@ class LoggerViewController: UIViewController {
     @IBOutlet weak var runStopButton: UIButton!
     @IBAction func runStopButtonPressed(_ sender: Any) {
         if isRunning {
+            if gpsSwitch.isOn {
+                gps.stop()
+            }
             sensors.stop()
             advertiser.stop()
             scanner.stop()
@@ -85,6 +81,9 @@ class LoggerViewController: UIViewController {
             sendButton.isEnabled = true
             runStopButton.setTitle("Run", for: .normal)
         } else {
+            if gpsSwitch.isOn {
+                gps.start()
+            }
             sensors.start()
             advertiser.start()
             scanner.startScanForAll()
