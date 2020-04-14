@@ -168,7 +168,9 @@ class DetectorViewController: UIViewController {
     
     // Stop any run when we leave the tab
     override func viewWillDisappear(_ animated: Bool) {
-        stopRun()
+        if isRunning {
+            stopRun()
+        }
     }
     
     // When application moves to the background we need to make some adjustments to

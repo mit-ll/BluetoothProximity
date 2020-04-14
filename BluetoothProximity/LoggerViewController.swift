@@ -165,7 +165,9 @@ class LoggerViewController: UIViewController {
     
     // Stop any run when we leave the tab
     override func viewWillDisappear(_ animated: Bool) {
-        stopRun()
+        if isRunning {
+            stopRun()
+        }
     }
     
     // RSSI counters - updated every second
