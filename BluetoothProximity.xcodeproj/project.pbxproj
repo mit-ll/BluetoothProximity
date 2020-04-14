@@ -14,6 +14,7 @@
 		752DDB1B2444F422003F2228 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752DDB1A2444F422003F2228 /* LiveViewController.swift */; };
 		752DDB1D2444F494003F2228 /* LoggerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752DDB1C2444F494003F2228 /* LoggerViewController.swift */; };
 		759DA83B2439224D00C0D35B /* BluetoothProximity.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 759DA8392439224C00C0D35B /* BluetoothProximity.xcdatamodeld */; };
+		75AFF0CF2445346F0080C0B5 /* GPS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AFF0CE2445346F0080C0B5 /* GPS.swift */; };
 		75C515DF243697FE0071BE11 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C515DE243697FE0071BE11 /* AppDelegate.swift */; };
 		75C515E1243697FE0071BE11 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C515E0243697FE0071BE11 /* ViewController.swift */; };
 		75C515E4243697FE0071BE11 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75C515E2243697FE0071BE11 /* Main.storyboard */; };
@@ -48,6 +49,7 @@
 		752DDB1A2444F422003F2228 /* LiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveViewController.swift; sourceTree = "<group>"; };
 		752DDB1C2444F494003F2228 /* LoggerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerViewController.swift; sourceTree = "<group>"; };
 		759DA83A2439224C00C0D35B /* BluetoothProximity.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BluetoothProximity.xcdatamodel; sourceTree = "<group>"; };
+		75AFF0CE2445346F0080C0B5 /* GPS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPS.swift; sourceTree = "<group>"; };
 		75C515DB243697FE0071BE11 /* BluetoothProximity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BluetoothProximity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75C515DE243697FE0071BE11 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75C515E0243697FE0071BE11 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 				752DDB162444F235003F2228 /* Sensors.swift */,
 				752DDB1A2444F422003F2228 /* LiveViewController.swift */,
 				752DDB1C2444F494003F2228 /* LoggerViewController.swift */,
+				75AFF0CE2445346F0080C0B5 /* GPS.swift */,
 			);
 			path = BluetoothProximity;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 				752DDB152444F21B003F2228 /* Logger.swift in Sources */,
 				752DDB132444F1FD003F2228 /* Bluetooth.swift in Sources */,
 				75C515DF243697FE0071BE11 /* AppDelegate.swift in Sources */,
+				75AFF0CF2445346F0080C0B5 /* GPS.swift in Sources */,
 				752DDB1D2444F494003F2228 /* LoggerViewController.swift in Sources */,
 				752DDB1B2444F422003F2228 /* LiveViewController.swift in Sources */,
 				759DA83B2439224D00C0D35B /* BluetoothProximity.xcdatamodeld in Sources */,

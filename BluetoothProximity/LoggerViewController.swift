@@ -60,7 +60,7 @@ class LoggerViewController: UIViewController {
     @IBOutlet weak var angleLabel: UILabel!
     @IBAction func angleStepperChanged(_ sender: Any) {
         angle = Int(angleStepper.value)
-        angleLabel.text = angleLabel.description
+        angleLabel.text = angle.description
     }
     
     // Run/stop button
@@ -68,31 +68,48 @@ class LoggerViewController: UIViewController {
     @IBOutlet weak var runStopButton: UIButton!
     @IBAction func runStopButtonPressed(_ sender: Any) {
         if isRunning {
+            
+            // Stop any processes
             if gpsSwitch.isOn {
                 gps.stop()
             }
             sensors.stop()
             advertiser.stop()
             scanner.stop()
-            isRunning = false
+            
+            // Unlock UI
             gpsSwitch.isEnabled = true
             rangeStepper.isEnabled = true
             angleStepper.isEnabled = true
             sendButton.isEnabled = true
             runStopButton.setTitle("Run", for: .normal)
+            
+            // Update state
+            isRunning = false
+
         } else {
+            
+            // Write range and angle to the log file
+            logger.write("Range,\(range!)")
+            logger.write("Angle,\(angle!)")
+            
+            // Start any processes
             if gpsSwitch.isOn {
                 gps.start()
             }
             sensors.start()
             advertiser.start()
             scanner.startScanForAll()
-            isRunning = true
+            
+            // Lock UI
             gpsSwitch.isEnabled = false
             rangeStepper.isEnabled = false
             angleStepper.isEnabled = false
             sendButton.isEnabled = false
             runStopButton.setTitle("Stop", for: .normal)
+            
+            // Update state
+            isRunning = true
         }
     }
     
