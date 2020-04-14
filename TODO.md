@@ -1,13 +1,7 @@
 # TODOs
 
-- Finish auto layout
-- Wait a few seconds before logging (for phones to get in position)
-- Make sure all data is safely unwrapped (can use simulator)
-- Make button corners rounded
-- Disable run/send buttons until log exits
-- Complete info page
 - Get app in TestFlight
-
+- Wait a few seconds before logging (for phones to get in position)
 - Add ability to annotate test
 - Experiment with iBeacon TX and ranging
 - Sort detector table by results (close, far)
