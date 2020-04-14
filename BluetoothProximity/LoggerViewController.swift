@@ -21,7 +21,8 @@ class LoggerViewController: UIViewController {
     var gps: GPS!
     var advertiser: BluetoothAdvertiser!
     var scanner: BluetoothScanner!
-        
+    
+    // Initialization
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -124,6 +125,7 @@ class LoggerViewController: UIViewController {
         }
         sensors.start()
         advertiser.start()
+        scanner.logToFile = true
         scanner.startScanForAll()
         scanner.resetRSSICount()
         startUpdatingRSSICount()
@@ -149,6 +151,7 @@ class LoggerViewController: UIViewController {
         }
         sensors.stop()
         advertiser.stop()
+        scanner.logToFile = false
         scanner.stop()
         stopUpdatingRSSICount()
         

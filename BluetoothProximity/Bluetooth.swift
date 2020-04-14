@@ -66,6 +66,23 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     
     // Variables
     var rssiCount: Int!
+    var logToFile: Bool!
+    var runDetector: Bool!
+    
+    // Detector parameters
+    let M = 5                   // Samples that must cross threshold
+    let N = 20                  // Total number of samples
+    let rssiThresh = -60        // Threshold RSSI
+    
+    // Detector storage
+    var uuidIdx: Int!
+    var uuidArr: [String] = []
+    var nameArr: [String] = []
+    var rssiArr: [Int] = []
+    var mtx: [[Int]] = []
+    var mtxPtr: [Int] = []
+    var nArr: [Int] = []
+    var detArr: [Int] = []
     
     override init() {
         super.init()
@@ -77,8 +94,10 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         // Create scanner
         scanner = CBCentralManager(delegate: self, queue: nil, options: nil)
         
-        // RSSI counter
+        // Initialize
         rssiCount = 0
+        logToFile = false
+        runDetector = false
     }
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -158,9 +177,90 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
             }
         }
         
-        // Write to log
-        let s = "Bluetooth," + uuid + ",\(RSSI)" + "," + advName + ",\(advPower)" + ",\(advTime)"
-        logger.write(s)
+        // Write to log if enabled
+        if logToFile {
+            let s = "Bluetooth," + uuid + ",\(RSSI)" + "," + advName + ",\(advPower)" + ",\(advTime)"
+            logger.write(s)
+        }
+        
+        // Run detector processing if enabled
+        if runDetector {
+            
+            // If this is the first time we've seen this UUID, set up storage for it
+            let idx = uuidArr.index(of: uuid)
+            if idx == nil {
+                uuidArr.append(uuid)
+                nameArr.append(advName)
+                uuidIdx = uuidArr.count - 1
+                rssiArr.append(0)
+                mtx.append([Int](repeating: 0, count: N))
+                mtxPtr.append(0)
+                nArr.append(0)
+                detArr.append(0)
+            } else {
+                uuidIdx = idx!
+            }
+            
+            // Update RSSI and name (may have changed)
+            rssiArr[uuidIdx] = RSSI.intValue
+            nameArr[uuidIdx] = advName
+            
+            // M-of-N detector. This makes a decision for each sample based on the threshold.
+            // If there are at least N samples, and M of the decisions declare detection, then
+            // overall detection is declared. Possible detection values:
+            //      0 - no detection
+            //      1 - not enough info, but suspect no detection
+            //      2 - not enough info, but suspect detection
+            //      3 - detection
+            
+            // Count up to N measurements for each device
+            if nArr[uuidIdx] < N {
+                nArr[uuidIdx] += 1
+            }
+            // Filter out erroneous RSSI readings
+            if (RSSI.intValue >= rssiThresh) && (RSSI.intValue < 0) && (RSSI.intValue > -110) {
+                mtx[uuidIdx][mtxPtr[uuidIdx]] = 1
+            } else {
+                mtx[uuidIdx][mtxPtr[uuidIdx]] = 0
+            }
+            // Wrap pointer to the buffer once we reach N measurements
+            mtxPtr[uuidIdx] += 1
+            if mtxPtr[uuidIdx] == N {
+                mtxPtr[uuidIdx] = 0
+            }
+            // See if there are M positives within the N samples
+            let s = mtx[uuidIdx].reduce(0, +)
+            if s >= M {
+                if nArr[uuidIdx] == N {
+                    detArr[uuidIdx] = 3    // detection
+                } else {
+                    detArr[uuidIdx] = 2    // not enough info, but suspect no detection
+                }
+            } else {
+                if nArr[uuidIdx] == N {
+                    detArr[uuidIdx] = 0    // 0 - no detection
+                } else {
+                    detArr[uuidIdx] = 1    // not enough info, but suspect no detection
+                }
+            }
+        }
+    }
+    
+    // Start detector processing - clear out all storage before running!
+    func startDetector() {
+        uuidArr = []
+        nameArr = []
+        rssiArr = []
+        mtx = []
+        mtxPtr = []
+        nArr = []
+        detArr = []
+        runDetector = true
+    }
+    
+    // Stop detector processing
+    func stopDetector() {
+        runDetector = false
     }
     
     // Reset RSSI counter
