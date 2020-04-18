@@ -39,6 +39,14 @@ class LoggerViewController: UIViewController {
         notificationCenter.addObserver(self, selector: #selector(didEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         notificationCenter.addObserver(self, selector: #selector(willEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
         
+        // Notification when proximity sensor is activated
+        // (required since the app does not go into the background!)
+        let device = UIDevice.current
+        device.isProximityMonitoringEnabled = true
+        if device.isProximityMonitoringEnabled {
+            NotificationCenter.default.addObserver(self, selector: #selector(proximityChanged(notification:)), name: NSNotification.Name(rawValue: "UIDeviceProximityStateDidChangeNotification"), object: device)
+        }
+        
         // Initial states
         haveInitialLog = false
         range = Int(rangeStepper.value)
@@ -222,6 +230,17 @@ class LoggerViewController: UIViewController {
             // Switch scanner from one service to everything
             scanner.stopScanForServiceLoop()
             scanner.startScanForAll()
+        }
+    }
+    
+    // Called when the proximity sensor is activated
+    // If it's on, go into background mode, otherwise, come into foreground mode
+    @objc func proximityChanged(notification: NSNotification) {
+        let state = UIDevice.current.proximityState ? 1 : 0
+        if state == 1 {
+            didEnterBackground()
+        } else {
+            willEnterForeground()
         }
     }
 }
