@@ -1,6 +1,6 @@
 # TODOs
 
-- Get app in TestFlight
+- Add sources for images/icons
 - Wait a few seconds before logging (for phones to get in position)
 - Add ability to annotate test
 - Experiment with iBeacon TX and ranging

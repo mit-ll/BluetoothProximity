@@ -3,7 +3,7 @@
 //  BluetoothProximity
 //
 //  Created by Michael Wentz on 4/13/20.
-//  Copyright © 2020 Michael Wentz. All rights reserved.
+//  Copyright © 2020 Massachusetts Institute of Technology. All rights reserved.
 //
 
 import UIKit

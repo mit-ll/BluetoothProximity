@@ -6,6 +6,14 @@ At a basic level, the RSSI decreases proportionally to the square of the distanc
 
 One first launch, approve the use of Bluetooth and allow location services (logging GPS is optional, as you will notice).
 
+## Contact
+
+BlueProximity@ll.mit.edu
+
+This is a listserv which attempts to prevent spam being posted. After sending to it, you may receive an email saying that confirmation is required to post your message. Just click the link to approve the message (no need to reply), and you should get a follow up that your message was successfully posted.
+
+As an alternative, you can always open an issue on GitHub.
+
 ## Logger Tab
 
 The logger tab is the main interface for collecting data, and requires using two phones for controlled measurements. The basic process (on both phones) is:
@@ -39,7 +47,7 @@ A close/far decision with a ? indicates that there isn't enough data to make a d
 Timestamped data is written to the log in a comma separated way. The general format is:
 
 ```
-Timestamp, sensor Name, sensor values
+Timestamp, sensor name, sensor values
 ```
 
 Here's a description of the data after a timestamp:
@@ -90,3 +98,19 @@ invalid mode 'kCFRunLoopCommonModes' provided to CFRunLoopRunSpecific - break on
 [core] SLRemoteComposeViewController: (this may be harmless) viewServiceDidTerminateWithError: Error Domain=_UIViewServiceErrorDomain Code=1 "(null)" UserInfo={Terminated=disconnect method}
 [ShareSheet] connection invalidated
 ```
+
+## License
+
+MIT License. Additional licensing information can be found in LICENSE.md.
+
+## Disclaimer
+
+DISTRIBUTION STATEMENT A. Approved for public release. Distribution is unlimited.
+ 
+This material is based upon work supported by the United States Air Force under Air Force Contract No. FA8702-15-D-0001. Any opinions, findings, conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the United States Air Force.
+ 
+(c) 2020 Massachusetts Institute of Technology.
+ 
+The software/firmware is provided to you on an As-Is basis
+ 
+Delivered to the U.S. Government with Unlimited Rights, as defined in DFARS Part 252.227-7013 or 7014 (Feb 2014). Notwithstanding any copyright notice, U.S. Government rights in this work are defined by DFARS 252.227-7013 or DFARS 252.227-7014 as detailed above. Use of this work other than as specifically authorized by the U.S. Government may violate any copyrights that exist in this work.

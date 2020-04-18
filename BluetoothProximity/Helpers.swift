@@ -3,12 +3,13 @@
 //  BluetoothProximity
 //
 //  Created by Michael Wentz on 4/13/20.
-//  Copyright © 2020 Michael Wentz. All rights reserved.
+//  Copyright © 2020 Massachusetts Institute of Technology. All rights reserved.
 //
 
 import UIKit
 
 // Gets device model name
+// Reference: https://stackoverflow.com/questions/26028918/how-to-determine-the-current-iphone-device-model
 public extension UIDevice {
     static let modelName: String = {
         var systemInfo = utsname()
