@@ -8,21 +8,62 @@
 
 import UIKit
 import CoreMotion
+import CoreLocation
 
 // Manages sensors (other than Bluetooth) and logs their data
-class Sensors {
+class Sensors: NSObject, CLLocationManagerDelegate {
     
     // Objects
     var logger: Logger!
-    var motion = CMMotionManager()
+    var motionManager = CMMotionManager()
+    var locationManager : CLLocationManager!
     
     // Initialize
-    init() {
+    override init() {
+        super.init()
         
         // Get logger
         let delegate = UIApplication.shared.delegate as! AppDelegate
         logger = delegate.logger
         
+        // Initalize
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestAlwaysAuthorization()
+    }
+    
+    // -----------------------------------------------------------------------------
+    // GPS
+    // -----------------------------------------------------------------------------
+    
+    // Starts GPS
+    func startGPS() {
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.startUpdatingLocation()
+        }
+    }
+    
+    // Stops GPS
+    func stopGPS() {
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.stopUpdatingLocation()
+        }
+    }
+    
+    // GPS data updated
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let data:CLLocation = locations[0] as CLLocation
+        let s = "GPS,\(data.coordinate.latitude),\(data.coordinate.longitude),\(data.altitude),\(data.speed),\(data.course)"
+        logger.write(s)
+    }
+    
+    // GPS errors
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error)
+    {
+        #if DEBUG
+        print("GPS error : \(error)")
+        #endif
     }
     
     // -----------------------------------------------------------------------------
@@ -64,8 +105,8 @@ class Sensors {
     
     // Starts the accelerometer
     func startAccelerometer() {
-        motion.accelerometerUpdateInterval = (1.0/accelRateHz)
-        motion.startAccelerometerUpdates()
+        motionManager.accelerometerUpdateInterval = (1.0/accelRateHz)
+        motionManager.startAccelerometerUpdates()
         accelTimer = Timer.scheduledTimer(timeInterval: (1.0/accelRateHz), target: self, selector: #selector(newAccelData), userInfo: nil, repeats: true)
     }
     
@@ -77,7 +118,7 @@ class Sensors {
     
     // Called when there is new accelerometer data
     @objc func newAccelData() {
-        let data = motion.accelerometerData
+        let data = motionManager.accelerometerData
         let x = data?.acceleration.x
         let y = data?.acceleration.y
         let z = data?.acceleration.z
@@ -97,8 +138,8 @@ class Sensors {
     
     // Starts the gyroscope
     func startGyroscope() {
-        motion.gyroUpdateInterval = (1.0/gyroRateHz)
-        motion.startGyroUpdates()
+        motionManager.gyroUpdateInterval = (1.0/gyroRateHz)
+        motionManager.startGyroUpdates()
         gyroTimer = Timer.scheduledTimer(timeInterval: (1.0/gyroRateHz), target: self, selector: #selector(newGyroData), userInfo: nil, repeats: true)
     }
     
@@ -110,7 +151,7 @@ class Sensors {
     
     // Called when there is new gyroscope data
     @objc func newGyroData() {
-        let data = motion.gyroData
+        let data = motionManager.gyroData
         let x = data?.rotationRate.x
         let y = data?.rotationRate.y
         let z = data?.rotationRate.z

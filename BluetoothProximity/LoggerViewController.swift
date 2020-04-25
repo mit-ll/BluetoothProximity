@@ -18,7 +18,6 @@ class LoggerViewController: UIViewController {
     // Objects from the AppDelegate
     var logger: Logger!
     var sensors: Sensors!
-    var gps: GPS!
     var advertiser: BluetoothAdvertiser!
     var scanner: BluetoothScanner!
     
@@ -30,7 +29,6 @@ class LoggerViewController: UIViewController {
         let delegate = UIApplication.shared.delegate as! AppDelegate
         logger = delegate.logger
         sensors = delegate.sensors
-        gps = delegate.gps
         advertiser = delegate.advertiser
         scanner = delegate.scanner
         
@@ -131,7 +129,7 @@ class LoggerViewController: UIViewController {
         
         // Start sensors
         if LoggerSettings.gpsEnabled {
-            gps.start()
+            sensors.startGPS()
         }
         if LoggerSettings.accelerometerEnabled {
             sensors.startAccelerometer()
@@ -167,7 +165,7 @@ class LoggerViewController: UIViewController {
         
         // Stop sensors
         if LoggerSettings.gpsEnabled {
-            gps.stop()
+            sensors.stopGPS()
         }
         if LoggerSettings.accelerometerEnabled {
             sensors.stopAccelerometer()
