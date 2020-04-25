@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Li-GM-hz6">
-                                <rect key="frame" x="110" y="296" width="100" height="41"/>
+                                <rect key="frame" x="110" y="276" width="100" height="41"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -47,45 +47,45 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="6" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sty-jW-hyH">
-                                <rect key="frame" x="139" y="183" width="41" height="29"/>
+                                <rect key="frame" x="139" y="163" width="41" height="29"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="feet" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C6c-Zx-AiE">
-                                <rect key="frame" x="200" y="183" width="40" height="29"/>
+                                <rect key="frame" x="200" y="163" width="40" height="29"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S5u-6p-Ysa">
-                                <rect key="frame" x="139" y="237" width="42" height="29"/>
+                                <rect key="frame" x="139" y="217" width="42" height="29"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="degrees" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kfN-uz-exL">
-                                <rect key="frame" x="201" y="237" width="84" height="29"/>
+                                <rect key="frame" x="201" y="217" width="84" height="29"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="6" maximumValue="30" translatesAutoresizingMaskIntoConstraints="NO" id="MAc-1z-iCQ">
-                                <rect key="frame" x="30" y="183" width="94" height="32"/>
+                                <rect key="frame" x="30" y="163" width="94" height="32"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <connections>
                                     <action selector="rangeStepperChanged:" destination="VmY-nb-10B" eventType="valueChanged" id="sfd-gR-oFc"/>
                                 </connections>
                             </stepper>
                             <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="315" stepValue="45" translatesAutoresizingMaskIntoConstraints="NO" id="rX2-iJ-sVe">
-                                <rect key="frame" x="30" y="240" width="94" height="32"/>
+                                <rect key="frame" x="30" y="220" width="94" height="32"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <connections>
                                     <action selector="angleStepperChanged:" destination="VmY-nb-10B" eventType="valueChanged" id="5JR-uU-OgC"/>
                                 </connections>
                             </stepper>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s1Z-ac-EUe">
-                                <rect key="frame" x="20" y="440" width="280" height="1"/>
+                                <rect key="frame" x="20" y="420" width="280" height="1"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="1" id="6RZ-gj-Esg"/>
@@ -93,19 +93,19 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BlueProxTx" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RN4-bx-I1X">
-                                <rect key="frame" x="50" y="357" width="112" height="29"/>
+                                <rect key="frame" x="50" y="337" width="112" height="29"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Other" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S8B-3v-lmY">
-                                <rect key="frame" x="50" y="391" width="60" height="29"/>
+                                <rect key="frame" x="50" y="371" width="60" height="29"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hl7-Qa-OeM">
-                                <rect key="frame" x="20" y="152" width="280" height="1"/>
+                                <rect key="frame" x="20" y="142" width="280" height="1"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="1" id="4Ry-Rl-eav"/>
@@ -113,13 +113,13 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kej-MO-kPa">
-                                <rect key="frame" x="173" y="357" width="97" height="29"/>
+                                <rect key="frame" x="173" y="337" width="97" height="29"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xGB-9e-kMh">
-                                <rect key="frame" x="173" y="391" width="97" height="29"/>
+                                <rect key="frame" x="173" y="371" width="97" height="29"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -140,7 +140,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8yU-nI-y9i">
-                                <rect key="frame" x="90" y="461" width="140" height="41"/>
+                                <rect key="frame" x="90" y="431" width="140" height="41"/>
                                 <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -158,7 +158,7 @@
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="s1Z-ac-EUe" firstAttribute="top" secondItem="S8B-3v-lmY" secondAttribute="bottom" constant="20" id="19v-fX-aDb"/>
-                            <constraint firstItem="MAc-1z-iCQ" firstAttribute="top" secondItem="hl7-Qa-OeM" secondAttribute="bottom" constant="30" id="1GW-ZM-Rpa"/>
+                            <constraint firstItem="MAc-1z-iCQ" firstAttribute="top" secondItem="hl7-Qa-OeM" secondAttribute="bottom" constant="20" id="1GW-ZM-Rpa"/>
                             <constraint firstItem="Hfd-v9-l22" firstAttribute="top" secondItem="4Bv-Ya-OJt" secondAttribute="top" constant="30" id="1TB-OE-GH1"/>
                             <constraint firstItem="kfN-uz-exL" firstAttribute="top" secondItem="C6c-Zx-AiE" secondAttribute="bottom" constant="25" id="2Ao-ns-TL3"/>
                             <constraint firstItem="S8B-3v-lmY" firstAttribute="leading" secondItem="4Bv-Ya-OJt" secondAttribute="leading" constant="50" id="4vh-6F-bNY"/>
@@ -167,7 +167,7 @@
                             <constraint firstItem="RN4-bx-I1X" firstAttribute="top" secondItem="2Li-GM-hz6" secondAttribute="bottom" constant="20" id="Aks-3h-5bZ"/>
                             <constraint firstItem="Hfd-v9-l22" firstAttribute="leading" secondItem="4Bv-Ya-OJt" secondAttribute="leading" constant="102" id="AmN-7h-jfu"/>
                             <constraint firstItem="Kej-MO-kPa" firstAttribute="leading" secondItem="RN4-bx-I1X" secondAttribute="trailing" constant="11" id="EW5-yO-jH8"/>
-                            <constraint firstItem="8yU-nI-y9i" firstAttribute="top" secondItem="s1Z-ac-EUe" secondAttribute="bottom" constant="20" id="FFs-eJ-DMg"/>
+                            <constraint firstItem="8yU-nI-y9i" firstAttribute="top" secondItem="s1Z-ac-EUe" secondAttribute="bottom" constant="10" id="FFs-eJ-DMg"/>
                             <constraint firstItem="kfN-uz-exL" firstAttribute="leading" secondItem="S5u-6p-Ysa" secondAttribute="trailing" constant="20" id="GaF-kk-jhG"/>
                             <constraint firstItem="hl7-Qa-OeM" firstAttribute="centerX" secondItem="4Bv-Ya-OJt" secondAttribute="centerX" id="H3v-q8-MJp"/>
                             <constraint firstItem="Sty-jW-hyH" firstAttribute="leading" secondItem="MAc-1z-iCQ" secondAttribute="trailing" constant="15" id="HAf-6M-TVJ"/>
@@ -182,21 +182,21 @@
                             <constraint firstItem="4Bv-Ya-OJt" firstAttribute="trailing" secondItem="C6c-Zx-AiE" secondAttribute="trailing" constant="80" id="Zte-AU-i2Z"/>
                             <constraint firstItem="S5u-6p-Ysa" firstAttribute="top" secondItem="Sty-jW-hyH" secondAttribute="bottom" constant="25" id="bi3-6A-wD0"/>
                             <constraint firstItem="4Bv-Ya-OJt" firstAttribute="trailing" secondItem="8yU-nI-y9i" secondAttribute="trailing" constant="90" id="c8M-0b-7ib"/>
-                            <constraint firstItem="hl7-Qa-OeM" firstAttribute="top" secondItem="uEd-I5-qxZ" secondAttribute="bottom" constant="20" id="cy7-OF-Cl6"/>
+                            <constraint firstItem="hl7-Qa-OeM" firstAttribute="top" secondItem="uEd-I5-qxZ" secondAttribute="bottom" constant="10" id="cy7-OF-Cl6"/>
                             <constraint firstItem="uEd-I5-qxZ" firstAttribute="leading" secondItem="4Bv-Ya-OJt" secondAttribute="leading" constant="50" id="e8h-Dj-78z"/>
                             <constraint firstItem="4Bv-Ya-OJt" firstAttribute="trailing" secondItem="Hfd-v9-l22" secondAttribute="trailing" constant="104" id="fxY-ff-Vek"/>
                             <constraint firstItem="C6c-Zx-AiE" firstAttribute="leading" secondItem="Sty-jW-hyH" secondAttribute="trailing" constant="20" id="hpo-lT-FSd"/>
                             <constraint firstItem="RN4-bx-I1X" firstAttribute="leading" secondItem="4Bv-Ya-OJt" secondAttribute="leading" constant="50" id="hzj-g0-LjI"/>
                             <constraint firstItem="MAc-1z-iCQ" firstAttribute="leading" secondItem="4Bv-Ya-OJt" secondAttribute="leading" constant="30" id="jl6-MJ-5IC"/>
                             <constraint firstItem="S8B-3v-lmY" firstAttribute="top" secondItem="RN4-bx-I1X" secondAttribute="bottom" constant="5" id="n6I-nT-O9y"/>
-                            <constraint firstItem="C6c-Zx-AiE" firstAttribute="top" secondItem="hl7-Qa-OeM" secondAttribute="bottom" constant="30" id="o77-vS-HK4"/>
+                            <constraint firstItem="C6c-Zx-AiE" firstAttribute="top" secondItem="hl7-Qa-OeM" secondAttribute="bottom" constant="20" id="o77-vS-HK4"/>
                             <constraint firstItem="2Li-GM-hz6" firstAttribute="top" secondItem="S5u-6p-Ysa" secondAttribute="bottom" constant="30" id="q2t-Dn-hdb"/>
                             <constraint firstItem="uEd-I5-qxZ" firstAttribute="top" secondItem="Hfd-v9-l22" secondAttribute="bottom" constant="20" id="qgR-ao-46X"/>
                             <constraint firstItem="s1Z-ac-EUe" firstAttribute="centerX" secondItem="4Bv-Ya-OJt" secondAttribute="centerX" id="rZY-d4-dnM"/>
                             <constraint firstItem="4Bv-Ya-OJt" firstAttribute="trailing" secondItem="uEd-I5-qxZ" secondAttribute="trailing" constant="50" id="t1o-zf-KeZ"/>
                             <constraint firstItem="S5u-6p-Ysa" firstAttribute="leading" secondItem="rX2-iJ-sVe" secondAttribute="trailing" constant="15" id="tzi-09-zDu"/>
                             <constraint firstItem="Kej-MO-kPa" firstAttribute="top" secondItem="2Li-GM-hz6" secondAttribute="bottom" constant="20" id="uY8-WC-MwQ"/>
-                            <constraint firstItem="Sty-jW-hyH" firstAttribute="top" secondItem="hl7-Qa-OeM" secondAttribute="bottom" constant="30" id="yAc-lx-6z1"/>
+                            <constraint firstItem="Sty-jW-hyH" firstAttribute="top" secondItem="hl7-Qa-OeM" secondAttribute="bottom" constant="20" id="yAc-lx-6z1"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="4Bv-Ya-OJt"/>
                     </view>
@@ -241,19 +241,19 @@
                                     <action selector="doneButtonPressed:" destination="3XR-2J-HEC" eventType="touchUpInside" id="DcT-qS-STb"/>
                                 </connections>
                             </button>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ioK-u6-xT5">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ioK-u6-xT5">
                                 <rect key="frame" x="48" y="40" width="224" height="250"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="250" id="DOy-pr-GqU"/>
                                 </constraints>
-                                <mutableString key="text">Set M-of-N detector parameters.
+                                <string key="text">Set M-of-N detector parameters.
 
 RSSI: threshold RSSI value used for each observation. When current RSSI is greater than or equal to the threshold, decide 1. Otherwise, decide 0.
 
 N: total number of observations used in the sliding window.
 
-M: number of 1 decisions within N observations for detection to be declared. </mutableString>
+M: number of 1 decisions within N observations for detection to be declared. </string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -781,7 +781,7 @@ M: number of 1 decisions within N observations for detection to be declared. <
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r6b-OR-uvw">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r6b-OR-uvw">
                                 <rect key="frame" x="44" y="30" width="251" height="76"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -949,7 +949,7 @@ M: number of 1 decisions within N observations for detection to be declared. <
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fYC-xp-W52">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fYC-xp-W52">
                                 <rect key="frame" x="35" y="89" width="251" height="94"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -960,7 +960,7 @@ M: number of 1 decisions within N observations for detection to be declared. <
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="The detector tab runs a basic algorithm for real-time proximity detection. It shows the first 10 Bluetooth devices discovered." textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Js0-0O-F0V">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" bouncesZoom="NO" editable="NO" text="The detector tab runs a basic algorithm for real-time proximity detection. It shows the first 10 Bluetooth devices discovered." textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Js0-0O-F0V">
                                 <rect key="frame" x="35" y="184" width="251" height="74"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -976,7 +976,7 @@ M: number of 1 decisions within N observations for detection to be declared. <
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TKy-BV-L3H">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TKy-BV-L3H">
                                 <rect key="frame" x="35" y="259" width="251" height="110"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -987,7 +987,7 @@ M: number of 1 decisions within N observations for detection to be declared. <
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QL2-h4-Aiz">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QL2-h4-Aiz">
                                 <rect key="frame" x="35" y="370" width="251" height="115"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>

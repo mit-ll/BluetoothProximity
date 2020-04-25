@@ -44,38 +44,42 @@ class Sensors: NSObject, CLLocationManagerDelegate {
     func startPedometer() {
         
         // Activity updates
-        activityManager.startActivityUpdates(to: OperationQueue.main) {
-            [weak self] (activity: CMMotionActivity?) in
+        if CMPedometer.isPedometerEventTrackingAvailable() {
+            activityManager.startActivityUpdates(to: OperationQueue.main) {
+                [weak self] (activity: CMMotionActivity?) in
 
-            guard let activity = activity else { return }
-            DispatchQueue.main.async {
-                var activityState = -1
-                if activity.stationary {
-                    activityState = 0
-                } else if activity.walking {
-                    activityState = 1
-                } else if activity.running {
-                    activityState = 2
-                } else if activity.cycling {
-                    activityState = 3
-                } else if activity.automotive {
-                    activityState = 4
-                } else if activity.unknown {
-                    activityState = 5
+                guard let activity = activity else { return }
+                DispatchQueue.main.async {
+                    var activityState = -1
+                    if activity.stationary {
+                        activityState = 0
+                    } else if activity.walking {
+                        activityState = 1
+                    } else if activity.running {
+                        activityState = 2
+                    } else if activity.cycling {
+                        activityState = 3
+                    } else if activity.automotive {
+                        activityState = 4
+                    } else if activity.unknown {
+                        activityState = 5
+                    }
+                    let s = "Activity,\(activityState),\(activity.confidence.rawValue)"
+                    self?.logger.write(s)
                 }
-                let s = "Activity,\(activityState),\(activity.confidence.rawValue)"
-                self?.logger.write(s)
             }
         }
         
         // Pedometer updates
-        pedometer.startUpdates(from: Date()) {
-            [weak self] pedometerData, error in
-            guard let pedometerData = pedometerData, error == nil else { return }
+        if CMPedometer.isStepCountingAvailable() {
+            pedometer.startUpdates(from: Date()) {
+                [weak self] pedometerData, error in
+                guard let pedometerData = pedometerData, error == nil else { return }
 
-            DispatchQueue.main.async {
-                let s = "Pedometer,\(pedometerData.numberOfSteps)"
-                self?.logger.write(s)
+                DispatchQueue.main.async {
+                    let s = "Pedometer,\(pedometerData.numberOfSteps)"
+                    self?.logger.write(s)
+                }
             }
         }
     }
