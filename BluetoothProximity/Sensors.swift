@@ -18,6 +18,8 @@ class Sensors: NSObject, CLLocationManagerDelegate {
     var motionManager = CMMotionManager()
     var locationManager : CLLocationManager!
     var altimeter = CMAltimeter()
+    var activityManager = CMMotionActivityManager()
+    var pedometer = CMPedometer()
     
     // Initialize
     override init() {
@@ -32,6 +34,56 @@ class Sensors: NSObject, CLLocationManagerDelegate {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
+    }
+    
+    // -----------------------------------------------------------------------------
+    // Pedometer
+    // -----------------------------------------------------------------------------
+    
+    // Start pedometer
+    func startPedometer() {
+        
+        // Activity updates
+        activityManager.startActivityUpdates(to: OperationQueue.main) {
+            [weak self] (activity: CMMotionActivity?) in
+
+            guard let activity = activity else { return }
+            DispatchQueue.main.async {
+                var activityState = -1
+                if activity.stationary {
+                    activityState = 0
+                } else if activity.walking {
+                    activityState = 1
+                } else if activity.running {
+                    activityState = 2
+                } else if activity.cycling {
+                    activityState = 3
+                } else if activity.automotive {
+                    activityState = 4
+                } else if activity.unknown {
+                    activityState = 5
+                }
+                let s = "Activity,\(activityState),\(activity.confidence.rawValue)"
+                self?.logger.write(s)
+            }
+        }
+        
+        // Pedometer updates
+        pedometer.startUpdates(from: Date()) {
+            [weak self] pedometerData, error in
+            guard let pedometerData = pedometerData, error == nil else { return }
+
+            DispatchQueue.main.async {
+                let s = "Pedometer,\(pedometerData.numberOfSteps)"
+                self?.logger.write(s)
+            }
+        }
+    }
+    
+    // Stop pedometer
+    func stopPedometer() {
+        activityManager.stopActivityUpdates()
+        pedometer.stopUpdates()
     }
     
     // -----------------------------------------------------------------------------

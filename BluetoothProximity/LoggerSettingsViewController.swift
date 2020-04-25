@@ -15,6 +15,7 @@ struct LoggerSettings {
     static var proximityEnabled = false
     static var compassEnabled = false
     static var altimeterEnabled = false
+    static var pedometerEnabled = false
 }
 
 class LoggerSettingsViewController: UIViewController {
@@ -34,6 +35,7 @@ class LoggerSettingsViewController: UIViewController {
         proximitySwitch.isOn = LoggerSettings.proximityEnabled
         compassSwitch.isOn = LoggerSettings.compassEnabled
         altimeterSwitch.isOn = LoggerSettings.altimeterEnabled
+        pedometerSwitch.isOn = LoggerSettings.pedometerEnabled
     }
     
     // GPS
@@ -77,6 +79,12 @@ class LoggerSettingsViewController: UIViewController {
     @IBOutlet weak var altimeterSwitch: UISwitch!
     @IBAction func altimeterSwitchChanged(_ sender: Any) {
         LoggerSettings.altimeterEnabled = altimeterSwitch.isOn
+    }
+    
+    // Pedometer
+    @IBOutlet weak var pedometerSwitch: UISwitch!
+    @IBAction func pedometerSwitchChanged(_ sender: Any) {
+        LoggerSettings.pedometerEnabled = pedometerSwitch.isOn
     }
     
     // Done button
