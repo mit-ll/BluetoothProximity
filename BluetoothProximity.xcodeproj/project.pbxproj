@@ -20,6 +20,7 @@
 		75C515E4243697FE0071BE11 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75C515E2243697FE0071BE11 /* Main.storyboard */; };
 		75C515E9243697FE0071BE11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75C515E8243697FE0071BE11 /* Assets.xcassets */; };
 		75C515EC243697FE0071BE11 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75C515EA243697FE0071BE11 /* LaunchScreen.storyboard */; };
+		806B5B072453E514006A5089 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806B5B062453E514006A5089 /* SettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		75C515E8243697FE0071BE11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		75C515EB243697FE0071BE11 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		75C515ED243697FE0071BE11 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		806B5B062453E514006A5089 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +86,7 @@
 				752DDB1C2444F494003F2228 /* LoggerViewController.swift */,
 				75AFF0CE2445346F0080C0B5 /* GPS.swift */,
 				754EEC3A2445503B007E305A /* InfoViewController.swift */,
+				806B5B062453E514006A5089 /* SettingsViewController.swift */,
 			);
 			path = BluetoothProximity;
 			sourceTree = "<group>";
@@ -161,6 +164,7 @@
 			files = (
 				754EEC3B2445503B007E305A /* InfoViewController.swift in Sources */,
 				752DDB152444F21B003F2228 /* Logger.swift in Sources */,
+				806B5B072453E514006A5089 /* SettingsViewController.swift in Sources */,
 				752DDB132444F1FD003F2228 /* Bluetooth.swift in Sources */,
 				75C515DF243697FE0071BE11 /* AppDelegate.swift in Sources */,
 				75AFF0CF2445346F0080C0B5 /* GPS.swift in Sources */,

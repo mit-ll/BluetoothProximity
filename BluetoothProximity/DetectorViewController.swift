@@ -11,7 +11,7 @@ import UIKit
 class DetectorViewController: UIViewController {
     
     // Number of rows in the table
-    let nRows = 12
+    let nRows = 10
     
     // Name label group
     @IBOutlet weak var nameLabel0: UILabel!
@@ -24,8 +24,6 @@ class DetectorViewController: UIViewController {
     @IBOutlet weak var nameLabel7: UILabel!
     @IBOutlet weak var nameLabel8: UILabel!
     @IBOutlet weak var nameLabel9: UILabel!
-    @IBOutlet weak var nameLabel10: UILabel!
-    @IBOutlet weak var nameLabel11: UILabel!
     var nameLabelArr : [UILabel] = []
     
     // RSSI label group
@@ -39,8 +37,6 @@ class DetectorViewController: UIViewController {
     @IBOutlet weak var rssiLabel7: UILabel!
     @IBOutlet weak var rssiLabel8: UILabel!
     @IBOutlet weak var rssiLabel9: UILabel!
-    @IBOutlet weak var rssiLabel10: UILabel!
-    @IBOutlet weak var rssiLabel11: UILabel!
     var rssiLabelArr : [UILabel] = []
     
     // Proximity label group
@@ -54,8 +50,6 @@ class DetectorViewController: UIViewController {
     @IBOutlet weak var proxLabel7: UILabel!
     @IBOutlet weak var proxLabel8: UILabel!
     @IBOutlet weak var proxLabel9: UILabel!
-    @IBOutlet weak var proxLabel10: UILabel!
-    @IBOutlet weak var proxLabel11: UILabel!
     var proxLabelArr : [UILabel] = []
     
     // Make status bar light
@@ -82,9 +76,9 @@ class DetectorViewController: UIViewController {
         notificationCenter.addObserver(self, selector: #selector(willEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
         
         // Pack labels into arrays
-        nameLabelArr = [nameLabel0, nameLabel1, nameLabel2, nameLabel3, nameLabel4, nameLabel5, nameLabel6, nameLabel7, nameLabel8, nameLabel9, nameLabel10, nameLabel11]
-        rssiLabelArr = [rssiLabel0, rssiLabel1, rssiLabel2, rssiLabel3, rssiLabel4, rssiLabel5, rssiLabel6, rssiLabel7, rssiLabel8, rssiLabel9, rssiLabel10, rssiLabel11]
-        proxLabelArr = [proxLabel0, proxLabel1, proxLabel2, proxLabel3, proxLabel4, proxLabel5, proxLabel6, proxLabel7, proxLabel8, proxLabel9, proxLabel11, proxLabel11]
+        nameLabelArr = [nameLabel0, nameLabel1, nameLabel2, nameLabel3, nameLabel4, nameLabel5, nameLabel6, nameLabel7, nameLabel8, nameLabel9]
+        rssiLabelArr = [rssiLabel0, rssiLabel1, rssiLabel2, rssiLabel3, rssiLabel4, rssiLabel5, rssiLabel6, rssiLabel7, rssiLabel8, rssiLabel9]
+        proxLabelArr = [proxLabel0, proxLabel1, proxLabel2, proxLabel3, proxLabel4, proxLabel5, proxLabel6, proxLabel7, proxLabel8, proxLabel9]
         
         // Initialize
         isRunning = false

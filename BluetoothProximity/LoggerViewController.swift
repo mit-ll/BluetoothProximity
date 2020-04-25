@@ -90,9 +90,6 @@ class LoggerViewController: UIViewController {
         }
     }
     
-    // GPS enable/disable
-    @IBOutlet weak var gpsSwitch: UISwitch!
-    
     // Range in feet
     var range: Int!
     @IBOutlet weak var rangeStepper: UIStepper!
@@ -130,7 +127,7 @@ class LoggerViewController: UIViewController {
         logger.write("Angle,\(angle!)")
         
         // Start any processes
-        if gpsSwitch.isOn {
+        if Settings.gpsEnabled {
             gps.start()
         }
         sensors.start()
@@ -142,7 +139,6 @@ class LoggerViewController: UIViewController {
         
         // Lock UI
         createNewLogButton.isEnabled = false
-        gpsSwitch.isEnabled = false
         rangeStepper.isEnabled = false
         angleStepper.isEnabled = false
         sendLogButton.isEnabled = false
@@ -156,7 +152,7 @@ class LoggerViewController: UIViewController {
     func stopRun() {
         
         // Stop any processes
-        if gpsSwitch.isOn {
+        if Settings.gpsEnabled {
             gps.stop()
         }
         sensors.stop()
@@ -167,7 +163,6 @@ class LoggerViewController: UIViewController {
         
         // Unlock UI
         createNewLogButton.isEnabled = true
-        gpsSwitch.isEnabled = true
         rangeStepper.isEnabled = true
         angleStepper.isEnabled = true
         sendLogButton.isEnabled = true
