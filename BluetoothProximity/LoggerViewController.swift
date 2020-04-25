@@ -251,6 +251,9 @@ class LoggerViewController: UIViewController {
             // Scanner can only scan for one service, and must do so in a timed loop
             scanner.stop()
             scanner.startScanForServiceLoop()
+            
+            // Log the state
+            logger.write("AppState,Background")
         }
     }
     
@@ -266,6 +269,9 @@ class LoggerViewController: UIViewController {
             // Switch scanner from one service to everything
             scanner.stopScanForServiceLoop()
             scanner.startScanForAll()
+            
+            // Log the state
+            logger.write("AppState,Foreground")
         }
     }
     
