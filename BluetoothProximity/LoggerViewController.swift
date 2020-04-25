@@ -56,6 +56,12 @@ class LoggerViewController: UIViewController {
         isRunning = false
         runStopButton.isEnabled = false
         sendLogButton.isEnabled = false
+        
+        // Force steppers to respect their tintColor
+        rangeStepper.setDecrementImage(rangeStepper.decrementImage(for: .normal), for: .normal)
+        rangeStepper.setIncrementImage(rangeStepper.incrementImage(for: .normal), for: .normal)
+        angleStepper.setDecrementImage(angleStepper.decrementImage(for: .normal), for: .normal)
+        angleStepper.setIncrementImage(angleStepper.incrementImage(for: .normal), for: .normal)
     }
     
     // Create new log. For the first log, just do it - but for subsequent ones, ask,
