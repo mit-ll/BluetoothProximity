@@ -13,6 +13,7 @@ struct LoggerSettings {
     static var accelerometerEnabled = false
     static var gyroscopeEnabled = false
     static var proximityEnabled = false
+    static var compassEnabled = false
 }
 
 class LoggerSettingsViewController: UIViewController {
@@ -30,6 +31,7 @@ class LoggerSettingsViewController: UIViewController {
         accelerometerSwitch.isOn = LoggerSettings.accelerometerEnabled
         gyroscopeSwitch.isOn = LoggerSettings.gyroscopeEnabled
         proximitySwitch.isOn = LoggerSettings.proximityEnabled
+        compassSwitch.isOn = LoggerSettings.compassEnabled
     }
     
     // GPS
@@ -54,6 +56,19 @@ class LoggerSettingsViewController: UIViewController {
     @IBOutlet weak var proximitySwitch: UISwitch!
     @IBAction func proximitySwitchChanged(_ sender: Any) {
         LoggerSettings.proximityEnabled = proximitySwitch.isOn
+    }
+    
+    // Compass
+    @IBOutlet weak var compassSwitch: UISwitch!
+    @IBAction func compassSwitchChanged(_ sender: Any) {
+        LoggerSettings.compassEnabled = compassSwitch.isOn
+        if LoggerSettings.compassEnabled {
+            // Inform that calibration is necessary
+            let alert = UIAlertController(title: "Note", message: "The compass must be calibrated to return true heading. Stand in an open area away from interference and move your phone through a figure 8 motion. If you choose not to do this, only the magnetic heading will be valid.", preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
+            }))
+            present(alert, animated: true, completion: nil)
+        }
     }
     
     // Done button

@@ -140,6 +140,9 @@ class LoggerViewController: UIViewController {
         if LoggerSettings.proximityEnabled {
             sensors.startProximity()
         }
+        if LoggerSettings.compassEnabled {
+            sensors.startCompass()
+        }
         
         // Start Bluetooth
         advertiser.start()
@@ -175,6 +178,9 @@ class LoggerViewController: UIViewController {
         }
         if LoggerSettings.proximityEnabled {
             sensors.stopProximity()
+        }
+        if LoggerSettings.compassEnabled {
+            sensors.stopCompass()
         }
         
         // Stop Bluetooth

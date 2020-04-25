@@ -829,7 +829,7 @@ M: number of 1 decisions within N observations for detection to be declared. <
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ked-4y-cui">
-                                <rect key="frame" x="103" y="296" width="114" height="41"/>
+                                <rect key="frame" x="103" y="335" width="114" height="41"/>
                                 <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -843,6 +843,18 @@ M: number of 1 decisions within N observations for detection to be declared. <
                                     <action selector="doneButtonPressed:" destination="IiL-im-9HL" eventType="touchUpInside" id="YYF-dA-ZcB"/>
                                 </connections>
                             </button>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="z4h-D2-0gO">
+                                <rect key="frame" x="49" y="276" width="51" height="31"/>
+                                <connections>
+                                    <action selector="compassSwitchChanged:" destination="IiL-im-9HL" eventType="valueChanged" id="AvS-jB-k47"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Compass" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Isq-ve-t2q">
+                                <rect key="frame" x="118" y="276" width="113" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -850,24 +862,29 @@ M: number of 1 decisions within N observations for detection to be declared. <
                             <constraint firstItem="1u9-Fy-4km" firstAttribute="top" secondItem="8Jq-zO-vSa" secondAttribute="bottom" constant="8" id="4Yw-Is-G9S"/>
                             <constraint firstItem="ckW-Si-psM" firstAttribute="top" secondItem="7Ln-hU-8op" secondAttribute="bottom" constant="10" id="6OP-wn-yCu"/>
                             <constraint firstItem="OHE-gf-HGq" firstAttribute="leading" secondItem="mR6-ub-vTm" secondAttribute="leading" constant="49" id="75R-1Y-HLD"/>
+                            <constraint firstItem="z4h-D2-0gO" firstAttribute="top" secondItem="B0Z-ti-whH" secondAttribute="bottom" constant="8" id="8uI-f7-U1N"/>
                             <constraint firstItem="mR6-ub-vTm" firstAttribute="trailing" secondItem="Ked-4y-cui" secondAttribute="trailing" constant="103" id="91N-5q-odO"/>
                             <constraint firstItem="8Jq-zO-vSa" firstAttribute="leading" secondItem="mR6-ub-vTm" secondAttribute="leading" constant="49" id="BRw-u5-YeI"/>
                             <constraint firstItem="oDr-9A-Cyg" firstAttribute="leading" secondItem="OHE-gf-HGq" secondAttribute="trailing" constant="20" id="CdR-Hy-2GU"/>
+                            <constraint firstItem="Isq-ve-t2q" firstAttribute="leading" secondItem="z4h-D2-0gO" secondAttribute="trailing" constant="20" id="Csq-22-qLt"/>
                             <constraint firstItem="mR6-ub-vTm" firstAttribute="trailing" secondItem="ckW-Si-psM" secondAttribute="trailing" constant="89" id="Exn-27-m9a"/>
                             <constraint firstItem="1u9-Fy-4km" firstAttribute="leading" secondItem="mR6-ub-vTm" secondAttribute="leading" constant="49" id="FtL-jB-2OK"/>
+                            <constraint firstItem="Ked-4y-cui" firstAttribute="top" secondItem="Isq-ve-t2q" secondAttribute="bottom" constant="30" id="GJ5-ah-6sw"/>
                             <constraint firstItem="mR6-ub-vTm" firstAttribute="trailing" secondItem="oDr-9A-Cyg" secondAttribute="trailing" constant="155" id="Jil-Ja-572"/>
                             <constraint firstItem="B0Z-ti-whH" firstAttribute="top" secondItem="1u9-Fy-4km" secondAttribute="bottom" constant="8" id="K2C-f8-CPs"/>
+                            <constraint firstItem="mR6-ub-vTm" firstAttribute="trailing" secondItem="Isq-ve-t2q" secondAttribute="trailing" constant="89" id="Kjq-V7-HaV"/>
                             <constraint firstItem="Ked-4y-cui" firstAttribute="leading" secondItem="mR6-ub-vTm" secondAttribute="leading" constant="103" id="MNO-LK-mzt"/>
                             <constraint firstItem="oDr-9A-Cyg" firstAttribute="top" secondItem="r6b-OR-uvw" secondAttribute="bottom" constant="14" id="Mq4-Jr-aLF"/>
                             <constraint firstItem="OHE-gf-HGq" firstAttribute="top" secondItem="r6b-OR-uvw" secondAttribute="bottom" constant="14" id="PBf-2L-zJ5"/>
+                            <constraint firstItem="z4h-D2-0gO" firstAttribute="leading" secondItem="mR6-ub-vTm" secondAttribute="leading" constant="49" id="Qpy-bx-WIu"/>
                             <constraint firstItem="8Jq-zO-vSa" firstAttribute="firstBaseline" secondItem="OHE-gf-HGq" secondAttribute="baseline" constant="8" symbolType="layoutAnchor" id="VAL-9f-vNW"/>
                             <constraint firstItem="mR6-ub-vTm" firstAttribute="trailing" secondItem="7Ln-hU-8op" secondAttribute="trailing" constant="51" id="Ww5-rx-Lsx"/>
                             <constraint firstItem="mR6-ub-vTm" firstAttribute="trailing" secondItem="r6b-OR-uvw" secondAttribute="trailing" constant="25" id="aGC-mE-CEX"/>
                             <constraint firstItem="B0Z-ti-whH" firstAttribute="leading" secondItem="mR6-ub-vTm" secondAttribute="leading" constant="49" id="aOd-Rg-COO"/>
-                            <constraint firstItem="Ked-4y-cui" firstAttribute="top" secondItem="WxY-Md-8DO" secondAttribute="bottom" constant="30" id="gJb-Ys-qBm"/>
                             <constraint firstItem="7Ln-hU-8op" firstAttribute="top" secondItem="oDr-9A-Cyg" secondAttribute="bottom" constant="10" id="hAc-Kr-i3Z"/>
                             <constraint firstItem="mR6-ub-vTm" firstAttribute="trailing" secondItem="WxY-Md-8DO" secondAttribute="trailing" constant="106" id="lFh-oQ-Skx"/>
                             <constraint firstItem="ckW-Si-psM" firstAttribute="leading" secondItem="1u9-Fy-4km" secondAttribute="trailing" constant="20" id="myy-hE-woQ"/>
+                            <constraint firstItem="Isq-ve-t2q" firstAttribute="top" secondItem="WxY-Md-8DO" secondAttribute="bottom" constant="10" id="nCl-8X-0oa"/>
                             <constraint firstItem="r6b-OR-uvw" firstAttribute="top" secondItem="mR6-ub-vTm" secondAttribute="top" constant="30" id="plN-UM-DCb"/>
                             <constraint firstItem="WxY-Md-8DO" firstAttribute="top" secondItem="ckW-Si-psM" secondAttribute="bottom" constant="10" id="qvw-9r-jFy"/>
                             <constraint firstItem="r6b-OR-uvw" firstAttribute="leading" secondItem="mR6-ub-vTm" secondAttribute="leading" constant="44" id="x1k-sY-kgO"/>
@@ -877,6 +894,7 @@ M: number of 1 decisions within N observations for detection to be declared. <
                     </view>
                     <connections>
                         <outlet property="accelerometerSwitch" destination="8Jq-zO-vSa" id="PMB-Te-2MD"/>
+                        <outlet property="compassSwitch" destination="z4h-D2-0gO" id="gSu-f6-7aR"/>
                         <outlet property="gpsSwitch" destination="OHE-gf-HGq" id="HmJ-HQ-dN6"/>
                         <outlet property="gyroscopeSwitch" destination="1u9-Fy-4km" id="6qS-O9-qCs"/>
                         <outlet property="proximitySwitch" destination="B0Z-ti-whH" id="Inl-7Z-pKc"/>

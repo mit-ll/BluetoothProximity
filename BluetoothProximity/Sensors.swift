@@ -34,6 +34,30 @@ class Sensors: NSObject, CLLocationManagerDelegate {
     }
     
     // -----------------------------------------------------------------------------
+    // Compass
+    // -----------------------------------------------------------------------------
+    
+    // Starts compass
+    func startCompass() {
+        if CLLocationManager.headingAvailable() {
+            locationManager.startUpdatingHeading()
+        }
+    }
+    
+    // Stops compass
+    func stopCompass() {
+        if CLLocationManager.headingAvailable() {
+            locationManager.stopUpdatingHeading()
+        }
+    }
+    
+    // Heading data updated
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading heading: CLHeading) {
+        let s = "Compass,\(heading.magneticHeading),\(heading.trueHeading),\(heading.headingAccuracy),\(heading.x),\(heading.y),\(heading.z)"
+        logger.write(s)
+    }
+    
+    // -----------------------------------------------------------------------------
     // GPS
     // -----------------------------------------------------------------------------
     
