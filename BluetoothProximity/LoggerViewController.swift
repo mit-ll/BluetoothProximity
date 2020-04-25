@@ -143,6 +143,9 @@ class LoggerViewController: UIViewController {
         if LoggerSettings.compassEnabled {
             sensors.startCompass()
         }
+        if LoggerSettings.altimeterEnabled {
+            sensors.startAltimeter()
+        }
         
         // Start Bluetooth
         advertiser.start()
@@ -181,6 +184,9 @@ class LoggerViewController: UIViewController {
         }
         if LoggerSettings.compassEnabled {
             sensors.stopCompass()
+        }
+        if LoggerSettings.altimeterEnabled {
+            sensors.stopAltimeter()
         }
         
         // Stop Bluetooth

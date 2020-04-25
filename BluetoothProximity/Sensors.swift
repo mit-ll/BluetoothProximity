@@ -17,6 +17,7 @@ class Sensors: NSObject, CLLocationManagerDelegate {
     var logger: Logger!
     var motionManager = CMMotionManager()
     var locationManager : CLLocationManager!
+    var altimeter = CMAltimeter()
     
     // Initialize
     override init() {
@@ -31,6 +32,27 @@ class Sensors: NSObject, CLLocationManagerDelegate {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
+    }
+    
+    // -----------------------------------------------------------------------------
+    // Altimeter
+    // -----------------------------------------------------------------------------
+    
+    // Starts altimeter
+    func startAltimeter() {
+        if CMAltimeter.isRelativeAltitudeAvailable() {
+            altimeter.startRelativeAltitudeUpdates(to: OperationQueue.main) { (data, error) in
+                let s = "Altimeter,\(data!.relativeAltitude),\(data!.pressure)"
+                self.logger.write(s)
+            }
+        }
+    }
+    
+    // Stops altimeter
+    func stopAltimeter() {
+        if CMAltimeter.isRelativeAltitudeAvailable() {
+            altimeter.stopRelativeAltitudeUpdates()
+        }
     }
     
     // -----------------------------------------------------------------------------

@@ -14,6 +14,7 @@ struct LoggerSettings {
     static var gyroscopeEnabled = false
     static var proximityEnabled = false
     static var compassEnabled = false
+    static var altimeterEnabled = false
 }
 
 class LoggerSettingsViewController: UIViewController {
@@ -32,6 +33,7 @@ class LoggerSettingsViewController: UIViewController {
         gyroscopeSwitch.isOn = LoggerSettings.gyroscopeEnabled
         proximitySwitch.isOn = LoggerSettings.proximityEnabled
         compassSwitch.isOn = LoggerSettings.compassEnabled
+        altimeterSwitch.isOn = LoggerSettings.altimeterEnabled
     }
     
     // GPS
@@ -69,6 +71,12 @@ class LoggerSettingsViewController: UIViewController {
             }))
             present(alert, animated: true, completion: nil)
         }
+    }
+    
+    // Altimeter
+    @IBOutlet weak var altimeterSwitch: UISwitch!
+    @IBAction func altimeterSwitchChanged(_ sender: Any) {
+        LoggerSettings.altimeterEnabled = altimeterSwitch.isOn
     }
     
     // Done button
