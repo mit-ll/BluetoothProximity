@@ -35,11 +35,11 @@ class SettingsViewController: UIViewController {
         Settings.proximityEnabled = proximitySwitch.isOn
         
         // Initial detector settings
-        Settings.detectorM = Int(mStepper.value)
+        mStepper.value = Double(Settings.detectorM)
+        nStepper.value = Double(Settings.detectorN)
+        rssiStepper.value = Double(Settings.detectorRSSI)
         mLabel.text = Settings.detectorM.description
-        Settings.detectorN = Int(nStepper.value)
         nLabel.text = Settings.detectorN.description
-        Settings.detectorRSSI = Int(rssiStepper.value)
         rssiLabel.text = Settings.detectorRSSI.description
         
         // Force steppers to respect their tintColor

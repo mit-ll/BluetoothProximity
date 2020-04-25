@@ -625,7 +625,6 @@
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="7zd-Ia-r6C">
                                 <rect key="frame" x="40" y="198" width="51" height="31"/>
                                 <connections>
-                                    <action selector="gpsSwitchChanged:" destination="jgd-3r-5Nm" eventType="valueChanged" id="166-xu-6Xi"/>
                                     <action selector="gyroscopeSwitchChanged:" destination="jgd-3r-5Nm" eventType="valueChanged" id="9tP-O3-9Vi"/>
                                 </connections>
                             </switch>
@@ -638,7 +637,6 @@
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Ou0-wH-uLx">
                                 <rect key="frame" x="40" y="237" width="51" height="31"/>
                                 <connections>
-                                    <action selector="gpsSwitchChanged:" destination="jgd-3r-5Nm" eventType="valueChanged" id="ECR-Cg-oDZ"/>
                                     <action selector="proximitySwitchChanged:" destination="jgd-3r-5Nm" eventType="valueChanged" id="PPi-Yz-sZo"/>
                                 </connections>
                             </switch>
@@ -684,27 +682,17 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="5" minimumValue="1" maximumValue="20" translatesAutoresizingMaskIntoConstraints="NO" id="lI3-fA-U8C">
-                                <rect key="frame" x="109" y="327" width="94" height="32"/>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <connections>
-                                    <action selector="mStepperChanged:" destination="jgd-3r-5Nm" eventType="valueChanged" id="p17-3d-KcD"/>
-                                    <action selector="rangeStepperChanged:" destination="VmY-nb-10B" eventType="valueChanged" id="O2X-cK-UF6"/>
-                                </connections>
-                            </stepper>
                             <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="20" minimumValue="20" maximumValue="200" stepValue="10" translatesAutoresizingMaskIntoConstraints="NO" id="0Kc-FJ-y5m">
                                 <rect key="frame" x="109" y="367" width="94" height="32"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <connections>
                                     <action selector="nStepperChanged:" destination="jgd-3r-5Nm" eventType="valueChanged" id="oPz-Pq-erU"/>
-                                    <action selector="rangeStepperChanged:" destination="VmY-nb-10B" eventType="valueChanged" id="wlN-uO-kPa"/>
                                 </connections>
                             </stepper>
                             <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="-60" minimumValue="-110" translatesAutoresizingMaskIntoConstraints="NO" id="Nzn-IE-Q73">
                                 <rect key="frame" x="109" y="408" width="94" height="32"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <connections>
-                                    <action selector="rangeStepperChanged:" destination="VmY-nb-10B" eventType="valueChanged" id="pf0-Vl-IR1"/>
                                     <action selector="rssiStepperChanged:" destination="jgd-3r-5Nm" eventType="valueChanged" id="3Gy-yG-RCU"/>
                                 </connections>
                             </stepper>
@@ -717,6 +705,13 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="5" minimumValue="1" maximumValue="20" translatesAutoresizingMaskIntoConstraints="NO" id="s8W-eU-yCi">
+                                <rect key="frame" x="110" y="327" width="94" height="32"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <action selector="mStepperChanged:" destination="jgd-3r-5Nm" eventType="valueChanged" id="HlR-fB-zJC"/>
+                                </connections>
+                            </stepper>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -729,16 +724,17 @@
                             <constraint firstItem="7zd-Ia-r6C" firstAttribute="top" secondItem="E9O-GX-QXZ" secondAttribute="bottom" constant="8" id="6ir-H0-v0a"/>
                             <constraint firstItem="uDx-0k-KTW" firstAttribute="trailing" secondItem="L38-Xs-Rib" secondAttribute="trailing" constant="34" id="7wI-62-hOh"/>
                             <constraint firstItem="7zd-Ia-r6C" firstAttribute="leading" secondItem="uDx-0k-KTW" secondAttribute="leading" constant="40" id="9aE-Cz-OXb"/>
-                            <constraint firstItem="lI3-fA-U8C" firstAttribute="top" secondItem="39y-uv-tdL" secondAttribute="bottom" constant="13" id="9am-A3-BcT"/>
                             <constraint firstItem="8mq-Gq-rhe" firstAttribute="top" secondItem="szX-WW-qrJ" secondAttribute="bottom" constant="10" id="B4I-OM-TDb"/>
+                            <constraint firstItem="0Kc-FJ-y5m" firstAttribute="top" secondItem="s8W-eU-yCi" secondAttribute="bottom" constant="8" id="CqQ-jO-CQY"/>
                             <constraint firstItem="BU0-ep-5Ak" firstAttribute="top" secondItem="pkp-oZ-iPT" secondAttribute="bottom" constant="11" id="EVt-LP-q3E"/>
                             <constraint firstItem="0Kc-FJ-y5m" firstAttribute="leading" secondItem="BU0-ep-5Ak" secondAttribute="trailing" constant="36" id="JaY-so-ciY"/>
-                            <constraint firstItem="lI3-fA-U8C" firstAttribute="leading" secondItem="pkp-oZ-iPT" secondAttribute="trailing" constant="34" id="MlT-0m-Bvg"/>
                             <constraint firstItem="uDx-0k-KTW" firstAttribute="trailing" secondItem="gfv-72-Yoj" secondAttribute="trailing" constant="34" id="Na9-jW-1sd"/>
+                            <constraint firstItem="s8W-eU-yCi" firstAttribute="leading" secondItem="pkp-oZ-iPT" secondAttribute="trailing" constant="35" id="PB6-Fj-KgW"/>
                             <constraint firstItem="Ou0-wH-uLx" firstAttribute="top" secondItem="7zd-Ia-r6C" secondAttribute="bottom" constant="8" id="PPC-IE-3aG"/>
                             <constraint firstItem="mzJ-Vb-QSz" firstAttribute="leading" secondItem="Ou0-wH-uLx" secondAttribute="trailing" constant="20" id="Pas-f8-KCg"/>
                             <constraint firstItem="L38-Xs-Rib" firstAttribute="leading" secondItem="Nzn-IE-Q73" secondAttribute="trailing" constant="29" id="Qa6-D8-kcn"/>
                             <constraint firstItem="ohr-SP-Dra" firstAttribute="leading" secondItem="uDx-0k-KTW" secondAttribute="leading" constant="40" id="R9f-CS-8il"/>
+                            <constraint firstItem="hE0-iI-aDP" firstAttribute="leading" secondItem="s8W-eU-yCi" secondAttribute="trailing" constant="28" id="RaC-jm-o4e"/>
                             <constraint firstItem="uDx-0k-KTW" firstAttribute="trailing" secondItem="dbk-RD-Irs" secondAttribute="trailing" constant="34" id="W0e-CC-wnM"/>
                             <constraint firstItem="uDx-0k-KTW" firstAttribute="trailing" secondItem="39y-uv-tdL" secondAttribute="trailing" constant="34" id="WDI-ss-xkk"/>
                             <constraint firstItem="SSU-xa-mxG" firstAttribute="top" secondItem="gfv-72-Yoj" secondAttribute="bottom" constant="14" id="Wvb-gB-b6I"/>
@@ -748,7 +744,6 @@
                             <constraint firstItem="39y-uv-tdL" firstAttribute="top" secondItem="Ou0-wH-uLx" secondAttribute="bottom" constant="14" id="aoB-SV-FU5"/>
                             <constraint firstItem="szX-WW-qrJ" firstAttribute="leading" secondItem="E9O-GX-QXZ" secondAttribute="trailing" constant="20" id="ay8-Un-6S4"/>
                             <constraint firstItem="Ou0-wH-uLx" firstAttribute="leading" secondItem="uDx-0k-KTW" secondAttribute="leading" constant="40" id="c56-sN-hcE"/>
-                            <constraint firstItem="hE0-iI-aDP" firstAttribute="leading" secondItem="lI3-fA-U8C" secondAttribute="trailing" constant="29" id="cFN-Jr-7GL"/>
                             <constraint firstItem="gfv-72-Yoj" firstAttribute="leading" secondItem="uDx-0k-KTW" secondAttribute="leading" constant="35" id="cTk-9y-S8n"/>
                             <constraint firstItem="dbk-RD-Irs" firstAttribute="leading" secondItem="0Kc-FJ-y5m" secondAttribute="trailing" constant="29" id="db5-aH-kPH"/>
                             <constraint firstItem="BU0-ep-5Ak" firstAttribute="leading" secondItem="uDx-0k-KTW" secondAttribute="leading" constant="55" id="drh-5Y-4vl"/>
@@ -761,10 +756,10 @@
                             <constraint firstItem="uDx-0k-KTW" firstAttribute="trailing" secondItem="szX-WW-qrJ" secondAttribute="trailing" constant="60" id="m6c-S0-aDy"/>
                             <constraint firstItem="mzJ-Vb-QSz" firstAttribute="top" secondItem="8mq-Gq-rhe" secondAttribute="bottom" constant="10" id="oA5-1c-eWi"/>
                             <constraint firstItem="L38-Xs-Rib" firstAttribute="top" secondItem="dbk-RD-Irs" secondAttribute="bottom" constant="12" id="pDT-Q5-Pqe"/>
+                            <constraint firstItem="s8W-eU-yCi" firstAttribute="top" secondItem="39y-uv-tdL" secondAttribute="bottom" constant="13" id="q7j-9v-BoW"/>
                             <constraint firstItem="8mq-Gq-rhe" firstAttribute="leading" secondItem="7zd-Ia-r6C" secondAttribute="trailing" constant="20" id="rg8-ln-dvE"/>
                             <constraint firstItem="39y-uv-tdL" firstAttribute="leading" secondItem="uDx-0k-KTW" secondAttribute="leading" constant="35" id="sH9-sZ-vYr"/>
                             <constraint firstItem="uDx-0k-KTW" firstAttribute="trailing" secondItem="hE0-iI-aDP" secondAttribute="trailing" constant="34" id="sK1-uK-Q9a"/>
-                            <constraint firstItem="0Kc-FJ-y5m" firstAttribute="top" secondItem="lI3-fA-U8C" secondAttribute="bottom" constant="8" id="typ-GY-uZV"/>
                             <constraint firstItem="dbk-RD-Irs" firstAttribute="top" secondItem="hE0-iI-aDP" secondAttribute="bottom" constant="13" id="vhk-3p-5sK"/>
                             <constraint firstItem="pkp-oZ-iPT" firstAttribute="top" secondItem="39y-uv-tdL" secondAttribute="bottom" constant="15" id="zmU-qh-5q4"/>
                         </constraints>
@@ -777,7 +772,7 @@
                         <outlet property="gpsSwitch" destination="ohr-SP-Dra" id="jve-IO-RkU"/>
                         <outlet property="gyroscopeSwitch" destination="7zd-Ia-r6C" id="ui9-qm-wVG"/>
                         <outlet property="mLabel" destination="hE0-iI-aDP" id="E7Q-jY-ohq"/>
-                        <outlet property="mStepper" destination="lI3-fA-U8C" id="rhO-Tc-zxI"/>
+                        <outlet property="mStepper" destination="s8W-eU-yCi" id="ccq-2q-NjL"/>
                         <outlet property="nLabel" destination="dbk-RD-Irs" id="gTg-A8-97g"/>
                         <outlet property="nStepper" destination="0Kc-FJ-y5m" id="fx8-nc-QYU"/>
                         <outlet property="proximitySwitch" destination="Ou0-wH-uLx" id="xfR-7F-J8r"/>
