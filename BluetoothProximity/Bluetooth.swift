@@ -71,9 +71,9 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     var runDetector: Bool!
     
     // Detector parameters
-    var M = Settings.detectorM                  // Samples that must cross threshold
-    var N = Settings.detectorN                  // Total number of samples
-    var rssiThresh = Settings.detectorRSSI      // Threshold RSSI
+    var M: Int!                 // Samples that must cross threshold
+    var N: Int!                 // Total number of samples
+    var rssiThresh: Int!        // Threshold RSSI
     
     // Detector storage
     var uuidIdx: Int!
@@ -257,9 +257,9 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     func startDetector() {
         
         // Set parameters
-        M = Settings.detectorM
-        N = Settings.detectorN
-        rssiThresh = Settings.detectorRSSI
+        M = DetectorSettings.M
+        N = DetectorSettings.N
+        rssiThresh = DetectorSettings.rssiThresh
         
         // Initialize memory
         uuidArr = []

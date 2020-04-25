@@ -84,6 +84,9 @@ class DetectorViewController: UIViewController {
         isRunning = false
     }
     
+    // Settings button
+    @IBOutlet weak var settingsButton: UIButton!
+    
     // Run/stop button
     var isRunning: Bool!
     @IBOutlet weak var runStopButton: UIButton!
@@ -97,6 +100,7 @@ class DetectorViewController: UIViewController {
     
     // Starts running
     func startRun() {
+        settingsButton.isEnabled = false
         advertiser.start()
         scanner.logToFile = false
         scanner.startDetector()
@@ -109,6 +113,7 @@ class DetectorViewController: UIViewController {
     
     // Stops running
     func stopRun() {
+        settingsButton.isEnabled = true
         advertiser.stop()
         scanner.stopDetector()
         scanner.stop()

@@ -108,6 +108,9 @@ class LoggerViewController: UIViewController {
         angleLabel.text = angle.description
     }
     
+    // Settings button
+    @IBOutlet weak var settingsButton: UIButton!
+    
     // Run/stop button
     var isRunning: Bool!
     @IBOutlet weak var runStopButton: UIButton!
@@ -127,16 +130,16 @@ class LoggerViewController: UIViewController {
         logger.write("Angle,\(angle!)")
         
         // Start sensors
-        if Settings.gpsEnabled {
+        if LoggerSettings.gpsEnabled {
             gps.start()
         }
-        if Settings.accelerometerEnabled {
+        if LoggerSettings.accelerometerEnabled {
             sensors.startAccelerometer()
         }
-        if Settings.gyroscopeEnabled {
+        if LoggerSettings.gyroscopeEnabled {
             sensors.startGyroscope()
         }
-        if Settings.proximityEnabled {
+        if LoggerSettings.proximityEnabled {
             sensors.startProximity()
         }
         
@@ -148,6 +151,7 @@ class LoggerViewController: UIViewController {
         startUpdatingRSSICounts()
         
         // Lock UI
+        settingsButton.isEnabled = false
         createNewLogButton.isEnabled = false
         rangeStepper.isEnabled = false
         angleStepper.isEnabled = false
@@ -162,16 +166,16 @@ class LoggerViewController: UIViewController {
     func stopRun() {
         
         // Stop sensors
-        if Settings.gpsEnabled {
+        if LoggerSettings.gpsEnabled {
             gps.stop()
         }
-        if Settings.accelerometerEnabled {
+        if LoggerSettings.accelerometerEnabled {
             sensors.stopAccelerometer()
         }
-        if Settings.gyroscopeEnabled {
+        if LoggerSettings.gyroscopeEnabled {
             sensors.stopGyroscope()
         }
-        if Settings.proximityEnabled {
+        if LoggerSettings.proximityEnabled {
             sensors.stopProximity()
         }
         
@@ -182,6 +186,7 @@ class LoggerViewController: UIViewController {
         stopUpdatingRSSICounts()
         
         // Unlock UI
+        settingsButton.isEnabled = true
         createNewLogButton.isEnabled = true
         rangeStepper.isEnabled = true
         angleStepper.isEnabled = true
