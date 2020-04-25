@@ -583,12 +583,6 @@
                                     <action selector="gpsSwitchChanged:" destination="jgd-3r-5Nm" eventType="valueChanged" id="iNz-ct-Xth"/>
                                 </connections>
                             </switch>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="GPS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SSU-xa-mxG">
-                                <rect key="frame" x="109" y="126" width="47" height="29"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gfv-72-Yoj">
                                 <rect key="frame" x="35" y="30" width="251" height="76"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -600,24 +594,86 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="E9O-GX-QXZ">
+                                <rect key="frame" x="40" y="165" width="51" height="31"/>
+                                <connections>
+                                    <action selector="accelerometerSwitchChanged:" destination="jgd-3r-5Nm" eventType="valueChanged" id="ahL-se-VPz"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Accelerometer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="szX-WW-qrJ">
+                                <rect key="frame" x="109" y="165" width="151" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="7zd-Ia-r6C">
+                                <rect key="frame" x="40" y="204" width="51" height="31"/>
+                                <connections>
+                                    <action selector="gpsSwitchChanged:" destination="jgd-3r-5Nm" eventType="valueChanged" id="166-xu-6Xi"/>
+                                    <action selector="gyroscopeSwitchChanged:" destination="jgd-3r-5Nm" eventType="valueChanged" id="9tP-O3-9Vi"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Gyroscope" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8mq-Gq-rhe">
+                                <rect key="frame" x="109" y="204" width="113" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Ou0-wH-uLx">
+                                <rect key="frame" x="40" y="243" width="51" height="31"/>
+                                <connections>
+                                    <action selector="gpsSwitchChanged:" destination="jgd-3r-5Nm" eventType="valueChanged" id="ECR-Cg-oDZ"/>
+                                    <action selector="proximitySwitchChanged:" destination="jgd-3r-5Nm" eventType="valueChanged" id="PPi-Yz-sZo"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Proximity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mzJ-Vb-QSz">
+                                <rect key="frame" x="109" y="243" width="96" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="GPS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SSU-xa-mxG">
+                                <rect key="frame" x="109" y="126" width="47" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="uDx-0k-KTW" firstAttribute="trailing" secondItem="mzJ-Vb-QSz" secondAttribute="trailing" constant="115" id="0Ii-pI-ZVo"/>
+                            <constraint firstItem="E9O-GX-QXZ" firstAttribute="leading" secondItem="uDx-0k-KTW" secondAttribute="leading" constant="40" id="3BC-Pl-Gut"/>
+                            <constraint firstItem="szX-WW-qrJ" firstAttribute="top" secondItem="SSU-xa-mxG" secondAttribute="bottom" constant="10" id="4sq-Tb-q0l"/>
                             <constraint firstItem="ohr-SP-Dra" firstAttribute="top" secondItem="gfv-72-Yoj" secondAttribute="bottom" constant="20" id="502-xf-VYs"/>
                             <constraint firstItem="uDx-0k-KTW" firstAttribute="trailing" secondItem="SSU-xa-mxG" secondAttribute="trailing" constant="164" id="5Fy-gh-mXS"/>
+                            <constraint firstItem="7zd-Ia-r6C" firstAttribute="top" secondItem="E9O-GX-QXZ" secondAttribute="bottom" constant="8" id="6ir-H0-v0a"/>
+                            <constraint firstItem="7zd-Ia-r6C" firstAttribute="leading" secondItem="uDx-0k-KTW" secondAttribute="leading" constant="40" id="9aE-Cz-OXb"/>
+                            <constraint firstItem="8mq-Gq-rhe" firstAttribute="top" secondItem="szX-WW-qrJ" secondAttribute="bottom" constant="10" id="B4I-OM-TDb"/>
                             <constraint firstItem="uDx-0k-KTW" firstAttribute="trailing" secondItem="gfv-72-Yoj" secondAttribute="trailing" constant="34" id="Na9-jW-1sd"/>
+                            <constraint firstItem="Ou0-wH-uLx" firstAttribute="top" secondItem="7zd-Ia-r6C" secondAttribute="bottom" constant="8" id="PPC-IE-3aG"/>
+                            <constraint firstItem="mzJ-Vb-QSz" firstAttribute="leading" secondItem="Ou0-wH-uLx" secondAttribute="trailing" constant="20" id="Pas-f8-KCg"/>
                             <constraint firstItem="ohr-SP-Dra" firstAttribute="leading" secondItem="uDx-0k-KTW" secondAttribute="leading" constant="40" id="R9f-CS-8il"/>
                             <constraint firstItem="SSU-xa-mxG" firstAttribute="top" secondItem="gfv-72-Yoj" secondAttribute="bottom" constant="20" id="Wvb-gB-b6I"/>
                             <constraint firstItem="SSU-xa-mxG" firstAttribute="leading" secondItem="ohr-SP-Dra" secondAttribute="trailing" constant="20" id="afW-jJ-eVz"/>
+                            <constraint firstItem="szX-WW-qrJ" firstAttribute="leading" secondItem="E9O-GX-QXZ" secondAttribute="trailing" constant="20" id="ay8-Un-6S4"/>
+                            <constraint firstItem="Ou0-wH-uLx" firstAttribute="leading" secondItem="uDx-0k-KTW" secondAttribute="leading" constant="40" id="c56-sN-hcE"/>
                             <constraint firstItem="gfv-72-Yoj" firstAttribute="leading" secondItem="uDx-0k-KTW" secondAttribute="leading" constant="35" id="cTk-9y-S8n"/>
+                            <constraint firstItem="uDx-0k-KTW" firstAttribute="trailing" secondItem="8mq-Gq-rhe" secondAttribute="trailing" constant="98" id="eQZ-XW-YmZ"/>
+                            <constraint firstItem="E9O-GX-QXZ" firstAttribute="firstBaseline" secondItem="ohr-SP-Dra" secondAttribute="baseline" constant="8" symbolType="layoutAnchor" id="gH2-Tm-MUs"/>
                             <constraint firstItem="gfv-72-Yoj" firstAttribute="top" secondItem="uDx-0k-KTW" secondAttribute="top" constant="30" id="iDa-12-6NO"/>
+                            <constraint firstItem="uDx-0k-KTW" firstAttribute="trailing" secondItem="szX-WW-qrJ" secondAttribute="trailing" constant="60" id="m6c-S0-aDy"/>
+                            <constraint firstItem="mzJ-Vb-QSz" firstAttribute="top" secondItem="8mq-Gq-rhe" secondAttribute="bottom" constant="10" id="oA5-1c-eWi"/>
+                            <constraint firstItem="8mq-Gq-rhe" firstAttribute="leading" secondItem="7zd-Ia-r6C" secondAttribute="trailing" constant="20" id="rg8-ln-dvE"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="uDx-0k-KTW"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Settings" image="Tab_Settings" id="kjH-8L-Iwb"/>
                     <navigationItem key="navigationItem" id="stc-cT-tBa"/>
                     <connections>
+                        <outlet property="accelerometerSwitch" destination="E9O-GX-QXZ" id="nuk-Uk-a21"/>
                         <outlet property="gpsSwitch" destination="ohr-SP-Dra" id="jve-IO-RkU"/>
+                        <outlet property="gyroscopeSwitch" destination="7zd-Ia-r6C" id="ui9-qm-wVG"/>
+                        <outlet property="proximitySwitch" destination="Ou0-wH-uLx" id="xfR-7F-J8r"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZCv-Ic-FKj" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -643,7 +699,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="The detector tab runs a basic algorithm to determine if Bluetooth devices are close or far (this is just a toy example)." textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Js0-0O-F0V">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="The detector tab runs a basic algorithm for real-time proximity detection. It shows the first 10 Bluetooth devices discovered." textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Js0-0O-F0V">
                                 <rect key="frame" x="35" y="184" width="251" height="74"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -665,17 +721,18 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="110" id="eGI-9E-1CQ"/>
                                 </constraints>
-                                <string key="text">The logger tab enables you to record a range and angle between phones and initiate measurements. Bluetooth and any sensor data is logged to a text file and can be sent off the phone via email.</string>
+                                <string key="text">The logger tab enables you to record a range and angle between two phones and initiate measurements. Bluetooth and any sensor data is logged to file and can be sent off the phone via email for post processing.</string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="The settings tab lets you optionally enable various sensors in the phone for logging." textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QL2-h4-Aiz">
-                                <rect key="frame" x="35" y="370" width="251" height="70"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QL2-h4-Aiz">
+                                <rect key="frame" x="35" y="370" width="251" height="115"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="70" id="pRx-EI-Ukd"/>
+                                    <constraint firstAttribute="height" constant="115" id="pRx-EI-Ukd"/>
                                 </constraints>
+                                <string key="text">The settings tab lets you optionally enable various sensors in the phone for logging. These sensors can be useful for determining the state of the phone, which affects the Bluetooth propagation channel.</string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>

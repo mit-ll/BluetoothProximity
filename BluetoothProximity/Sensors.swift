@@ -25,20 +25,6 @@ class Sensors {
         
     }
     
-    // Start sensors
-    func start() {
-        startProximity()
-        startAccelerometer()
-        startGyroscope()
-    }
-    
-    // Stop sensors
-    func stop() {
-        stopProximity()
-        stopAccelerometer()
-        stopGyroscope()
-    }
-    
     // -----------------------------------------------------------------------------
     // Proximity sensor
     // -----------------------------------------------------------------------------

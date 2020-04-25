@@ -126,11 +126,21 @@ class LoggerViewController: UIViewController {
         logger.write("Range,\(range!)")
         logger.write("Angle,\(angle!)")
         
-        // Start any processes
+        // Start sensors
         if Settings.gpsEnabled {
             gps.start()
         }
-        sensors.start()
+        if Settings.accelerometerEnabled {
+            sensors.startAccelerometer()
+        }
+        if Settings.gyroscopeEnabled {
+            sensors.startGyroscope()
+        }
+        if Settings.proximityEnabled {
+            sensors.startProximity()
+        }
+        
+        // Start Bluetooth
         advertiser.start()
         scanner.logToFile = true
         scanner.startScanForAll()
@@ -151,11 +161,21 @@ class LoggerViewController: UIViewController {
     // Stops running
     func stopRun() {
         
-        // Stop any processes
+        // Stop sensors
         if Settings.gpsEnabled {
             gps.stop()
         }
-        sensors.stop()
+        if Settings.accelerometerEnabled {
+            sensors.stopAccelerometer()
+        }
+        if Settings.gyroscopeEnabled {
+            sensors.stopGyroscope()
+        }
+        if Settings.proximityEnabled {
+            sensors.stopProximity()
+        }
+        
+        // Stop Bluetooth
         advertiser.stop()
         scanner.logToFile = false
         scanner.stop()
