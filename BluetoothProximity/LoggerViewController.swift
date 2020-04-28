@@ -165,6 +165,9 @@ class LoggerViewController: UIViewController {
         sendLogButton.isEnabled = false
         runStopButton.setTitle("Stop", for: .normal)
         
+        // Override screen auto-lock, so it will stay on
+        UIApplication.shared.isIdleTimerDisabled = true
+        
         // Update state
         isRunning = true
     }
@@ -208,6 +211,9 @@ class LoggerViewController: UIViewController {
         angleStepper.isEnabled = true
         sendLogButton.isEnabled = true
         runStopButton.setTitle("Run", for: .normal)
+        
+        // Restore screen auto-lock
+        UIApplication.shared.isIdleTimerDisabled = false
         
         // Update state
         isRunning = false
