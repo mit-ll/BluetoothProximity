@@ -32,8 +32,15 @@ class Sensors: NSObject, CLLocationManagerDelegate {
         // Initalize
         locationManager = CLLocationManager()
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.headingFilter = 10
         locationManager.requestAlwaysAuthorization()
+        
+        // Best location estimates without using extra sensors
+        // (Apple says to only use kCLLocationAccuracyBestForNavigation if the device is plugged in)
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        
+        // How often to updating heading, in degrees
+        locationManager.headingFilter = 15
     }
     
     // -----------------------------------------------------------------------------
