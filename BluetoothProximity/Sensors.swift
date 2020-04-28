@@ -77,7 +77,7 @@ class Sensors: NSObject, CLLocationManagerDelegate {
                 guard let pedometerData = pedometerData, error == nil else { return }
 
                 DispatchQueue.main.async {
-                    let s = "Pedometer,\(pedometerData.numberOfSteps)"
+                    let s = "Pedometer,\(pedometerData.distance ?? -1),\(pedometerData.numberOfSteps),\(pedometerData.currentPace ?? -1),\(pedometerData.currentCadence ?? -1)"
                     self?.logger.write(s)
                 }
             }
