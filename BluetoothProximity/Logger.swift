@@ -59,11 +59,18 @@ class Logger {
             return
         }
         
-        // Log details about the device: UUID, model, and name
-        let u = UIDevice.current.identifierForVendor?.uuidString
-        let m = UIDevice.modelName
-        let n = UIDevice.current.name
-        let s = "Device,\(u ?? "?"),\(m),\(n)"
+        // App details: version, build
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        let appBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
+        var s = "AppVersion,\(appVersion ?? "?"),\(appBuild ?? "?")"
+        write(s)
+        
+        // Device details: UUID, model, iOS version, name
+        let deviceUUID = UIDevice.current.identifierForVendor?.uuidString
+        let deviceModel = UIDevice.modelName
+        let deviceVersion = UIDevice.current.systemVersion
+        let deviceName = UIDevice.current.name
+        s = "Device,\(deviceUUID ?? "?"),\(deviceModel),\(deviceVersion),\(deviceName)"
         write(s)
     }
     
