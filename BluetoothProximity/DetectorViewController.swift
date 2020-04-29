@@ -145,7 +145,12 @@ class DetectorViewController: UIViewController {
         let n = min(scanner.uuidArr.count, nRows)
         if n > 0 {
             for i in 0...(n-1) {
-                nameLabelArr[i].text = String(scanner.nameArr[i].prefix(10))
+                // If the name is none, display the first 8 characters of the UUID
+                if scanner.nameArr[i] == "None" {
+                    nameLabelArr[i].text = String(scanner.uuidArr[i].prefix(8))
+                } else {
+                    nameLabelArr[i].text = String(scanner.nameArr[i].prefix(10))
+                }
                 rssiLabelArr[i].text = scanner.rssiArr[i].description
                 if scanner.detArr[i] == 0 {
                     proxLabelArr[i].text = "Far"
