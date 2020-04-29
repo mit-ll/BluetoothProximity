@@ -10,9 +10,19 @@ import UIKit
 import CoreData
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegate {
 
     var window: UIWindow?
+    
+    // For tab transitions. See these links for the original code:
+    // https://stackoverflow.com/questions/51482618/viewcontroller-slide-animation
+    // https://github.com/mattneub/Programming-iOS-Book-Examples/blob/master/bk2ch06p300customAnimation3b/ch19p620customAnimation1/AppDelegate.swift
+    var context : UIViewControllerContextTransitioning?
+    var interacting = false
+    var anim : UIViewImplicitlyAnimating?
+    var prev : UIPreviewInteraction!
+    
+    // Objects
     var logger: Logger!
     var sensors: Sensors!
     var advertiser: BluetoothAdvertiser!
@@ -20,11 +30,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        // Tab controller for transitions
+        let tbc = self.window!.rootViewController as! UITabBarController
+        tbc.delegate = self
+        let prev = UIPreviewInteraction(view: tbc.tabBar)
+        prev.delegate = self
+        self.prev = prev
+        
+        // Objects
         logger = Logger()
         sensors = Sensors()
         advertiser = BluetoothAdvertiser()
         scanner = BluetoothScanner()
+        
         return true
+    }
+    
+    // Tab controller for transitions
+    func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return self
+    }
+    
+    // Tab controller for transitions
+    func tabBarController(_ tabBarController: UITabBarController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return self.interacting ? self : nil
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -99,3 +129,136 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+// For tab transitions
+extension AppDelegate : UIPreviewInteractionDelegate {
+    func previewInteractionShouldBegin(_ previewInteraction: UIPreviewInteraction) -> Bool {
+        let tbc = self.window!.rootViewController as! UITabBarController
+        let loc = previewInteraction.location(in:tbc.tabBar)
+        if loc.x > tbc.view!.bounds.midX {
+            if tbc.selectedIndex < tbc.viewControllers!.count - 1 {
+                self.interacting = true
+                tbc.selectedIndex = tbc.selectedIndex + 1
+                tbc.tabBar.isUserInteractionEnabled = false
+                return true
+            }
+        } else {
+            if tbc.selectedIndex > 0 {
+                self.interacting = true
+                tbc.selectedIndex = tbc.selectedIndex - 1
+                tbc.tabBar.isUserInteractionEnabled = false
+                return true
+            }
+        }
+        return false
+    }
+    
+    func previewInteraction(_ previewInteraction: UIPreviewInteraction, didUpdatePreviewTransition transitionProgress: CGFloat, ended: Bool) {
+        var percent = transitionProgress
+        if percent < 0.05 {percent = 0.05}
+        if percent > 0.95 {percent = 0.95}
+        self.anim?.fractionComplete = percent
+        self.context?.updateInteractiveTransition(percent)
+    }
+    
+    func previewInteraction(_ previewInteraction: UIPreviewInteraction, didUpdateCommitTransition transitionProgress: CGFloat, ended: Bool) {
+        if ended {
+            self.anim?.pauseAnimation()
+            self.anim?.stopAnimation(false)
+            self.anim?.finishAnimation(at: .end)
+            let tbc = self.window!.rootViewController as! UITabBarController
+            tbc.tabBar.isUserInteractionEnabled = true
+        }
+    }
+    
+    func previewInteractionDidCancel(_ previewInteraction: UIPreviewInteraction) {
+        if let anim = self.anim as? UIViewPropertyAnimator {
+            anim.pauseAnimation()
+            anim.isReversed = true
+            anim.continueAnimation(
+                withTimingParameters:
+                UICubicTimingParameters(animationCurve:.linear),
+                durationFactor: 0.2)
+            let tbc = self.window!.rootViewController as! UITabBarController
+            tbc.tabBar.isUserInteractionEnabled = true
+        }
+    }
+
+}
+
+// For tab transitions
+extension AppDelegate : UIViewControllerInteractiveTransitioning {
+    
+    func startInteractiveTransition(_ ctx: UIViewControllerContextTransitioning){
+        self.context = ctx
+        self.anim = self.interruptibleAnimator(using: ctx)
+    }
+    
+}
+
+// For tab transitions
+extension AppDelegate : UIViewControllerAnimatedTransitioning {
+    
+    func interruptibleAnimator(using ctx: UIViewControllerContextTransitioning) -> UIViewImplicitlyAnimating {
+        
+        if self.anim != nil {
+            return self.anim!
+        }
+        
+        let vc1 = ctx.viewController(forKey:.from)!
+        let vc2 = ctx.viewController(forKey:.to)!
+        
+        let con = ctx.containerView
+        
+        let r1start = ctx.initialFrame(for:vc1)
+        let r2end = ctx.finalFrame(for:vc2)
+        
+        let v1 = ctx.view(forKey:.from)!
+        let v2 = ctx.view(forKey:.to)!
+        
+        let tbc = self.window!.rootViewController as! UITabBarController
+        let ix1 = tbc.viewControllers!.firstIndex(of:vc1)!
+        let ix2 = tbc.viewControllers!.firstIndex(of:vc2)!
+        let dir : CGFloat = ix1 < ix2 ? 1 : -1
+        var r1end = r1start
+        r1end.origin.x -= r1end.size.width * dir
+        var r2start = r2end
+        r2start.origin.x += r2start.size.width * dir
+        v2.frame = r2start
+        con.addSubview(v2)
+        
+        let anim = UIViewPropertyAnimator(duration: 0.3, curve: .linear) {
+            v1.frame = r1end
+            v2.frame = r2end
+        }
+        anim.addCompletion { finish in
+            if finish == .end {
+                ctx.finishInteractiveTransition()
+                ctx.completeTransition(true)
+            } else {
+                ctx.cancelInteractiveTransition()
+                ctx.completeTransition(false)
+            }
+        }
+        
+        self.anim = anim
+        return anim
+    }
+    
+    func transitionDuration(using ctx: UIViewControllerContextTransitioning?) -> TimeInterval {
+        return 0.3
+    }
+    
+    func animateTransition(using ctx: UIViewControllerContextTransitioning) {
+        
+        let anim = self.interruptibleAnimator(using: ctx)
+        anim.startAnimation()
+        
+    }
+    
+    func animationEnded(_ transitionCompleted: Bool) {
+        self.interacting = false
+        self.context = nil
+        self.anim = nil
+    }
+    
+}
