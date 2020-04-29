@@ -46,6 +46,7 @@ class LoggerViewController: UIViewController {
         }
         
         // Initial states
+        firstRun = true
         haveInitialLog = false
         range = Int(rangeStepper.value)
         rangeLabel.text = range.description
@@ -110,13 +111,24 @@ class LoggerViewController: UIViewController {
     @IBOutlet weak var settingsButton: UIButton!
     
     // Run/stop button
+    var firstRun: Bool!
     var isRunning: Bool!
     @IBOutlet weak var runStopButton: UIButton!
     @IBAction func runStopButtonPressed(_ sender: Any) {
         if isRunning {
             stopRun()
         } else {
-            startRun()
+            // Display a warning about locking the phone on the first run
+            if firstRun {
+                let alert = UIAlertController(title: "Warning", message: "Please do not lock the phone using the power button (the screen turning off can interfere with the data collection). The automatic screen lock/sleep will be disabled while logging. This message will only be displayed once.", preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
+                    self.firstRun = false
+                    self.startRun()
+                }))
+                present(alert, animated: true, completion: nil)
+            } else {
+                startRun()
+            }
         }
     }
     
