@@ -218,6 +218,69 @@
             </objects>
             <point key="canvasLocation" x="1905" y="-1554.9295774647887"/>
         </scene>
+        <!--More Info View Controller-->
+        <scene sceneID="M7f-Lf-8Mi">
+            <objects>
+                <viewController id="m7L-a7-vSv" customClass="MoreInfoViewController" customModule="BluetoothProximity" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="4IG-vM-JFk">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="548"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="More Info" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fwG-yp-r1O">
+                                <rect key="frame" x="35" y="30" width="184" height="51"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="42"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="VV4-Us-dn4">
+                                <rect key="frame" x="30" y="81" width="260" height="216.5"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <string key="text">Created by MIT Lincoln Laboratory: https://www.ll.mit.edu/  Contact: bluetooth-proximity-admin@mit.edu  Soure code: https://github.com/mit-ll/BluetoothProximity  Tab bar icons by Icons8: https://icons8.com/</string>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <dataDetectorType key="dataDetectorTypes" link="YES"/>
+                            </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QkV-Iw-QaV">
+                                <rect key="frame" x="110" y="327.5" width="100" height="41"/>
+                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="bpk-RH-V9p"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Done"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="6"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="doneButtonPressed:" destination="m7L-a7-vSv" eventType="touchUpInside" id="Yyu-n5-YEg"/>
+                                    <action selector="doneButtonPressed:" destination="3XR-2J-HEC" eventType="touchUpInside" id="wOD-GY-BfA"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="BNM-ue-aR7" firstAttribute="trailing" secondItem="QkV-Iw-QaV" secondAttribute="trailing" constant="110" id="3mX-8O-vvA"/>
+                            <constraint firstItem="QkV-Iw-QaV" firstAttribute="leading" secondItem="BNM-ue-aR7" secondAttribute="leading" constant="110" id="AdC-1Z-uG8"/>
+                            <constraint firstItem="fwG-yp-r1O" firstAttribute="top" secondItem="BNM-ue-aR7" secondAttribute="top" constant="30" id="Dvs-Ni-1hz"/>
+                            <constraint firstItem="QkV-Iw-QaV" firstAttribute="top" secondItem="VV4-Us-dn4" secondAttribute="bottom" constant="30" id="OC4-7Z-e0M"/>
+                            <constraint firstItem="VV4-Us-dn4" firstAttribute="top" secondItem="fwG-yp-r1O" secondAttribute="bottom" id="d60-Uu-a6E"/>
+                            <constraint firstItem="BNM-ue-aR7" firstAttribute="trailing" secondItem="fwG-yp-r1O" secondAttribute="trailing" constant="101" id="eZM-KJ-qtT"/>
+                            <constraint firstItem="BNM-ue-aR7" firstAttribute="trailing" secondItem="VV4-Us-dn4" secondAttribute="trailing" constant="30" id="nBX-9S-p9O"/>
+                            <constraint firstItem="fwG-yp-r1O" firstAttribute="leading" secondItem="BNM-ue-aR7" secondAttribute="leading" constant="35" id="wbt-bS-0yA"/>
+                            <constraint firstItem="VV4-Us-dn4" firstAttribute="leading" secondItem="BNM-ue-aR7" secondAttribute="leading" constant="30" id="yjA-Uq-ugB"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="BNM-ue-aR7"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="dgb-gl-Cn0"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ubg-Fo-dN5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="573.75" y="-803.87323943661977"/>
+        </scene>
         <!--Detector Settings View Controller-->
         <scene sceneID="Vfr-Hc-g6e">
             <objects>
@@ -306,13 +369,13 @@
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ioK-u6-xT5">
                                 <rect key="frame" x="30" y="30" width="260" height="233.5"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <mutableString key="text">Set M-of-N detector parameters.
+                                <string key="text">Set M-of-N detector parameters.
 
 RSSI: threshold RSSI value used for each observation. When current RSSI is greater than or equal, decide 1. Otherwise, decide 0.
 
 N: total number of observations used in the sliding window.
 
-M: number of 1 decisions within N observations for detection to be declared.</mutableString>
+M: number of 1 decisions within N observations for detection to be declared.</string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -951,16 +1014,17 @@ M: number of 1 decisions within N observations for detection to be declared.</mu
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fYC-xp-W52">
-                                <rect key="frame" x="30" y="81" width="260" height="100"/>
+                                <rect key="frame" x="30" y="81" width="260" height="83"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <string key="text">This app was created to log Bluetooth received signal strength indicators (RSSIs) to help develop algorithms for detecting if Bluetooth devices are close or far away.</string>
+                                <string key="text">This app was created to log Bluetooth received signal strength indicators (RSSIs) to help develop algorithms for proximity detection.</string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" bouncesZoom="NO" editable="NO" text="The detector tab runs a basic algorithm for real-time proximity detection. It shows the first 10 Bluetooth devices discovered." textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Js0-0O-F0V">
-                                <rect key="frame" x="30" y="181" width="260" height="83"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Js0-0O-F0V">
+                                <rect key="frame" x="30" y="164" width="260" height="100"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <string key="text">The detector tab runs a basic M-of-N algorithm in real-time. It shows the first 10 Bluetooth devices discovered. Parameters for the algorithm can be configured using the settings button.</string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -972,26 +1036,34 @@ M: number of 1 decisions within N observations for detection to be declared.</mu
                                 <nil key="highlightedColor"/>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TKy-BV-L3H">
-                                <rect key="frame" x="30" y="264" width="260" height="116.5"/>
+                                <rect key="frame" x="30" y="264" width="260" height="150"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <string key="text">The logger tab enables you to record a range and angle between two phones and initiate measurements. Bluetooth and any sensor data is logged to file and can be sent off the phone via email for post processing.</string>
+                                <string key="text">The logger tab enables you to record a range and angle between two phones and take measurements for post processing. Bluetooth and any sensor data is logged to file and can be sent off the phone to a shared folder or email. You can choose which sensors to use with the settings button.</string>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" bouncesZoom="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QL2-h4-Aiz">
-                                <rect key="frame" x="30" y="380" width="260" height="116.5"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <string key="text">The settings tab lets you optionally enable various sensors in the phone for logging. These sensors can be useful for determining the state of the phone, which affects the Bluetooth propagation channel.</string>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dbL-O0-sdx">
+                                <rect key="frame" x="100" y="440" width="120" height="41"/>
+                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="More Info"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="6"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <segue destination="m7L-a7-vSv" kind="show" id="Fno-Sa-W0c"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="Js0-0O-F0V" firstAttribute="top" secondItem="fYC-xp-W52" secondAttribute="bottom" id="Ef9-OY-RjZ"/>
-                            <constraint firstItem="8oK-0B-VLy" firstAttribute="trailing" secondItem="QL2-h4-Aiz" secondAttribute="trailing" constant="30" id="Fby-dp-qM7"/>
+                            <constraint firstItem="8oK-0B-VLy" firstAttribute="trailing" secondItem="dbL-O0-sdx" secondAttribute="trailing" constant="100" id="J0u-2E-AEI"/>
+                            <constraint firstItem="dbL-O0-sdx" firstAttribute="leading" secondItem="8oK-0B-VLy" secondAttribute="leading" constant="100" id="L3m-7i-L5P"/>
                             <constraint firstItem="8oK-0B-VLy" firstAttribute="trailing" secondItem="TKy-BV-L3H" secondAttribute="trailing" constant="30" id="NWx-zq-IvY"/>
                             <constraint firstItem="TKy-BV-L3H" firstAttribute="leading" secondItem="8oK-0B-VLy" secondAttribute="leading" constant="30" id="Q0w-vr-uOZ"/>
                             <constraint firstItem="FXb-Hb-JC0" firstAttribute="top" secondItem="8oK-0B-VLy" secondAttribute="top" constant="30" id="WkO-Dp-EGJ"/>
@@ -999,12 +1071,11 @@ M: number of 1 decisions within N observations for detection to be declared.</mu
                             <constraint firstItem="fYC-xp-W52" firstAttribute="leading" secondItem="8oK-0B-VLy" secondAttribute="leading" constant="30" id="YgA-iJ-bIo"/>
                             <constraint firstItem="TKy-BV-L3H" firstAttribute="top" secondItem="Js0-0O-F0V" secondAttribute="bottom" id="g3U-O7-CBh"/>
                             <constraint firstItem="fYC-xp-W52" firstAttribute="top" secondItem="FXb-Hb-JC0" secondAttribute="bottom" id="lyE-7n-YgP"/>
-                            <constraint firstItem="QL2-h4-Aiz" firstAttribute="leading" secondItem="8oK-0B-VLy" secondAttribute="leading" constant="30" id="mdh-Pa-nzY"/>
                             <constraint firstItem="FXb-Hb-JC0" firstAttribute="leading" secondItem="8oK-0B-VLy" secondAttribute="leading" constant="35" id="oBW-1H-Oqd"/>
                             <constraint firstItem="8oK-0B-VLy" firstAttribute="trailing" secondItem="Js0-0O-F0V" secondAttribute="trailing" constant="30" id="qhN-lB-pzZ"/>
                             <constraint firstItem="8oK-0B-VLy" firstAttribute="trailing" secondItem="fYC-xp-W52" secondAttribute="trailing" constant="30" id="s1W-0P-JqE"/>
-                            <constraint firstItem="QL2-h4-Aiz" firstAttribute="top" secondItem="TKy-BV-L3H" secondAttribute="bottom" id="u1i-H9-8BX"/>
                             <constraint firstItem="Js0-0O-F0V" firstAttribute="leading" secondItem="8oK-0B-VLy" secondAttribute="leading" constant="30" id="wQk-rN-2yP"/>
+                            <constraint firstItem="dbL-O0-sdx" firstAttribute="top" secondItem="TKy-BV-L3H" secondAttribute="bottom" constant="26" id="wte-8d-pmu"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="8oK-0B-VLy"/>
                     </view>
