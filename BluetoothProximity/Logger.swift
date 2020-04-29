@@ -59,9 +59,12 @@ class Logger {
             return
         }
         
-        // Log the device type and name
-        let deviceStr = "Device," + UIDevice.modelName + "," + UIDevice.current.name
-        write(deviceStr)
+        // Log details about the device: UUID, model, and name
+        let u = UIDevice.current.identifierForVendor?.uuidString
+        let m = UIDevice.modelName
+        let n = UIDevice.current.name
+        let s = "Device,\(u ?? "?"),\(m),\(n)"
+        write(s)
     }
     
     // Gets timestamp

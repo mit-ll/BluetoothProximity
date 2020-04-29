@@ -60,8 +60,8 @@ Timestamp, sensor name, sensor values
 Here's a description of the data after a timestamp:
 
 ```
-Device, device model, device name
-AppState, Foreground or Background
+Device, unique ID, model, name
+AppState, foreground or background
 Range, value in feet
 Angle, value in degrees
 Bluetooth, UUID, RSSI, advertised name, TX power level, advertised timestamp
