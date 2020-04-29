@@ -38,6 +38,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         prev.delegate = self
         self.prev = prev
         
+        // Swipe gesture to move between tabs
+        let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes(_:)))
+        let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes(_:)))
+        leftSwipe.direction = .left
+        rightSwipe.direction = .right
+        window?.addGestureRecognizer(leftSwipe)
+        window?.addGestureRecognizer(rightSwipe)
+        
         // Objects
         logger = Logger()
         sensors = Sensors()
@@ -45,6 +53,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         scanner = BluetoothScanner()
         
         return true
+    }
+    
+    // Swipe gesture to move between tabs
+    // Left swipe moves us right, right swipe moves us left
+    @objc func handleSwipes(_ sender:UISwipeGestureRecognizer) {
+        let tbc = self.window!.rootViewController as! UITabBarController
+        if (sender.direction == .left) {
+            tbc.selectedIndex += 1
+        }
+            
+        if (sender.direction == .right) {
+            tbc.selectedIndex -= 1
+        }
     }
     
     // Tab controller for transitions
