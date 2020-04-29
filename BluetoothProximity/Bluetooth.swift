@@ -84,6 +84,8 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     var mtxPtr: [Int] = []
     var nArr: [Int] = []
     var detArr: [Int] = []
+    var tInitArr: [Double] = []
+    var durArr: [Int] = []
     
     override init() {
         super.init()
@@ -204,13 +206,20 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
                 mtxPtr.append(0)
                 nArr.append(0)
                 detArr.append(0)
+                let tInit = NSDate().timeIntervalSince1970
+                tInitArr.append(tInit)
+                durArr.append(0)
             } else {
                 uuidIdx = idx!
             }
-            
-            // Update RSSI and name (may have changed)
+                        
+            // Update RSSI and name
             rssiArr[uuidIdx] = RSSI.intValue
             nameArr[uuidIdx] = advName
+            
+            // Update duration
+            let tNow = NSDate().timeIntervalSince1970
+            durArr[uuidIdx] = Int(tNow - tInitArr[uuidIdx])
             
             // M-of-N detector. This makes a decision for each sample based on the threshold.
             // If there are at least N samples, and M of the decisions declare detection, then
@@ -269,6 +278,8 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         mtxPtr = []
         nArr = []
         detArr = []
+        tInitArr = []
+        durArr = []
         runDetector = true
     }
     

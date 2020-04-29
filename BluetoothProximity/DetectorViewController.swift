@@ -52,6 +52,19 @@ class DetectorViewController: UIViewController {
     @IBOutlet weak var proxLabel9: UILabel!
     var proxLabelArr : [UILabel] = []
     
+    // Duration label group
+    @IBOutlet weak var durLabel0: UILabel!
+    @IBOutlet weak var durLabel1: UILabel!
+    @IBOutlet weak var durLabel2: UILabel!
+    @IBOutlet weak var durLabel3: UILabel!
+    @IBOutlet weak var durLabel4: UILabel!
+    @IBOutlet weak var durLabel5: UILabel!
+    @IBOutlet weak var durLabel6: UILabel!
+    @IBOutlet weak var durLabel7: UILabel!
+    @IBOutlet weak var durLabel8: UILabel!
+    @IBOutlet weak var durLabel9: UILabel!
+    var durLabelArr : [UILabel] = []
+    
     // Make status bar light
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -79,6 +92,7 @@ class DetectorViewController: UIViewController {
         nameLabelArr = [nameLabel0, nameLabel1, nameLabel2, nameLabel3, nameLabel4, nameLabel5, nameLabel6, nameLabel7, nameLabel8, nameLabel9]
         rssiLabelArr = [rssiLabel0, rssiLabel1, rssiLabel2, rssiLabel3, rssiLabel4, rssiLabel5, rssiLabel6, rssiLabel7, rssiLabel8, rssiLabel9]
         proxLabelArr = [proxLabel0, proxLabel1, proxLabel2, proxLabel3, proxLabel4, proxLabel5, proxLabel6, proxLabel7, proxLabel8, proxLabel9]
+        durLabelArr = [durLabel0, durLabel1, durLabel2, durLabel3, durLabel4, durLabel5, durLabel6, durLabel7, durLabel8, durLabel9]
         
         // Initialize
         isRunning = false
@@ -149,6 +163,7 @@ class DetectorViewController: UIViewController {
                     proxLabelArr[i].text = "?"
                     proxLabelArr[i].textColor = UIColor.white
                 }
+                durLabelArr[i].text = scanner.durArr[i].description
             }
         }
     }
@@ -162,6 +177,7 @@ class DetectorViewController: UIViewController {
             rssiLabelArr[i].text = "."
             proxLabelArr[i].text = "."
             proxLabelArr[i].textColor = UIColor.white
+            durLabelArr[i].text = "."
         }
     }
     
