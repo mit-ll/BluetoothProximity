@@ -510,10 +510,10 @@ M: number of 1 decisions for detection to be declared.  T: threshold time, s
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="o1L-oY-V4z">
-                                <rect key="frame" x="18" y="172" width="284" height="216.5"/>
+                                <rect key="frame" x="18" y="157" width="284" height="314"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="JG3-bm-YLY">
-                                        <rect key="frame" x="0.0" y="0.0" width="51" height="216.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="51" height="314"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W3K-D6-RX7">
                                                 <rect key="frame" x="0.0" y="0.0" width="51" height="21.5"/>
@@ -581,10 +581,40 @@ M: number of 1 decisions for detection to be declared.  T: threshold time, s
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rFp-SD-lk7">
+                                                <rect key="frame" x="0.0" y="216.5" width="51" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Olt-Ou-zmk">
+                                                <rect key="frame" x="0.0" y="236" width="51" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fzw-cg-Rj3">
+                                                <rect key="frame" x="0.0" y="255.5" width="51" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7X8-nG-258">
+                                                <rect key="frame" x="0.0" y="275" width="51" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E4E-h6-LE1">
+                                                <rect key="frame" x="0.0" y="294.5" width="51" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Ceu-Vg-iFU">
-                                        <rect key="frame" x="66" y="0.0" width="39" height="216.5"/>
+                                        <rect key="frame" x="66" y="0.0" width="39" height="314"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="RSSI" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4b0-dw-lRC">
                                                 <rect key="frame" x="0.0" y="0.0" width="39" height="21.5"/>
@@ -652,10 +682,40 @@ M: number of 1 decisions for detection to be declared.  T: threshold time, s
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="koI-Q3-Pem">
+                                                <rect key="frame" x="0.0" y="216.5" width="39" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ABZ-Fi-ZKi">
+                                                <rect key="frame" x="0.0" y="236" width="39" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fYk-oE-Rwa">
+                                                <rect key="frame" x="0.0" y="255.5" width="39" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L0r-mg-iXT">
+                                                <rect key="frame" x="0.0" y="275" width="39" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SgP-W8-ofl">
+                                                <rect key="frame" x="0.0" y="294.5" width="39" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="uO9-Ea-pyF">
-                                        <rect key="frame" x="120" y="0.0" width="78" height="216.5"/>
+                                        <rect key="frame" x="120" y="0.0" width="78" height="314"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Proximity" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lRg-ac-7za">
                                                 <rect key="frame" x="0.0" y="0.0" width="78" height="21.5"/>
@@ -723,10 +783,40 @@ M: number of 1 decisions for detection to be declared.  T: threshold time, s
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wLd-0Q-q8h">
+                                                <rect key="frame" x="0.0" y="216.5" width="78" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5LQ-2f-KpD">
+                                                <rect key="frame" x="0.0" y="236" width="78" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a7J-rc-x7s">
+                                                <rect key="frame" x="0.0" y="255.5" width="78" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k6W-w5-Wtg">
+                                                <rect key="frame" x="0.0" y="275" width="78" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wtf-6w-bXD">
+                                                <rect key="frame" x="0.0" y="294.5" width="78" height="19.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="MwK-zG-ui6">
-                                        <rect key="frame" x="213" y="0.0" width="71" height="216.5"/>
+                                        <rect key="frame" x="213" y="0.0" width="71" height="314"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Duration" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CCK-Ti-SxV">
                                                 <rect key="frame" x="0.0" y="0.0" width="71" height="20.5"/>
@@ -789,7 +879,52 @@ M: number of 1 decisions for detection to be declared.  T: threshold time, s
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tvD-vR-jFm">
-                                                <rect key="frame" x="0.0" y="196" width="71" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="196" width="71" height="19.5"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="19.5" id="jtG-eg-4S3"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hbi-0y-WbI">
+                                                <rect key="frame" x="0.0" y="215.5" width="71" height="19.5"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="19.5" id="ygc-JY-xNK"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t4a-IN-8Ca">
+                                                <rect key="frame" x="0.0" y="235" width="71" height="19.5"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="19.5" id="c6a-XJ-7D4"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sDD-Vb-roh">
+                                                <rect key="frame" x="0.0" y="254.5" width="71" height="19.5"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="19.5" id="KG0-DS-VDm"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uP5-bP-Di2">
+                                                <rect key="frame" x="0.0" y="274" width="71" height="19.5"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="19.5" id="37K-nP-N7h"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TiH-bd-aXW">
+                                                <rect key="frame" x="0.0" y="293.5" width="71" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
@@ -799,7 +934,7 @@ M: number of 1 decisions for detection to be declared.  T: threshold time, s
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="gWV-sa-KzI">
-                                <rect key="frame" x="57" y="418.5" width="206" height="20.5"/>
+                                <rect key="frame" x="57" y="486" width="206" height="20.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Additional Devices:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gcn-i9-IsE">
                                         <rect key="frame" x="0.0" y="0.0" width="146" height="20.5"/>
@@ -824,9 +959,9 @@ M: number of 1 decisions for detection to be declared.  T: threshold time, s
                             <constraint firstItem="Gp8-oF-5jJ" firstAttribute="trailing" secondItem="o1L-oY-V4z" secondAttribute="trailing" constant="18" id="3V8-Ah-vYd"/>
                             <constraint firstItem="Gp8-oF-5jJ" firstAttribute="trailing" secondItem="Z5b-ny-gYz" secondAttribute="trailing" constant="103" id="3dJ-bT-1gu"/>
                             <constraint firstItem="Z5b-ny-gYz" firstAttribute="top" secondItem="Gp8-oF-5jJ" secondAttribute="top" constant="30" id="4xj-Hu-xDM"/>
-                            <constraint firstItem="o1L-oY-V4z" firstAttribute="top" secondItem="wo6-l2-Hlh" secondAttribute="bottom" constant="30" id="ITd-AO-Di4"/>
+                            <constraint firstItem="o1L-oY-V4z" firstAttribute="top" secondItem="wo6-l2-Hlh" secondAttribute="bottom" constant="15" id="ITd-AO-Di4"/>
                             <constraint firstItem="o1L-oY-V4z" firstAttribute="leading" secondItem="Gp8-oF-5jJ" secondAttribute="leading" constant="18" id="L7U-wh-cs7"/>
-                            <constraint firstItem="gWV-sa-KzI" firstAttribute="top" secondItem="o1L-oY-V4z" secondAttribute="bottom" constant="30" id="MzG-og-UXR"/>
+                            <constraint firstItem="gWV-sa-KzI" firstAttribute="top" secondItem="o1L-oY-V4z" secondAttribute="bottom" constant="15" id="MzG-og-UXR"/>
                             <constraint firstItem="wo6-l2-Hlh" firstAttribute="top" secondItem="Z5b-ny-gYz" secondAttribute="bottom" constant="30" id="Nio-OT-EWb"/>
                             <constraint firstItem="Z5b-ny-gYz" firstAttribute="leading" secondItem="Gp8-oF-5jJ" secondAttribute="leading" constant="103" id="NmJ-t8-pIp"/>
                             <constraint firstItem="Gp8-oF-5jJ" firstAttribute="trailing" secondItem="wo6-l2-Hlh" secondAttribute="trailing" constant="110" id="iVZ-iv-YxR"/>
@@ -841,6 +976,11 @@ M: number of 1 decisions for detection to be declared.  T: threshold time, s
                         <outlet property="additionalDevicesLabel" destination="lc4-q1-KuD" id="x9q-lg-sra"/>
                         <outlet property="durLabel0" destination="HgE-0r-k2u" id="kSW-Cu-zQw"/>
                         <outlet property="durLabel1" destination="gxy-Xx-1ZC" id="x9W-e5-Dz1"/>
+                        <outlet property="durLabel10" destination="Hbi-0y-WbI" id="SAv-4q-sg4"/>
+                        <outlet property="durLabel11" destination="t4a-IN-8Ca" id="qY0-ls-7pu"/>
+                        <outlet property="durLabel12" destination="sDD-Vb-roh" id="Dwd-h7-Och"/>
+                        <outlet property="durLabel13" destination="uP5-bP-Di2" id="VGR-bx-Vbr"/>
+                        <outlet property="durLabel14" destination="TiH-bd-aXW" id="tfd-VG-PGd"/>
                         <outlet property="durLabel2" destination="vgt-mz-gab" id="PCA-zM-tmY"/>
                         <outlet property="durLabel3" destination="BLE-xP-aZB" id="miH-ub-nrJ"/>
                         <outlet property="durLabel4" destination="d2I-U6-dxn" id="AMx-CA-S0C"/>
@@ -851,6 +991,11 @@ M: number of 1 decisions for detection to be declared.  T: threshold time, s
                         <outlet property="durLabel9" destination="tvD-vR-jFm" id="J0a-Uc-dSK"/>
                         <outlet property="nameLabel0" destination="4aH-bx-p6f" id="HdN-Fo-WkU"/>
                         <outlet property="nameLabel1" destination="Nir-Fh-CUk" id="Ds0-AP-8Hg"/>
+                        <outlet property="nameLabel10" destination="rFp-SD-lk7" id="kAS-Zk-uy8"/>
+                        <outlet property="nameLabel11" destination="Olt-Ou-zmk" id="DRa-cP-aVp"/>
+                        <outlet property="nameLabel12" destination="fzw-cg-Rj3" id="LVk-R1-nDj"/>
+                        <outlet property="nameLabel13" destination="7X8-nG-258" id="KSE-Gb-qSf"/>
+                        <outlet property="nameLabel14" destination="E4E-h6-LE1" id="9jp-pY-RO8"/>
                         <outlet property="nameLabel2" destination="p8w-Dr-MTn" id="auC-xu-bo1"/>
                         <outlet property="nameLabel3" destination="zEy-id-UcB" id="rhv-hF-kbw"/>
                         <outlet property="nameLabel4" destination="LoU-p0-5Db" id="gGB-c2-lyL"/>
@@ -861,6 +1006,11 @@ M: number of 1 decisions for detection to be declared.  T: threshold time, s
                         <outlet property="nameLabel9" destination="rgc-v3-xs2" id="41x-Qx-doD"/>
                         <outlet property="proxLabel0" destination="Lyq-IF-uha" id="vDF-jm-4V4"/>
                         <outlet property="proxLabel1" destination="2vE-0x-meC" id="CLS-Sy-aLf"/>
+                        <outlet property="proxLabel10" destination="wLd-0Q-q8h" id="4df-KH-sFi"/>
+                        <outlet property="proxLabel11" destination="5LQ-2f-KpD" id="Q17-JW-mvb"/>
+                        <outlet property="proxLabel12" destination="a7J-rc-x7s" id="6dN-9V-tAZ"/>
+                        <outlet property="proxLabel13" destination="k6W-w5-Wtg" id="cy8-x5-0EV"/>
+                        <outlet property="proxLabel14" destination="wtf-6w-bXD" id="Cfw-Vi-FLj"/>
                         <outlet property="proxLabel2" destination="vjv-27-SAP" id="S5M-q0-Kz7"/>
                         <outlet property="proxLabel3" destination="4aH-GX-Vt0" id="Bxd-Iy-CtB"/>
                         <outlet property="proxLabel4" destination="jjq-Yv-ti0" id="GlO-E6-yXH"/>
@@ -871,6 +1021,11 @@ M: number of 1 decisions for detection to be declared.  T: threshold time, s
                         <outlet property="proxLabel9" destination="nO5-TR-BiW" id="uxB-ev-Xml"/>
                         <outlet property="rssiLabel0" destination="i7T-aO-fH2" id="1NF-7e-8dy"/>
                         <outlet property="rssiLabel1" destination="CqD-RN-XVP" id="Bjo-Hq-4v2"/>
+                        <outlet property="rssiLabel10" destination="koI-Q3-Pem" id="mQW-8P-Cph"/>
+                        <outlet property="rssiLabel11" destination="ABZ-Fi-ZKi" id="De6-iY-hCn"/>
+                        <outlet property="rssiLabel12" destination="fYk-oE-Rwa" id="6Si-Xy-SAT"/>
+                        <outlet property="rssiLabel13" destination="L0r-mg-iXT" id="LbX-CO-ikl"/>
+                        <outlet property="rssiLabel14" destination="SgP-W8-ofl" id="m9q-pa-VPH"/>
                         <outlet property="rssiLabel2" destination="07a-vj-Xt0" id="snA-Qa-q88"/>
                         <outlet property="rssiLabel3" destination="2Wd-AG-Fan" id="jrV-hB-9xo"/>
                         <outlet property="rssiLabel4" destination="EXF-Gw-boC" id="U7K-up-AWS"/>
