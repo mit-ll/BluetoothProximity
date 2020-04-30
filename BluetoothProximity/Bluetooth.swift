@@ -74,6 +74,7 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     var M: Int!                 // Samples that must cross threshold
     var N: Int!                 // Total number of samples
     var rssiThresh: Int!        // Threshold RSSI
+    var tThresh: Int!           // Threshold time for keeping track of a device
     
     // Detector storage
     var uuidIdx: Int!
@@ -86,6 +87,7 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     var detArr: [Int] = []
     var tInitArr: [Double] = []
     var durArr: [Int] = []
+    var tLastArr: [Double] = []
     
     override init() {
         super.init()
@@ -208,6 +210,7 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
                 detArr.append(0)
                 let tInit = NSDate().timeIntervalSince1970
                 tInitArr.append(tInit)
+                tLastArr.append(0)
                 durArr.append(0)
             } else {
                 uuidIdx = idx!
@@ -217,10 +220,16 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
             rssiArr[uuidIdx] = RSSI.intValue
             nameArr[uuidIdx] = advName
             
-            // Update duration
+            // Get the time now. If the initial time is zero this means the data was reset
+            // so we should re-initialize it. Then compute the total duration and save the
+            // last time this device was heard from.
             let tNow = NSDate().timeIntervalSince1970
+            if tInitArr[uuidIdx] == 0 {
+                tInitArr[uuidIdx] = tNow
+            }
             durArr[uuidIdx] = Int(tNow - tInitArr[uuidIdx])
-            
+            tLastArr[uuidIdx] = tNow
+                        
             // M-of-N detector. This makes a decision for each sample based on the threshold.
             // If there are at least N samples, and M of the decisions declare detection, then
             // overall detection is declared. Possible detection values:
@@ -262,6 +271,19 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         }
     }
     
+    // Reset data for a UUID
+    func resetDataAt(index: Int) {
+        nArr[index] = 0
+        mtxPtr[index] = 0
+        detArr[index] = 0
+        tInitArr[index] = 0
+        tLastArr[index] = 0
+        durArr[index] = 0
+        for i in 0...(mtx[index].count-1) {
+            mtx[index][i] = 0
+        }
+    }
+    
     // Start detector processing
     func startDetector() {
         
@@ -269,6 +291,7 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         M = DetectorSettings.M
         N = DetectorSettings.N
         rssiThresh = DetectorSettings.rssiThresh
+        tThresh = DetectorSettings.tThresh
         
         // Initialize memory
         uuidArr = []
@@ -280,6 +303,7 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         detArr = []
         tInitArr = []
         durArr = []
+        tLastArr = []
         runDetector = true
     }
     

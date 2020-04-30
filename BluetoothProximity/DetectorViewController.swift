@@ -142,34 +142,66 @@ class DetectorViewController: UIViewController {
         tableTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTable), userInfo: nil, repeats: true)
     }
     @objc func updateTable() {
-        let n = min(scanner.uuidArr.count, nRows)
-        if n > 0 {
-            for i in 0...(n-1) {
-                // If the name is none, display the first 8 characters of the UUID
+                
+        // If there's data, try to populate the table
+        let nAvail = scanner.uuidArr.count
+        if nAvail > 0 {
+            
+            // Clear everything
+            clearTable()
+            
+            // Loop through all entries to see if we should display them
+            var nRowsDisp = 0
+            let tNow = NSDate().timeIntervalSince1970
+            for i in 0...(nAvail-1) {
+                
+                // If this device is beyond the time threshold, don't display it, and
+                // reset its data for if/when it returns
+                let tDiff = Int(tNow - scanner.tLastArr[i])
+                if tDiff >= scanner.tThresh {
+                    scanner.resetDataAt(index: i)
+                    continue
+                }
+                                
+                // Name - if it's None, display the first 8 characters of the UUID
                 if scanner.nameArr[i] == "None" {
-                    nameLabelArr[i].text = String(scanner.uuidArr[i].prefix(8))
+                    nameLabelArr[nRowsDisp].text = String(scanner.uuidArr[i].prefix(8))
                 } else {
-                    nameLabelArr[i].text = String(scanner.nameArr[i].prefix(10))
+                    nameLabelArr[nRowsDisp].text = String(scanner.nameArr[i].prefix(10))
                 }
-                rssiLabelArr[i].text = scanner.rssiArr[i].description
+                
+                // RSSI
+                rssiLabelArr[nRowsDisp].text = scanner.rssiArr[i].description
+                
+                // Proximity estimate
                 if scanner.detArr[i] == 0 {
-                    proxLabelArr[i].text = "Far"
-                    proxLabelArr[i].textColor = UIColor.green
+                    proxLabelArr[nRowsDisp].text = "Far"
+                    proxLabelArr[nRowsDisp].textColor = UIColor.green
                 } else if scanner.detArr[i] == 1 {
-                    proxLabelArr[i].text = "Far?"
-                    proxLabelArr[i].textColor = UIColor.orange
+                    proxLabelArr[nRowsDisp].text = "Far?"
+                    proxLabelArr[nRowsDisp].textColor = UIColor.orange
                 } else if scanner.detArr[i] == 2 {
-                    proxLabelArr[i].text = "Close?"
-                    proxLabelArr[i].textColor = UIColor.yellow
+                    proxLabelArr[nRowsDisp].text = "Close?"
+                    proxLabelArr[nRowsDisp].textColor = UIColor.yellow
                 } else if scanner.detArr[i] == 3 {
-                    proxLabelArr[i].text = "Close"
-                    proxLabelArr[i].textColor = UIColor.red
+                    proxLabelArr[nRowsDisp].text = "Close"
+                    proxLabelArr[nRowsDisp].textColor = UIColor.red
                 } else {
-                    proxLabelArr[i].text = "?"
-                    proxLabelArr[i].textColor = UIColor.white
+                    proxLabelArr[nRowsDisp].text = "?"
+                    proxLabelArr[nRowsDisp].textColor = UIColor.white
                 }
-                durLabelArr[i].text = scanner.durArr[i].description
+                
+                // Duration
+                durLabelArr[nRowsDisp].text = scanner.durArr[i].description
+                
+                // Update number of rows displayed, and quit if we've filled all rows
+                nRowsDisp += 1
+                if nRowsDisp == nRows {
+                    break
+                }
+                
             }
+                        
         }
     }
     func stopUpdatingTable() {
@@ -177,7 +209,7 @@ class DetectorViewController: UIViewController {
         tableTimer = nil
     }
     func clearTable() {
-        for i in 0...9 {
+        for i in 0...(nRows-1) {
             nameLabelArr[i].text = "."
             rssiLabelArr[i].text = "."
             proxLabelArr[i].text = "."

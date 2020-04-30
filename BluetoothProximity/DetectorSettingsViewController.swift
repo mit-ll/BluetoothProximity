@@ -12,6 +12,7 @@ struct DetectorSettings {
     static var M = 5
     static var N = 20
     static var rssiThresh = -60
+    static var tThresh = 30
 }
 
 class DetectorSettingsViewController: UIViewController {
@@ -31,6 +32,8 @@ class DetectorSettingsViewController: UIViewController {
         nLabel.text = DetectorSettings.N.description
         mStepper.value = Double(DetectorSettings.M)
         mLabel.text = DetectorSettings.M.description
+        tStepper.value = Double(DetectorSettings.tThresh)
+        tLabel.text = DetectorSettings.tThresh.description
         
         // Force steppers to respect their tintColor
         rssiStepper.setDecrementImage(rssiStepper.decrementImage(for: .normal), for: .normal)
@@ -39,6 +42,8 @@ class DetectorSettingsViewController: UIViewController {
         nStepper.setIncrementImage(nStepper.incrementImage(for: .normal), for: .normal)
         mStepper.setDecrementImage(mStepper.decrementImage(for: .normal), for: .normal)
         mStepper.setIncrementImage(mStepper.incrementImage(for: .normal), for: .normal)
+        tStepper.setDecrementImage(tStepper.decrementImage(for: .normal), for: .normal)
+        tStepper.setIncrementImage(tStepper.incrementImage(for: .normal), for: .normal)
     }
     
     // RSSI threshold stepper
@@ -63,6 +68,14 @@ class DetectorSettingsViewController: UIViewController {
     @IBAction func mStepperChanged(_ sender: Any) {
         DetectorSettings.M = Int(mStepper.value)
         mLabel.text = DetectorSettings.M.description
+    }
+    
+    // Time threshold stepper
+    @IBOutlet weak var tLabel: UILabel!
+    @IBOutlet weak var tStepper: UIStepper!
+    @IBAction func tStepperChanged(_ sender: Any) {
+        DetectorSettings.tThresh = Int(tStepper.value)
+        tLabel.text = DetectorSettings.tThresh.description
     }
     
     // Done button
