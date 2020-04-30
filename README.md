@@ -4,20 +4,22 @@ This is a basic iOS application that was built to log information from the Bluet
 
 At a basic level, the RSSI decreases proportionally to the square of the distance between the transmitter and receiver. With knowledge of the transmitter power, the RSSI gives insight into the path loss, and thus the range. However, when a phone is in a pocket or masked by the body, the path loss can be much larger. By using this app to collect data in different scenarios, we hope to design a proximity detector with a high probably of detection and low probability of false alarm.
 
-On first launch, approve the use of Bluetooth and allow location and motion services (logging GPS and other sensors can by optionally configured).
+On first launch, approve the use of Bluetooth and allow location and motion services (logging GPS and other sensors can by optionally configured). If you're having issues recording data, make sure that you've enabled access to location services, Bluetooth, and motion & fitness (under the privacy settings of your phone).
 
 ## Installation
 
-The methods to install the app are:
-- Build from source and deploy using Xcode
-- Ad-hoc distribution
-	- Send us your device ID and we'll send you a link to install the app
-- TestFlight
-	- Send us your email and we'll invite you to the beta testing program
+Options to install the app include:
+- Use Xcode to build from source and deploy
+- Ask us for an invite to the TestFlight beta testing program
 
 ## Contact
 
-BlueProximity@ll.mit.edu or open an issue on GitHub
+For questions/support: 
+- bluetooth-proximity-admin@mit.edu
+- Open an issue on GitHub
+
+To submit data and log files:
+- bluetooth-proximity-data@mit.edu
 
 ## Logger Tab
 
