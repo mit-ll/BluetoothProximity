@@ -137,14 +137,16 @@ class DetectorViewController: UIViewController {
     }
     
     // Table is updated every second
+    @IBOutlet weak var additionalDevicesLabel: UILabel!
     var tableTimer: Timer?
     func startUpdatingTable() {
         tableTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTable), userInfo: nil, repeats: true)
     }
     @objc func updateTable() {
                 
-        // If there's data, try to populate the table
+        // If there's data, populate the table
         let nAvail = scanner.uuidArr.count
+        var nAdditional = 0
         if nAvail > 0 {
             
             // Clear everything
@@ -162,47 +164,54 @@ class DetectorViewController: UIViewController {
                     scanner.resetDataAt(index: i)
                     continue
                 }
+                
+                // Update table if we can, otherwise add to the additional device count
+                if nRowsDisp < nRows {
                                 
-                // Name - if it's None, display the first 8 characters of the UUID
-                if scanner.nameArr[i] == "None" {
-                    nameLabelArr[nRowsDisp].text = String(scanner.uuidArr[i].prefix(8))
+                    // Name - if it's None, display the first 8 characters of the UUID
+                    if scanner.nameArr[i] == "None" {
+                        nameLabelArr[nRowsDisp].text = String(scanner.uuidArr[i].prefix(8))
+                    } else {
+                        nameLabelArr[nRowsDisp].text = String(scanner.nameArr[i].prefix(10))
+                    }
+                    
+                    // RSSI
+                    rssiLabelArr[nRowsDisp].text = scanner.rssiArr[i].description
+                    
+                    // Proximity estimate
+                    if scanner.detArr[i] == 0 {
+                        proxLabelArr[nRowsDisp].text = "Far"
+                        proxLabelArr[nRowsDisp].textColor = UIColor.green
+                    } else if scanner.detArr[i] == 1 {
+                        proxLabelArr[nRowsDisp].text = "Far?"
+                        proxLabelArr[nRowsDisp].textColor = UIColor.orange
+                    } else if scanner.detArr[i] == 2 {
+                        proxLabelArr[nRowsDisp].text = "Close?"
+                        proxLabelArr[nRowsDisp].textColor = UIColor.yellow
+                    } else if scanner.detArr[i] == 3 {
+                        proxLabelArr[nRowsDisp].text = "Close"
+                        proxLabelArr[nRowsDisp].textColor = UIColor.red
+                    } else {
+                        proxLabelArr[nRowsDisp].text = "?"
+                        proxLabelArr[nRowsDisp].textColor = UIColor.white
+                    }
+                    
+                    // Duration
+                    durLabelArr[nRowsDisp].text = scanner.durArr[i].description
+                    
+                    // Update number of rows displayed
+                    nRowsDisp += 1
+                    
                 } else {
-                    nameLabelArr[nRowsDisp].text = String(scanner.nameArr[i].prefix(10))
-                }
-                
-                // RSSI
-                rssiLabelArr[nRowsDisp].text = scanner.rssiArr[i].description
-                
-                // Proximity estimate
-                if scanner.detArr[i] == 0 {
-                    proxLabelArr[nRowsDisp].text = "Far"
-                    proxLabelArr[nRowsDisp].textColor = UIColor.green
-                } else if scanner.detArr[i] == 1 {
-                    proxLabelArr[nRowsDisp].text = "Far?"
-                    proxLabelArr[nRowsDisp].textColor = UIColor.orange
-                } else if scanner.detArr[i] == 2 {
-                    proxLabelArr[nRowsDisp].text = "Close?"
-                    proxLabelArr[nRowsDisp].textColor = UIColor.yellow
-                } else if scanner.detArr[i] == 3 {
-                    proxLabelArr[nRowsDisp].text = "Close"
-                    proxLabelArr[nRowsDisp].textColor = UIColor.red
-                } else {
-                    proxLabelArr[nRowsDisp].text = "?"
-                    proxLabelArr[nRowsDisp].textColor = UIColor.white
-                }
-                
-                // Duration
-                durLabelArr[nRowsDisp].text = scanner.durArr[i].description
-                
-                // Update number of rows displayed, and quit if we've filled all rows
-                nRowsDisp += 1
-                if nRowsDisp == nRows {
-                    break
+                    nAdditional += 1
                 }
                 
             }
-                        
         }
+        
+        // Update label for number of additional devices
+        additionalDevicesLabel.text = nAdditional.description
+        
     }
     func stopUpdatingTable() {
         tableTimer?.invalidate()

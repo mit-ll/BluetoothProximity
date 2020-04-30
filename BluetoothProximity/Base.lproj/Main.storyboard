@@ -798,6 +798,26 @@ M: number of 1 decisions for detection to be declared.  T: threshold time, s
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="gWV-sa-KzI">
+                                <rect key="frame" x="57" y="418.5" width="206" height="20.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Additional Devices:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gcn-i9-IsE">
+                                        <rect key="frame" x="0.0" y="0.0" width="146" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lc4-q1-KuD">
+                                        <rect key="frame" x="166" y="0.0" width="40" height="20.5"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="40" id="QCQ-Hd-bpY"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -806,16 +826,19 @@ M: number of 1 decisions for detection to be declared.  T: threshold time, s
                             <constraint firstItem="Z5b-ny-gYz" firstAttribute="top" secondItem="Gp8-oF-5jJ" secondAttribute="top" constant="30" id="4xj-Hu-xDM"/>
                             <constraint firstItem="o1L-oY-V4z" firstAttribute="top" secondItem="wo6-l2-Hlh" secondAttribute="bottom" constant="30" id="ITd-AO-Di4"/>
                             <constraint firstItem="o1L-oY-V4z" firstAttribute="leading" secondItem="Gp8-oF-5jJ" secondAttribute="leading" constant="18" id="L7U-wh-cs7"/>
+                            <constraint firstItem="gWV-sa-KzI" firstAttribute="top" secondItem="o1L-oY-V4z" secondAttribute="bottom" constant="30" id="MzG-og-UXR"/>
                             <constraint firstItem="wo6-l2-Hlh" firstAttribute="top" secondItem="Z5b-ny-gYz" secondAttribute="bottom" constant="30" id="Nio-OT-EWb"/>
                             <constraint firstItem="Z5b-ny-gYz" firstAttribute="leading" secondItem="Gp8-oF-5jJ" secondAttribute="leading" constant="103" id="NmJ-t8-pIp"/>
                             <constraint firstItem="Gp8-oF-5jJ" firstAttribute="trailing" secondItem="wo6-l2-Hlh" secondAttribute="trailing" constant="110" id="iVZ-iv-YxR"/>
                             <constraint firstItem="wo6-l2-Hlh" firstAttribute="leading" secondItem="Gp8-oF-5jJ" secondAttribute="leading" constant="110" id="jFk-gd-BJR"/>
+                            <constraint firstItem="gWV-sa-KzI" firstAttribute="centerX" secondItem="Gp8-oF-5jJ" secondAttribute="centerX" id="ker-zv-OqK"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Gp8-oF-5jJ"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Detector" image="Tab_Detector" id="chl-xI-VfL"/>
                     <navigationItem key="navigationItem" id="vG3-TX-cap"/>
                     <connections>
+                        <outlet property="additionalDevicesLabel" destination="lc4-q1-KuD" id="x9q-lg-sra"/>
                         <outlet property="durLabel0" destination="HgE-0r-k2u" id="kSW-Cu-zQw"/>
                         <outlet property="durLabel1" destination="gxy-Xx-1ZC" id="x9W-e5-Dz1"/>
                         <outlet property="durLabel2" destination="vgt-mz-gab" id="PCA-zM-tmY"/>
