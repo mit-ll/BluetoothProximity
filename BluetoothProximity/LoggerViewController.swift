@@ -258,9 +258,18 @@ class LoggerViewController: UIViewController {
     // Send log button
     @IBOutlet weak var sendLogButton: UIButton!
     @IBAction func sendLogButtonPressed(_ sender: Any) {
-        let activityItem:NSURL = NSURL(fileURLWithPath:logger.fileURL.path)
-        let activityVC = UIActivityViewController(activityItems: [activityItem], applicationActivities: nil)
-        present(activityVC, animated: true, completion: nil)
+        
+        // Present a note to record test details manually, then open the sharing interface
+        let alert = UIAlertController(title: "Note", message: "Please annotate your test to include an environment (indoor, outdoor, any obstructions), phone placement (in hand, in pocket, etc.), and stance (sitting, standing). This along with any other relevant details should be included when emailing your data.", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
+            
+            let activityItem:NSURL = NSURL(fileURLWithPath:self.logger.fileURL.path)
+            let activityVC = UIActivityViewController(activityItems: [activityItem], applicationActivities: nil)
+            self.present(activityVC, animated: true, completion: nil)
+            
+        }))
+        present(alert, animated: true, completion: nil)
+        
     }
     
     // When application moves to the background we need to make some adjustments to
