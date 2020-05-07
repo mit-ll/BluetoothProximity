@@ -260,9 +260,9 @@ class LoggerViewController: UIViewController {
     @IBAction func sendLogButtonPressed(_ sender: Any) {
         
         // Present a note to record test details manually, then open the sharing interface
-        let alert = UIAlertController(title: "Note", message: "Please annotate your test to include an environment (indoor, outdoor, any obstructions), phone placement (in hand, in pocket, etc.), and stance (sitting, standing). This along with any other relevant details should be included when emailing your data.", preferredStyle: UIAlertController.Style.alert)
+        let alert = UIAlertController(title: "Note", message: "When emailing your data, please describe your test scenario (indoor or outdoor, phone placement on the body, and any other pertinent details). \n\nYou can send data to\n bluetooth-proximity-data@mit.edu\n for analysis. This email address has been copied to your clipboard.", preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
-            
+            UIPasteboard.general.string = "bluetooth-proximity-data@mit.edu"
             let activityItem:NSURL = NSURL(fileURLWithPath:self.logger.fileURL.path)
             let activityVC = UIActivityViewController(activityItems: [activityItem], applicationActivities: nil)
             self.present(activityVC, animated: true, completion: nil)
