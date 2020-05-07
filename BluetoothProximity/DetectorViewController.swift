@@ -134,6 +134,17 @@ class DetectorViewController: UIViewController {
     
     // Starts running
     func startRun() {
+        
+        // Make sure Bluetooth is on
+        if !advertiser.isOn() || !scanner.isOn() {
+            let alert = UIAlertController(title: "Warning", message: "Bluetooth is not on. Please turn it on to continue.", preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
+                // Nothing to do here
+            }))
+            present(alert, animated: true, completion: nil)
+            return
+        }
+        
         settingsButton.isEnabled = false
         advertiser.start()
         scanner.logToFile = false

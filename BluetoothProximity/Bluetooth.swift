@@ -34,10 +34,15 @@ class BluetoothAdvertiser: NSObject, CBPeripheralManagerDelegate {
         // Don't need to do anything here
     }
     
+    // Checks if Bluetooth is on
+    func isOn() -> Bool {
+        return advertiser.state == .poweredOn
+    }
+    
     // Starts advertising
     // This can run in the background, but the local name is ignored and the frequency may decrease
     func start() {
-        if advertiser.state == .poweredOn {
+        if isOn() {
             advertiser.add(service)
             let adData: [String: Any] = [
                 CBAdvertisementDataServiceUUIDsKey: [service.uuid],
@@ -49,7 +54,7 @@ class BluetoothAdvertiser: NSObject, CBPeripheralManagerDelegate {
     
     // Stops advertising
     func stop() {
-        if advertiser.state == .poweredOn {
+        if isOn() {
             advertiser.stopAdvertising()
             advertiser.removeAllServices()
         }
@@ -110,10 +115,15 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         // Don't need to do anything here
     }
     
+    // Checks if Bluetooth is on
+    func isOn() -> Bool {
+        return scanner.state == .poweredOn
+    }
+    
     // Start scanning for any device
     // Note that this will not do anything if the app is in the background
     func startScanForAll() {
-        if scanner.state == .poweredOn {
+        if isOn() {
             scanner.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey : true])
         }
     }
@@ -121,14 +131,14 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     // Start scanning for a service UUID
     // This can run in the background, but will not allow duplicates
     func startScanForService() {
-        if scanner.state == .poweredOn {
+        if isOn() {
             scanner.scanForPeripherals(withServices: [serviceCBUUID], options: [CBCentralManagerScanOptionAllowDuplicatesKey : true])
         }
     }
     
     // Stop scan
     func stop() {
-        if scanner.state == .poweredOn {
+        if isOn() {
             scanner.stopScan()
         }
     }
@@ -137,14 +147,14 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     // This is a workaround to allow duplicates while in the background
     // The period is 100 ms, which is about 3x slower than while in the foreground
     func startScanForServiceLoop() {
-        if scanner.state == .poweredOn {
+        if isOn() {
             scanTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(BluetoothScanner.restartScan), userInfo: nil, repeats: true)
         }
     }
     
     // Restarts the scan, for use by startScanForServiceLoop()
     @objc func restartScan() {
-        if scanner.state == .poweredOn {
+        if isOn() {
             stop()
             startScanForService()
         }
@@ -152,7 +162,7 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     
     // Stops scanning for a service UUID in a loop
     func stopScanForServiceLoop() {
-        if scanner.state == .poweredOn {
+        if isOn() {
             scanTimer?.invalidate()
             scanTimer = nil
             scanner.stopScan()

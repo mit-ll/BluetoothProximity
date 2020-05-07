@@ -120,7 +120,7 @@ class LoggerViewController: UIViewController {
         } else {
             // Display a warning about locking the phone on the first run
             if firstRun {
-                let alert = UIAlertController(title: "Warning", message: "Please do not lock the phone using the power button (the screen turning off can interfere with the data collection). The automatic screen lock/sleep will be disabled while logging. This message will only be displayed once.", preferredStyle: UIAlertController.Style.alert)
+                let alert = UIAlertController(title: "Warning", message: "Please do not lock the phone using the power button (turning off the screen will interfere with data collection). The automatic screen lock/sleep will be disabled while logging. This message will only be displayed once.", preferredStyle: UIAlertController.Style.alert)
                 alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
                     self.firstRun = false
                     self.startRun()
@@ -134,6 +134,16 @@ class LoggerViewController: UIViewController {
     
     // Starts running
     func startRun() {
+        
+        // Make sure Bluetooth is on
+        if !advertiser.isOn() || !scanner.isOn() {
+            let alert = UIAlertController(title: "Warning", message: "Bluetooth is not on. Please turn it on to continue.", preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
+                // Nothing to do here
+            }))
+            present(alert, animated: true, completion: nil)
+            return
+        }
         
         // Write range and angle to the log file
         logger.write("Range,\(range!)")
