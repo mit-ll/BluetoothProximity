@@ -218,6 +218,47 @@
             </objects>
             <point key="canvasLocation" x="1905" y="-1554.9295774647887"/>
         </scene>
+        <!--Ultrasonic-->
+        <scene sceneID="e8N-tB-9Ic">
+            <objects>
+                <viewController id="szr-tK-8Yb" customClass="UltrasonicViewController" customModule="BluetoothProximity" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="2a6-2S-LQo">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mCf-uH-CHl">
+                                <rect key="frame" x="120" y="168" width="80" height="41"/>
+                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Run"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="6"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="runStopButtonPressed:" destination="szr-tK-8Yb" eventType="touchUpInside" id="XTn-ai-9Pi"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Dqi-vh-jTA" firstAttribute="trailing" secondItem="mCf-uH-CHl" secondAttribute="trailing" constant="120" id="TB7-w1-orn"/>
+                            <constraint firstItem="mCf-uH-CHl" firstAttribute="leading" secondItem="Dqi-vh-jTA" secondAttribute="leading" constant="120" id="ZUG-NX-x9q"/>
+                            <constraint firstItem="mCf-uH-CHl" firstAttribute="top" secondItem="Dqi-vh-jTA" secondAttribute="top" constant="168" id="xxx-OE-0y8"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Dqi-vh-jTA"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Ultrasonic" image="Tab_Ultrasonic" id="K7a-FL-qwd"/>
+                    <connections>
+                        <outlet property="runStopButton" destination="mCf-uH-CHl" id="TYU-Zy-gM4"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LPt-p2-JdU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2582" y="-1554"/>
+        </scene>
         <!--More Info View Controller-->
         <scene sceneID="M7f-Lf-8Mi">
             <objects>
@@ -1321,6 +1362,7 @@ M: number of 1 decisions for detection to be declared.  T: threshold time, s
                         <segue destination="HuD-NL-xrZ" kind="relationship" relationship="viewControllers" id="cuf-db-tKV"/>
                         <segue destination="Ohc-YH-guj" kind="relationship" relationship="viewControllers" id="KOt-Ou-N1O"/>
                         <segue destination="VmY-nb-10B" kind="relationship" relationship="viewControllers" id="nH6-0h-sTI"/>
+                        <segue destination="szr-tK-8Yb" kind="relationship" relationship="viewControllers" id="xRS-TW-Rjh"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lbt-Wg-5Ll" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1332,5 +1374,6 @@ M: number of 1 decisions for detection to be declared.  T: threshold time, s
         <image name="Tab_Detector" width="30" height="30"/>
         <image name="Tab_Info" width="30" height="30"/>
         <image name="Tab_Logger" width="30" height="30"/>
+        <image name="Tab_Ultrasonic" width="30" height="30"/>
     </resources>
 </document>
