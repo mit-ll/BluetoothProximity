@@ -16,6 +16,8 @@ class UltrasonicViewController: UIViewController {
     var tx: audioTx!
     var rx: audioRx!
     var engine: AVAudioEngine!
+    var enableTx: Bool!
+    var enableRx: Bool!
     
     // Make status bar light
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -41,6 +43,8 @@ class UltrasonicViewController: UIViewController {
         rx = audioRx()
         rx.recorder = engine.inputNode
         isRunning = false
+        enableTx = txSwitch.isOn
+        enableRx = rxSwitch.isOn
         
         // Connect transmitter
         engine.attach(tx.player)
@@ -55,6 +59,19 @@ class UltrasonicViewController: UIViewController {
             #endif
         }
     }
+    
+    // Transmit switch
+    @IBOutlet weak var txSwitch: UISwitch!
+    @IBAction func txSwitchChanged(_ sender: Any) {
+        enableTx = txSwitch.isOn
+    }
+    
+    // Receive switch
+    @IBOutlet weak var rxSwitch: UISwitch!
+    @IBAction func rxSwitchChanged(_ sender: Any) {
+        enableRx = rxSwitch.isOn
+    }
+    
     
     // Run/stop button
     var isRunning: Bool!
@@ -71,11 +88,17 @@ class UltrasonicViewController: UIViewController {
     func startRun() {
 
         // Start transmitter and receiver
-        tx.startLoop()
-        rx.startLoop()
+        if enableTx {
+            tx.startLoop()
+        }
+        if enableRx {
+            rx.startLoop()
+        }
         
         // Update UI
         runStopButton.setTitle("Stop", for: .normal)
+        txSwitch.isEnabled = false
+        rxSwitch.isEnabled = false
         
         // Update state
         isRunning = true
@@ -85,11 +108,17 @@ class UltrasonicViewController: UIViewController {
     func stopRun() {
 
         // Stop transmitter and receiver
-        tx.stopLoop()
-        rx.stopLoop()
+        if enableTx {
+            tx.stopLoop()
+        }
+        if enableRx {
+            rx.stopLoop()
+        }
         
         // Update UI
         runStopButton.setTitle("Run", for: .normal)
+        txSwitch.isEnabled = true
+        rxSwitch.isEnabled = true
         
         // Update state
         isRunning = false

@@ -227,7 +227,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mCf-uH-CHl">
-                                <rect key="frame" x="120" y="168" width="80" height="41"/>
+                                <rect key="frame" x="120" y="222" width="80" height="41"/>
                                 <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -241,18 +241,55 @@
                                     <action selector="runStopButtonPressed:" destination="szr-tK-8Yb" eventType="touchUpInside" id="XTn-ai-9Pi"/>
                                 </connections>
                             </button>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="uns-wn-iKs">
+                                <rect key="frame" x="80" y="80" width="51" height="31"/>
+                                <connections>
+                                    <action selector="txSwitchChanged:" destination="szr-tK-8Yb" eventType="valueChanged" id="a51-BG-Vgg"/>
+                                </connections>
+                            </switch>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="ZMD-RT-LHP">
+                                <rect key="frame" x="80" y="141" width="51" height="31"/>
+                                <connections>
+                                    <action selector="rxSwitchChanged:" destination="szr-tK-8Yb" eventType="valueChanged" id="DZe-84-CiC"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="Transmit" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3oH-lR-LPb">
+                                <rect key="frame" x="149" y="81" width="89" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="Receive" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KaI-za-F3A">
+                                <rect key="frame" x="149" y="142" width="82" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="uns-wn-iKs" firstAttribute="leading" secondItem="Dqi-vh-jTA" secondAttribute="leading" constant="80" id="5zW-qS-lH0"/>
+                            <constraint firstItem="mCf-uH-CHl" firstAttribute="top" secondItem="ZMD-RT-LHP" secondAttribute="bottom" constant="50" id="AaK-B2-swE"/>
+                            <constraint firstItem="KaI-za-F3A" firstAttribute="leading" secondItem="ZMD-RT-LHP" secondAttribute="trailing" constant="20" id="Cf9-X9-SlL"/>
+                            <constraint firstItem="Dqi-vh-jTA" firstAttribute="trailing" secondItem="KaI-za-F3A" secondAttribute="trailing" constant="89" id="FY4-Kg-iee"/>
+                            <constraint firstItem="uns-wn-iKs" firstAttribute="top" secondItem="Dqi-vh-jTA" secondAttribute="top" constant="80" id="NHO-Gm-4ib"/>
                             <constraint firstItem="Dqi-vh-jTA" firstAttribute="trailing" secondItem="mCf-uH-CHl" secondAttribute="trailing" constant="120" id="TB7-w1-orn"/>
+                            <constraint firstItem="Dqi-vh-jTA" firstAttribute="trailing" secondItem="3oH-lR-LPb" secondAttribute="trailing" constant="82" id="WB9-nQ-KSQ"/>
                             <constraint firstItem="mCf-uH-CHl" firstAttribute="leading" secondItem="Dqi-vh-jTA" secondAttribute="leading" constant="120" id="ZUG-NX-x9q"/>
-                            <constraint firstItem="mCf-uH-CHl" firstAttribute="top" secondItem="Dqi-vh-jTA" secondAttribute="top" constant="168" id="xxx-OE-0y8"/>
+                            <constraint firstItem="mCf-uH-CHl" firstAttribute="top" secondItem="KaI-za-F3A" secondAttribute="bottom" constant="51" id="Zpd-ju-b3L"/>
+                            <constraint firstItem="ZMD-RT-LHP" firstAttribute="leading" secondItem="Dqi-vh-jTA" secondAttribute="leading" constant="80" id="bVi-my-jcn"/>
+                            <constraint firstItem="ZMD-RT-LHP" firstAttribute="top" secondItem="uns-wn-iKs" secondAttribute="bottom" constant="30" id="cEu-PE-4QH"/>
+                            <constraint firstItem="3oH-lR-LPb" firstAttribute="top" secondItem="Dqi-vh-jTA" secondAttribute="top" constant="81" id="twg-Fi-qgZ"/>
+                            <constraint firstItem="3oH-lR-LPb" firstAttribute="leading" secondItem="uns-wn-iKs" secondAttribute="trailing" constant="20" id="v7x-SF-9Ib"/>
+                            <constraint firstItem="KaI-za-F3A" firstAttribute="top" secondItem="3oH-lR-LPb" secondAttribute="bottom" constant="32" id="vZH-Bk-A9K"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Dqi-vh-jTA"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Ultrasonic" image="Tab_Ultrasonic" id="K7a-FL-qwd"/>
                     <connections>
                         <outlet property="runStopButton" destination="mCf-uH-CHl" id="TYU-Zy-gM4"/>
+                        <outlet property="rxSwitch" destination="ZMD-RT-LHP" id="h8o-uR-CiW"/>
+                        <outlet property="txSwitch" destination="uns-wn-iKs" id="hwb-Ab-s73"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LPt-p2-JdU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
