@@ -123,7 +123,7 @@ class dataWriter {
     
 }
 
-// Transmitter - sends signals
+// Transmitter
 class audioTx {
     
     // Objects
@@ -151,10 +151,19 @@ class audioTx {
         let pi: Double = Double.pi
         let n = Int(buffSize)
         var x: [Float32] = Array(repeating: 0.0, count: n)
-        for i in 0...Int(buffSize-1) {
-            // The argument is a Double and we cast to Float32 (for a cleaner sin wave
+        for i in 0...(n-1) {
+            // The argument is a Double and we cast to Float32 (for a cleaner signal
             // compared to the argument also being Float32).
             x[i] = Float32(a*sin(2.0*pi*(f/fs)*Double(i)))
+        }
+        
+        // Ramp up and down
+        // Duration is in seconds
+        let dRamp = 2.5e-3
+        let nRamp = Int(fs*dRamp)
+        for i in 0...(nRamp-1) {
+            x[i] *= Float32(i)/Float32(nRamp)
+            x[Int(buffSize)-i-1] *= Float32(i)/Float32(nRamp)
         }
         
         // Save to file
@@ -181,8 +190,23 @@ class audioTx {
     
     // Transmit once
     @objc func send() {
+        
+        // Send at the next 100 ms boundary
+        var info = mach_timebase_info()
+        guard mach_timebase_info(&info) == KERN_SUCCESS else { return }
+        let currentTime = mach_absolute_time()
+        let nanos = currentTime*(UInt64(info.numer)/UInt64(info.denom))
+        let sendNanos = ceil(Double(nanos)/100000000.0)*100000000.0
+        let sendTime = UInt64(sendNanos)*(UInt64(info.denom)/UInt64(info.numer))
+        let playTime = AVAudioTime(hostTime: sendTime)
+        
+        #if DEBUG
+        print("Scheduling send at \(Double(nanos)/1e9) for \(sendNanos/1e9)")
+        #endif
+        
+        // Schedule and playout
         player.scheduleBuffer(buff)
-        player.play()
+        player.play(at: playTime)
     }
     
     // Stop transmitting in a loop
