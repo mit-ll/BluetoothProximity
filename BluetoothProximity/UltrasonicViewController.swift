@@ -13,6 +13,7 @@ class UltrasonicViewController: UIViewController {
     
     // Objects
     var tx: audioTx!
+    var rx: audioRx!
     var engine: AVAudioEngine!
     
     // Make status bar light
@@ -22,13 +23,25 @@ class UltrasonicViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+
+        // Setup to play and record
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playAndRecord, options: [.mixWithOthers, .defaultToSpeaker])
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            #if DEBUG
+            print("AVAudioSession failed")
+            #endif
+        }
+        
         // Initialize
-        tx = audioTx()
         engine = AVAudioEngine()
+        tx = audioTx()
+        rx = audioRx()
+        rx.recorder = engine.inputNode
         isRunning = false
         
-        // Connect components
+        // Connect transmitter
         engine.attach(tx.player)
         engine.connect(tx.player, to:engine.outputNode, format: tx.buff.format)
         
@@ -56,8 +69,9 @@ class UltrasonicViewController: UIViewController {
     // Starts running
     func startRun() {
 
-        // Start transmitter
+        // Start transmitter and receiver
         tx.startLoop()
+        rx.startLoop()
         
         // Update UI
         runStopButton.setTitle("Stop", for: .normal)
@@ -69,8 +83,9 @@ class UltrasonicViewController: UIViewController {
     // Stops running
     func stopRun() {
 
-        // Stop transmitter
+        // Stop transmitter and receiver
         tx.stopLoop()
+        rx.stopLoop()
         
         // Update UI
         runStopButton.setTitle("Run", for: .normal)
@@ -114,8 +129,15 @@ class dataWriter {
         }
     }
     
-    // Writes an array of samples to file
-    func writeArray(data: [Float32]) {
+    // Writes an array of floats to file
+    func writeFloatArray(data: [Float32]) {
+        fileHandle.seekToEndOfFile()
+        let tmp = data.withUnsafeBytes{Array($0)}
+        fileHandle.write(Data(tmp))
+    }
+    
+    // Writes an array of doubles to file
+    func writeDoubleArray(data: [Double]) {
         fileHandle.seekToEndOfFile()
         let tmp = data.withUnsafeBytes{Array($0)}
         fileHandle.write(Data(tmp))
@@ -167,9 +189,9 @@ class audioTx {
         }
         
         // Save to file
-        //let writer = dataWriter()
-        //writer.createFile(fileName: "tx.dat")
-        //writer.writeArray(data: x)
+        let writer = dataWriter()
+        writer.createFile(fileName: "tx.dat")
+        writer.writeFloatArray(data: x)
                 
         // Set up buffer to send
         let audioFormat = AVAudioFormat(standardFormatWithSampleRate: fs, channels: 2)!
@@ -214,6 +236,74 @@ class audioTx {
         sendTimer?.invalidate()
         sendTimer = nil
         player.stop()
+    }
+    
+}
+
+class audioRx {
+    
+    // Objects
+    var recorder: AVAudioInputNode!
+    var repeatEvery: Double!
+    var fs: Double!
+    var n: AVAudioFrameCount!
+    var audioFormat: AVAudioFormat!
+    var writer: dataWriter!
+    
+    // Initialize
+    init() {
+        
+        // Sample rate (samples/second)
+        fs = 48000.0
+        
+        // Number of samples per buffer
+        n = 16384
+        
+        // Buffer format
+        audioFormat = AVAudioFormat(standardFormatWithSampleRate: Double(fs), channels: 1)!
+        
+        // Initialize data writer
+        writer = dataWriter()
+    }
+    
+    // Start receiving in a loop
+    func startLoop() {
+        
+        // Make a new file
+        writer.createFile(fileName: "rx.dat")
+        
+        // Install a tap
+        recorder.installTap(onBus: 0, bufferSize: n, format: audioFormat) { (buffer, when) in
+            let buff = UnsafeBufferPointer(start: buffer.floatChannelData![0], count: Int(buffer.frameLength))
+            
+            // Timestamp
+            var info = mach_timebase_info()
+            guard mach_timebase_info(&info) == KERN_SUCCESS else { return }
+            let currentTime = when.hostTime
+            let nanos = Double(currentTime*(UInt64(info.numer)/UInt64(info.denom)))
+
+            // Process
+            self.processRecv(x: Array(buff), t: nanos)
+        }
+        
+    }
+    
+    // Receive processing
+    func processRecv(x: [Float32], t: Double) {
+        
+        #if DEBUG
+        print("Received \(x.count) samples at \(t)")
+        #endif
+        
+        // Save to file
+        let md = [t, Double(x.count)]
+        writer.writeDoubleArray(data: md)
+        writer.writeFloatArray(data: x)
+    }
+    
+    // Stop receiving in a loop
+    func stopLoop() {
+        recorder.removeTap(onBus: 0)
     }
     
 }
