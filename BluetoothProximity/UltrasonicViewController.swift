@@ -288,6 +288,7 @@ class audioTx {
         
         // Schedule and playout
         player.scheduleBuffer(buff)
+        player.prepare(withFrameCount: buff.frameLength)
         player.play(at: playTime)
     }
     
