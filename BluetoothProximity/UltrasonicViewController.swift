@@ -183,6 +183,7 @@ class audioTx {
     var player: AVAudioPlayerNode!
     var sendTimer: Timer?
     var repeatEvery: Double!
+    var writer: dataWriter!
     
     // Initialize
     init() {
@@ -248,17 +249,17 @@ class audioTx {
             x[Int(buffSize)-i-1] *= Float32(i)/Float32(nRamp)
         }
         
-        // Save to file
-        let writer = dataWriter()
+        // Save samples to file
+        writer = dataWriter()
         writer.createFile(fileName: "tx.dat")
+        writer.writeDoubleArray(data: [Double(x.count)])
         writer.writeFloatArray(data: x)
                 
         // Set up buffer to send
-        let audioFormat = AVAudioFormat(standardFormatWithSampleRate: fs, channels: 2)!
+        let audioFormat = AVAudioFormat(standardFormatWithSampleRate: fs, channels: 1)!
         buff = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: buffSize)!
         buff.frameLength = buffSize
         buff.floatChannelData![0].initialize(from: &x, count: n)
-        buff.floatChannelData![1].initialize(from: &x, count: n)
         
         // Create audio player
         player = AVAudioPlayerNode()
@@ -273,23 +274,27 @@ class audioTx {
     // Transmit once
     @objc func send() {
         
-        // Send at the next 100 ms boundary
+        // Schedule sending in 100 ms from now
         var info = mach_timebase_info()
         guard mach_timebase_info(&info) == KERN_SUCCESS else { return }
         let currentTime = mach_absolute_time()
-        let nanos = currentTime*(UInt64(info.numer)/UInt64(info.denom))
-        let sendNanos = ceil(Double(nanos)/100000000.0)*100000000.0
-        let sendTime = UInt64(sendNanos)*(UInt64(info.denom)/UInt64(info.numer))
-        let playTime = AVAudioTime(hostTime: sendTime)
+        let nanos = currentTime*UInt64(info.numer)/UInt64(info.denom)
+        let sendNanos = Double(nanos) + 100000000.0
+        let sendTime = UInt64(sendNanos)*UInt64(info.denom)/UInt64(info.numer)
+        let sendAvTime = AVAudioTime(hostTime: sendTime)
         
         #if DEBUG
         print("Scheduling send at \(Double(nanos)/1e9) for \(sendNanos/1e9)")
         #endif
         
         // Schedule and playout
+        player.stop()
         player.scheduleBuffer(buff)
         player.prepare(withFrameCount: buff.frameLength)
-        player.play(at: playTime)
+        player.play(at: sendAvTime)
+        
+        // Save times to file
+        writer.writeDoubleArray(data: [Double(nanos), sendNanos])
     }
     
     // Stop transmitting in a loop
@@ -341,7 +346,7 @@ class audioRx {
             var info = mach_timebase_info()
             guard mach_timebase_info(&info) == KERN_SUCCESS else { return }
             let currentTime = when.hostTime
-            let nanos = Double(currentTime*(UInt64(info.numer)/UInt64(info.denom)))
+            let nanos = Double(currentTime*UInt64(info.numer)/UInt64(info.denom))
 
             // Process
             self.processRecv(x: Array(buff), t: nanos)
