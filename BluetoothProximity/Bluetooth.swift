@@ -9,19 +9,23 @@
 import UIKit
 import CoreBluetooth
 
-// Service UUID (0x1800 = generic access) and local name
-let serviceCBUUID = CBUUID(string: "1800")
-let localName = "BlueProxTx"
-
 // Advertiser - broadcasts signals
 class BluetoothAdvertiser: NSObject, CBPeripheralManagerDelegate {
     
     // Objects
     var service: CBMutableService!
     var advertiser: CBPeripheralManager!
+    var serviceCBUUID: CBUUID!
+    var localName: String!
     
     override init() {
         super.init()
+        
+        // Service UUID (0x1800 = generic access)
+        serviceCBUUID = CBUUID(string: "1800")
+        
+        // Default name
+        localName = "BlueProxTx"
         
         // Create service
         service = CBMutableService(type: serviceCBUUID, primary: true)
@@ -37,6 +41,11 @@ class BluetoothAdvertiser: NSObject, CBPeripheralManagerDelegate {
     // Checks if Bluetooth is on
     func isOn() -> Bool {
         return advertiser.state == .poweredOn
+    }
+    
+    // Sets advertised name
+    func setName(name: String) {
+        localName = name
     }
     
     // Starts advertising
@@ -68,12 +77,15 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     var logger: Logger!
     var scanner: CBCentralManager!
     var scanTimer: Timer?
+    var serviceCBUUID: CBUUID!
+    var localName: String!
     
     // Variables
     var proxRSSICount: Int!
     var otherRSSICount: Int!
     var logToFile: Bool!
     var runDetector: Bool!
+    var runUltrasonic: Bool!
     
     // Detector parameters
     var M: Int!                 // Samples that must cross threshold
@@ -101,6 +113,12 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         let delegate = UIApplication.shared.delegate as! AppDelegate
         logger = delegate.logger
         
+        // Service UUID (0x1800 = generic access)
+        serviceCBUUID = CBUUID(string: "1800")
+        
+        // Default name
+        localName = "BlueProxTx"
+        
         // Create scanner
         scanner = CBCentralManager(delegate: self, queue: nil, options: nil)
         
@@ -109,6 +127,7 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         otherRSSICount = 0
         logToFile = false
         runDetector = false
+        runUltrasonic = false
     }
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -132,7 +151,12 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     // This can run in the background, but will not allow duplicates
     func startScanForService() {
         if isOn() {
-            scanner.scanForPeripherals(withServices: [serviceCBUUID], options: [CBCentralManagerScanOptionAllowDuplicatesKey : true])
+            // In in ultrasonic mode, don't allow duplicates
+            if runUltrasonic {
+                scanner.scanForPeripherals(withServices: [serviceCBUUID], options: [CBCentralManagerScanOptionAllowDuplicatesKey : false])
+            } else {
+                scanner.scanForPeripherals(withServices: [serviceCBUUID], options: [CBCentralManagerScanOptionAllowDuplicatesKey : true])
+            }
         }
     }
     
@@ -169,8 +193,32 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         }
     }
     
+    // Sets advertised name (for parsing)
+    func setName(name: String) {
+        localName = name
+    }
+    
     // Callback when we receive data
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+        
+        // Ultrasonic mode
+        if runUltrasonic {
+            let hasName = advertisementData["kCBAdvDataLocalName"] != nil
+            if hasName {
+                let advName = advertisementData["kCBAdvDataLocalName"] as! String
+                
+                // Commands to start or stop transmitting/receiving
+                // (master sends these commands, slave executes them)
+                if advName == "ultraStart" {
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: "ultraStart"), object: nil)
+                    setName(name: "ultraStop")
+                } else if advName == "ultraStop" {
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: "ultraStop"), object: nil)
+                    setName(name: "ultraStart")
+                }
+            }
+            return
+        }
         
         // Get UUID
         let uuid = peripheral.identifier.uuidString

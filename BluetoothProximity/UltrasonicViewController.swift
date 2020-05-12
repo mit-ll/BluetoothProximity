@@ -21,6 +21,10 @@ class UltrasonicViewController: UIViewController {
     var enableRx: Bool!
     var countTimer: Timer?
     
+    // Objects from the AppDelegate
+    var advertiser: BluetoothAdvertiser!
+    var scanner: BluetoothScanner!
+    
     // Make status bar light
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -28,7 +32,12 @@ class UltrasonicViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        // Get objects from the AppDelegate
+        let delegate = UIApplication.shared.delegate as! AppDelegate
+        advertiser = delegate.advertiser
+        scanner = delegate.scanner
+        
         // Setup to play and record
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playAndRecord, options: [.mixWithOthers, .defaultToSpeaker])
@@ -63,13 +72,31 @@ class UltrasonicViewController: UIViewController {
             print("AVAudioEngine failed to start")
             #endif
         }
+        
+        // Observers for start/stop commands
+        NotificationCenter.default.addObserver(self, selector: #selector(startRun), name: Notification.Name(rawValue: "ultraStart"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(stopRun), name: Notification.Name(rawValue: "ultraStop"), object: nil)
+
     }
     
     // A/B control
+    // Only A is capable of starting a run using the button
+    // B scans Bluetooth for the start/stop signals
     var abID: String!
     @IBOutlet weak var abControl: UISegmentedControl!
     @IBAction func abControlChanged(_ sender: Any) {
         abID = abControl.titleForSegment(at: abControl.selectedSegmentIndex)
+        if abID == "B" {
+            runStopButton.isEnabled = false
+            scanner.logToFile = false
+            scanner.runDetector = false
+            scanner.runUltrasonic = true
+            scanner.setName(name: "ultraStart")
+            scanner.startScanForService()
+        } else {
+            runStopButton.isEnabled = true
+            scanner.stop()
+        }
     }
 
     // Range stepper
@@ -93,7 +120,6 @@ class UltrasonicViewController: UIViewController {
         enableRx = rxSwitch.isOn
     }
     
-    
     // Run/stop button
     var isRunning: Bool!
     @IBOutlet weak var runStopButton: UIButton!
@@ -109,7 +135,14 @@ class UltrasonicViewController: UIViewController {
     @IBOutlet weak var countLabel: UILabel!
     
     // Starts running
-    func startRun() {
+    @objc func startRun() {
+        
+        // If we are node A (master), tell node B (slave) to start
+        if abID == "A" {
+            advertiser.stop()
+            advertiser.setName(name: "ultraStart")
+            advertiser.start()
+        }
 
         // Start receiver and transmitter
         if enableRx {
@@ -126,13 +159,22 @@ class UltrasonicViewController: UIViewController {
         runStopButton.setTitle("Stop", for: .normal)
         txSwitch.isEnabled = false
         rxSwitch.isEnabled = false
+        rangeStepper.isEnabled = false
+        abControl.isEnabled = false
         
         // Update state
         isRunning = true
     }
     
     // Stops running
-    func stopRun() {
+    @objc func stopRun() {
+        
+        // If we are node A (master), tell node B (slave) to stop
+        if abID == "A" {
+            advertiser.stop()
+            advertiser.setName(name: "ultraStop")
+            advertiser.start()
+        }
 
         // Stop receiver and transmitter
         if enableRx {
@@ -149,6 +191,8 @@ class UltrasonicViewController: UIViewController {
         runStopButton.setTitle("Run", for: .normal)
         txSwitch.isEnabled = true
         rxSwitch.isEnabled = true
+        rangeStepper.isEnabled = true
+        abControl.isEnabled = true
         
         // Update state
         isRunning = false
@@ -374,7 +418,7 @@ class audioTx {
         let sendAvTime = AVAudioTime(hostTime: sendTime)
         
         #if DEBUG
-        print("Scheduling send at \(Double(nanos)/1e9) for \(sendNanos/1e9)")
+        //print("Scheduling send at \(Double(nanos)/1e9) for \(sendNanos/1e9)")
         #endif
         
         // Schedule and playout
@@ -452,7 +496,7 @@ class audioRx {
     func processRecv(x: [Float32], t: Double) {
         
         #if DEBUG
-        print("Received \(x.count) samples at \(t)")
+        //print("Received \(x.count) samples at \(t)")
         #endif
         
         // Save to file
