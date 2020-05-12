@@ -19,6 +19,7 @@ class UltrasonicViewController: UIViewController {
     var engine: AVAudioEngine!
     var enableTx: Bool!
     var enableRx: Bool!
+    var countTimer: Timer?
     
     // Make status bar light
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -104,16 +105,22 @@ class UltrasonicViewController: UIViewController {
         }
     }
     
+    // Counter
+    @IBOutlet weak var countLabel: UILabel!
+    
     // Starts running
     func startRun() {
 
-        // Start transmitter and receiver
-        if enableTx {
-            tx.startLoop(id: abID, range: range)
-        }
+        // Start receiver and transmitter
         if enableRx {
             rx.startLoop(id: abID, range: range)
         }
+        if enableTx {
+            tx.startLoop(id: abID, range: range)
+        }
+        
+        // Start updating counter
+        startUpdatingCount()
         
         // Update UI
         runStopButton.setTitle("Stop", for: .normal)
@@ -127,13 +134,16 @@ class UltrasonicViewController: UIViewController {
     // Stops running
     func stopRun() {
 
-        // Stop transmitter and receiver
-        if enableTx {
-            tx.stopLoop()
-        }
+        // Stop receiver and transmitter
         if enableRx {
             rx.stopLoop()
         }
+        if enableTx {
+            tx.stopLoop()
+        }
+        
+        // Stop updating counter
+        stopUpdatingCount()
         
         // Update UI
         runStopButton.setTitle("Run", for: .normal)
@@ -142,6 +152,23 @@ class UltrasonicViewController: UIViewController {
         
         // Update state
         isRunning = false
+    }
+    
+    // Start updating counter
+    func startUpdatingCount() {
+        countTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateCount), userInfo: nil, repeats: true)
+        countTimer?.fire()
+    }
+    
+    // Update counter
+    @objc func updateCount() {
+        countLabel.text = tx.count.description
+    }
+    
+    // Stop updating counter
+    func stopUpdatingCount() {
+        countTimer?.invalidate()
+        countTimer = nil
     }
     
 }
@@ -205,6 +232,7 @@ class audioTx {
     var repeatEvery: Double!
     var writer: dataWriter!
     var y: [Float32]!
+    var count: Int!
     
     // Initialize
     init() {
@@ -218,6 +246,9 @@ class audioTx {
         
         // Buffer size
         let buffSize = AVAudioFrameCount(fs*d)
+        
+        // Counter
+        count = 0
         
         /*
         // Create a tone
@@ -309,6 +340,9 @@ class audioTx {
     // Start transmitting in a loop
     func startLoop(id: String, range: Int) {
         
+        // Initialize counter
+        count = 0
+        
         // Make a new file
         let txFile = id + "_tx_" + range.description + ".dat"
         writer.createFile(fileName: txFile)
@@ -316,9 +350,10 @@ class audioTx {
         // Save samples to file
         writer.writeFloatArray(data: y)
         
-        // Delay 400 ms if we are node B
+        // Wait half of a repitition before starting if we are node B
         if id == "B" {
-            usleep(400000)
+            let s = UInt32((repeatEvery/2.0)*1000000.0)
+            usleep(s)
         }
         
         // Start sending on an interval
@@ -350,6 +385,9 @@ class audioTx {
         
         // Save times to file
         writer.writeDoubleArray(data: [Double(nanos), sendNanos])
+        
+        // Update counter
+        count += 1
     }
     
     // Stop transmitting in a loop
