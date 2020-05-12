@@ -215,6 +215,13 @@ class UltrasonicViewController: UIViewController {
         countTimer = nil
     }
     
+    // Stop any run when we leave the tab
+    override func viewWillDisappear(_ animated: Bool) {
+        if isRunning {
+            stopRun()
+        }
+    }
+    
 }
 
 // Writes data samples to file
