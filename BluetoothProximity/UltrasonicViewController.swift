@@ -408,7 +408,8 @@ class audioTx {
         let txFile = id + "_tx_" + range.description + ".dat"
         writer.createFile(fileName: txFile)
         
-        // Save samples to file
+        // Save to file
+        writer.writeDoubleArray(data: [Double(y.count)])
         writer.writeFloatArray(data: y)
         
         // Wait half of a repitition before starting if we are node B
