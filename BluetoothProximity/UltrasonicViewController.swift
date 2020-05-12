@@ -44,6 +44,9 @@ class UltrasonicViewController: UIViewController {
         rx = audioRx()
         rx.recorder = engine.inputNode
         isRunning = false
+        abID = abControl.titleForSegment(at: abControl.selectedSegmentIndex)
+        range = Int(rangeStepper.value)
+        rangeLabel.text = range.description
         enableTx = txSwitch.isOn
         enableRx = rxSwitch.isOn
         
@@ -59,6 +62,22 @@ class UltrasonicViewController: UIViewController {
             print("AVAudioEngine failed to start")
             #endif
         }
+    }
+    
+    // A/B control
+    var abID: String!
+    @IBOutlet weak var abControl: UISegmentedControl!
+    @IBAction func abControlChanged(_ sender: Any) {
+        abID = abControl.titleForSegment(at: abControl.selectedSegmentIndex)
+    }
+
+    // Range stepper
+    var range: Int!
+    @IBOutlet weak var rangeLabel: UILabel!
+    @IBOutlet weak var rangeStepper: UIStepper!
+    @IBAction func rangeStepperChanged(_ sender: Any) {
+        range = Int(rangeStepper.value)
+        rangeLabel.text = range.description
     }
     
     // Transmit switch
@@ -90,10 +109,10 @@ class UltrasonicViewController: UIViewController {
 
         // Start transmitter and receiver
         if enableTx {
-            tx.startLoop()
+            tx.startLoop(id: abID, range: range)
         }
         if enableRx {
-            rx.startLoop()
+            rx.startLoop(id: abID, range: range)
         }
         
         // Update UI
@@ -185,6 +204,7 @@ class audioTx {
     var sendTimer: Timer?
     var repeatEvery: Double!
     var writer: dataWriter!
+    var y: [Float32]!
     
     // Initialize
     init() {
@@ -234,7 +254,6 @@ class audioTx {
         }
         
         // High pass filter
-        var y: [Float32]
         if #available(iOS 13.0, *) {
             y = vDSP.convolve(x, withKernel: b)
         } else {
@@ -260,12 +279,6 @@ class audioTx {
             y[Int(buffSize)-i-1] *= Float32(i)/Float32(nRamp)
         }
         
-        // Save samples to file
-        writer = dataWriter()
-        writer.createFile(fileName: "tx.dat")
-        writer.writeDoubleArray(data: [Double(y.count)])
-        writer.writeFloatArray(data: y)
-                
         // Set up buffer to send
         let audioFormat = AVAudioFormat(standardFormatWithSampleRate: fs, channels: 1)!
         buff = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: buffSize)!
@@ -274,10 +287,27 @@ class audioTx {
         
         // Create audio player
         player = AVAudioPlayerNode()
+        
+        // Initialize data writer
+        writer = dataWriter()
     }
     
     // Start transmitting in a loop
-    func startLoop() {
+    func startLoop(id: String, range: Int) {
+        
+        // Make a new file
+        let txFile = id + "_tx_" + range.description + ".dat"
+        writer.createFile(fileName: txFile)
+        
+        // Save samples to file
+        writer.writeFloatArray(data: y)
+        
+        // Delay 400 ms if we are node B
+        if id == "B" {
+            usleep(400000)
+        }
+        
+        // Start sending on an interval
         sendTimer = Timer.scheduledTimer(timeInterval: repeatEvery, target: self, selector: #selector(audioTx.send), userInfo: nil, repeats: true)
         sendTimer?.fire()
     }
@@ -344,10 +374,11 @@ class audioRx {
     }
     
     // Start receiving in a loop
-    func startLoop() {
+    func startLoop(id: String, range: Int) {
         
         // Make a new file
-        writer.createFile(fileName: "rx.dat")
+        let rxFile = id + "_rx_" + range.description + ".dat"
+        writer.createFile(fileName: rxFile)
         
         // Install a tap
         recorder.installTap(onBus: 0, bufferSize: n, format: audioFormat) { (buffer, when) in
