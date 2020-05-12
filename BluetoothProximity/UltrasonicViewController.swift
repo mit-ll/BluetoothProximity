@@ -137,6 +137,11 @@ class UltrasonicViewController: UIViewController {
     // Starts running
     @objc func startRun() {
         
+        // Only start running if we aren't already running
+        if isRunning {
+            return
+        }
+        
         // If we are node A (master), tell node B (slave) to start
         if abID == "A" {
             advertiser.stop()
@@ -168,6 +173,11 @@ class UltrasonicViewController: UIViewController {
     
     // Stops running
     @objc func stopRun() {
+        
+        // Only stop running if we are actually running
+        if isRunning == false {
+            return
+        }
         
         // If we are node A (master), tell node B (slave) to stop
         if abID == "A" {
