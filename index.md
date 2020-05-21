@@ -8,7 +8,7 @@ Privacy Statement
 ================================
 
 ### Introduction
-**MIT PACT:** Private Automated Contact Tracing is committed to supporting the privacy of its users. This Privacy Statement explains how we handle and use the information you provide through the use of the **BlueProx** measurement app and **BluetoothProximity** beta research app.  
+**MIT PACT:** **P**rivate **A**utomated **C**ontact **T**racing is committed to supporting the privacy of its users. This Privacy Statement explains how we handle and use the information you provide through the use of the **BlueProx** measurement app and **BluetoothProximity** beta research app.  
 
 ### What information we collect 
 We collect, use, store and transfer different kinds of information, which we have grouped together as follows:  
@@ -16,7 +16,7 @@ We collect, use, store and transfer different kinds of information, which we hav
 *	**Bluetooth** – time-stamped records of nearby Bluetooth devices and signal strength
 *	**Device state** - if provided by you, motion- and environment-related data from your phone
 *	**Location** (BluetoothProximity only)– if provided by you, geo-location data sourced from your phone
-*	**Sound** (BluetoothProximity only)- if provided by you, acoustic beacon signals sourced from your phone
+*	**Sound** (BluetoothProximity only)– if provided by you, acoustic beacon signals sourced from your phone
  
 ### How we collect personal information about you 
 We collect this information directly from you and not from any other source. 
