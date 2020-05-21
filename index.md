@@ -8,21 +8,21 @@ Privacy Statement
 ================================
 
 ### Introduction
-**BluetoothProximity** is committed to supporting the privacy of its users. This Privacy Statement explains how we handle and use the information you provide through the use of **BluetoothProximity**.  
+**MIT PACT** is committed to supporting the privacy of its users. This Privacy Statement explains how we handle and use the information you provide through the use of the **BlueProx** measurement app and **BluetoothProximity** beta research app.  
 
 ### What information we collect 
 We collect, use, store and transfer different kinds of information, which we have grouped together as follows:  
 *	**Basic** biographic/contact information – email address
 *	**Bluetooth** – time-stamped records of nearby Bluetooth devices and signal strength
 *	**Device state** - if provided by you, motion- and environment-related data from your phone
-*	**Location** – if provided by you, geo-location data sourced from your phone
-*	**Sound** - if provided by you, acoustic beacon signals
+*	**Location** – if provided by you, geo-location data sourced from your phone (Bluetooth Proximity only)
+*	**Sound** - if provided by you, acoustic beacon signals sourced from your phone (Bluetooth Proximity only)
  
 ### How we collect personal information about you 
 We collect this information directly from you and not from any other source. 
   
 ### How we use your personal information
-We use your information for a number of legitimate purposes all in support of the Institute and its mission.  Specifically, we use your information to:
+We use your information for a number of legitimate purposes all in support of MIT PACT (Private Automated Contact Tracing) and its mission.  Specifically, we use your information to:
 *	Characterize Bluetooth radio frequency (RF) phenomenology
 *	Develop algorithms for estimating the duration and range of proximate contact between Bluetooth devices
 
