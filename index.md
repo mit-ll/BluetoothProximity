@@ -15,8 +15,8 @@ We collect, use, store and transfer different kinds of information, which we hav
 *	**Basic** biographic/contact information – email address
 *	**Bluetooth** – time-stamped records of nearby Bluetooth devices and signal strength
 *	**Device state** - if provided by you, motion- and environment-related data from your phone
-*	**Location** – if provided by you, geo-location data sourced from your phone (BluetoothProximity only)
-*	**Sound** - if provided by you, acoustic beacon signals sourced from your phone (BluetoothProximity only)
+*	**Location** (BluetoothProximity only)– if provided by you, geo-location data sourced from your phone
+*	**Sound** (BluetoothProximity only)- if provided by you, acoustic beacon signals sourced from your phone
  
 ### How we collect personal information about you 
 We collect this information directly from you and not from any other source. 
