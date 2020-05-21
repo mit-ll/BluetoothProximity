@@ -8,7 +8,7 @@ Privacy Statement
 ================================
 
 ### Introduction
-**MIT PACT** is committed to supporting the privacy of its users. This Privacy Statement explains how we handle and use the information you provide through the use of the **BlueProx** measurement app and **BluetoothProximity** beta research app.  
+**MIT PACT:** Private Automated Contact Tracing is committed to supporting the privacy of its users. This Privacy Statement explains how we handle and use the information you provide through the use of the **BlueProx** measurement app and **BluetoothProximity** beta research app.  
 
 ### What information we collect 
 We collect, use, store and transfer different kinds of information, which we have grouped together as follows:  
@@ -22,7 +22,7 @@ We collect, use, store and transfer different kinds of information, which we hav
 We collect this information directly from you and not from any other source. 
   
 ### How we use your personal information
-We use your information for a number of legitimate purposes all in support of MIT PACT (Private Automated Contact Tracing) and its mission.  Specifically, we use your information to:
+We use your information for a number of legitimate purposes all in support of MIT PACT and its mission.  Specifically, we use your information to:
 *	Characterize Bluetooth radio frequency (RF) phenomenology
 *	Develop algorithms for estimating the duration and range of proximate contact between Bluetooth devices
 
