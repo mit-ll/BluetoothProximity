@@ -54,6 +54,8 @@ class UltrasonicViewController: UIViewController {
         isSlave = (masterSlaveControl.selectedSegmentIndex == 1)
         range = Int(rangeStepper.value)
         rangeLabel.text = range.description
+        count = 0
+        countLabel.text = count.description
         
         // Connect transmitter
         engine.attach(tx.player)
@@ -82,6 +84,7 @@ class UltrasonicViewController: UIViewController {
     @IBAction func masterSlaveControlChanged(_ sender: Any) {
         isSlave = (masterSlaveControl.selectedSegmentIndex == 1)
         if isSlave {
+            runStopButton.setTitle("Waiting...", for: .normal)
             runStopButton.isEnabled = false
             scanner.logToFile = false
             scanner.runDetector = false
@@ -89,6 +92,7 @@ class UltrasonicViewController: UIViewController {
             scanner.setName(name: "ultraStart")
             scanner.startScanForService()
         } else {
+            runStopButton.setTitle("Run", for: .normal)
             runStopButton.isEnabled = true
             scanner.stop()
         }
@@ -107,34 +111,37 @@ class UltrasonicViewController: UIViewController {
     var isRunning: Bool!
     @IBOutlet weak var runStopButton: UIButton!
     @IBAction func runStopButtonPressed(_ sender: Any) {
-        if isRunning {
-            stopRun()
-        } else {
+        
+        // Run and then stop after 1 second
+        if !isRunning {
             startRun()
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
+                self.stopRun()
+            })
         }
+        
     }
         
     // Starts running
     @objc func startRun() {
-        
-        // Only start running if we aren't already running
-        if isRunning {
-            return
-        }
-        
+                
         // If we are the master, tell the slave to start
         if !isSlave {
             advertiser.stop()
             advertiser.setName(name: "ultraStart")
             advertiser.start()
         }
+        
+        // Update run counter
+        count += 1
 
-        // Start receiver and transmitter
-        rx.startLoop(isSlave: isSlave, range: range)
-        tx.startLoop(isSlave: isSlave, range: range)
+        // Run receiver (runs continuous) and transmitter (runs once)
+        rx.run(isSlave: isSlave, range: range, count: count)
+        tx.run(isSlave: isSlave, range: range, count: count)
                 
         // Update UI
-        runStopButton.setTitle("Stop", for: .normal)
+        runStopButton.setTitle("Running...", for: .normal)
+        runStopButton.isEnabled = false
         rangeStepper.isEnabled = false
         masterSlaveControl.isEnabled = false
         
@@ -156,18 +163,22 @@ class UltrasonicViewController: UIViewController {
             advertiser.setName(name: "ultraStop")
             advertiser.start()
         }
-
-        // Stop receiver and transmitter
-        rx.stopLoop()
-        tx.stopLoop()
-                
+        
         // Update UI
-        runStopButton.setTitle("Run", for: .normal)
+        if isSlave {
+            runStopButton.setTitle("Waiting...", for: .normal)
+        } else {
+            runStopButton.isEnabled = true
+            runStopButton.setTitle("Run", for: .normal)
+        }
         rangeStepper.isEnabled = true
         masterSlaveControl.isEnabled = true
         
         // Update state
         isRunning = false
+        
+        // Update run counter label
+        countLabel.text = count.description
     }
     
     // Stop any run when we leave the tab
@@ -176,6 +187,10 @@ class UltrasonicViewController: UIViewController {
             stopRun()
         }
     }
+    
+    // Run counter
+    var count: Int!
+    @IBOutlet weak var countLabel: UILabel!
     
 }
 
@@ -234,7 +249,6 @@ class audioTx {
     // Objects
     var buff: AVAudioPCMBuffer!
     var player: AVAudioPlayerNode!
-    var sendTimer: Timer?
     var repeatEvery: Double!
     var writer: dataWriter!
     var y: [Float32]!
@@ -339,36 +353,27 @@ class audioTx {
         return result
     }
     
-    // Start transmitting in a loop
-    func startLoop(isSlave: Bool, range: Int) {
-                
+    // Main transmit routine
+    @objc func run(isSlave: Bool, range: Int, count: Int) {
+        
         // Make a new file
         var id = "master"
         if isSlave {
             id = "slave"
         }
-        let txFile = id + "_tx_" + range.description + ".dat"
+        let txFile = id + "_tx_rng_" + range.description + "_cnt_" + count.description + ".dat"
         writer.createFile(fileName: txFile)
         
-        // Save to file
+        // Save samples to file
         writer.writeDoubleArray(data: [Double(y.count)])
         writer.writeFloatArray(data: y)
         
-        // Wait half of a repitition before starting if we are the slave
+        // If we're the slave, wait 300 ms before sending
         if isSlave {
-            let s = UInt32((repeatEvery/2.0)*1000000.0)
-            usleep(s)
+            usleep(300000)
         }
         
-        // Start sending on an interval
-        sendTimer = Timer.scheduledTimer(timeInterval: repeatEvery, target: self, selector: #selector(audioTx.send), userInfo: nil, repeats: true)
-        sendTimer?.fire()
-    }
-    
-    // Transmit once
-    @objc func send() {
-        
-        // Schedule sending in 100 ms from now
+        // Schedule sending 100 ms from now
         var info = mach_timebase_info()
         guard mach_timebase_info(&info) == KERN_SUCCESS else { return }
         let currentTime = mach_absolute_time()
@@ -376,6 +381,9 @@ class audioTx {
         let sendNanos = Double(nanos) + 100000000.0
         let sendTime = UInt64(sendNanos)*UInt64(info.denom)/UInt64(info.numer)
         let sendAvTime = AVAudioTime(hostTime: sendTime)
+        
+        // Save time to file
+        writer.writeDoubleArray(data: [Double(nanos), sendNanos])
         
         #if DEBUG
         //print("Scheduling send at \(Double(nanos)/1e9) for \(sendNanos/1e9)")
@@ -386,16 +394,6 @@ class audioTx {
         player.scheduleBuffer(buff)
         player.prepare(withFrameCount: buff.frameLength)
         player.play(at: sendAvTime)
-        
-        // Save times to file
-        writer.writeDoubleArray(data: [Double(nanos), sendNanos])
-    }
-    
-    // Stop transmitting in a loop
-    func stopLoop() {
-        sendTimer?.invalidate()
-        sendTimer = nil
-        player.stop()
     }
     
 }
@@ -416,8 +414,8 @@ class audioRx {
         // Sample rate (samples/second)
         fs = 48000.0
         
-        // Number of samples per buffer
-        n = 16384
+        // Number of samples per receive buffer
+        n = 32768
         
         // Buffer format
         audioFormat = AVAudioFormat(standardFormatWithSampleRate: Double(fs), channels: 1)!
@@ -426,35 +424,38 @@ class audioRx {
         writer = dataWriter()
     }
     
-    // Start receiving in a loop
-    func startLoop(isSlave: Bool, range: Int) {
+    // Main receive routine
+    func run(isSlave: Bool, range: Int, count: Int) {
         
         // Make a new file
         var id = "master"
         if isSlave {
             id = "slave"
         }
-        let rxFile = id + "_rx_" + range.description + ".dat"
+        let rxFile = id + "_rx_rng_" + range.description + "_cnt_" + count.description + ".dat"
         writer.createFile(fileName: rxFile)
         
         // Install a tap
         recorder.installTap(onBus: 0, bufferSize: n, format: audioFormat) { (buffer, when) in
             let buff = UnsafeBufferPointer(start: buffer.floatChannelData![0], count: Int(buffer.frameLength))
             
-            // Timestamp
+            // Timestamp this buffer
             var info = mach_timebase_info()
             guard mach_timebase_info(&info) == KERN_SUCCESS else { return }
             let currentTime = when.hostTime
             let nanos = Double(currentTime*UInt64(info.numer)/UInt64(info.denom))
+            
+            // Stop receiving data
+            self.recorder.removeTap(onBus: 0)
 
-            // Process
-            self.processRecv(x: Array(buff), t: nanos)
+            // Process data
+            self.processData(x: Array(buff), t: nanos)
         }
         
     }
     
-    // Receive processing
-    func processRecv(x: [Float32], t: Double) {
+    // Receiver processing
+    func processData(x: [Float32], t: Double) {
         
         #if DEBUG
         //print("Received \(x.count) samples at \(t)")
@@ -464,11 +465,6 @@ class audioRx {
         let md = [t, Double(x.count)]
         writer.writeDoubleArray(data: md)
         writer.writeFloatArray(data: x)
-    }
-    
-    // Stop receiving in a loop
-    func stopLoop() {
-        recorder.removeTap(onBus: 0)
     }
     
 }
