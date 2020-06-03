@@ -17,9 +17,6 @@ class UltrasonicViewController: UIViewController {
     var tx: audioTx!
     var rx: audioRx!
     var engine: AVAudioEngine!
-    var enableTx: Bool!
-    var enableRx: Bool!
-    var countTimer: Timer?
     
     // Objects from the AppDelegate
     var advertiser: BluetoothAdvertiser!
@@ -54,11 +51,9 @@ class UltrasonicViewController: UIViewController {
         rx = audioRx()
         rx.recorder = engine.inputNode
         isRunning = false
-        abID = abControl.titleForSegment(at: abControl.selectedSegmentIndex)
+        isSlave = (masterSlaveControl.selectedSegmentIndex == 1)
         range = Int(rangeStepper.value)
         rangeLabel.text = range.description
-        enableTx = txSwitch.isOn
-        enableRx = rxSwitch.isOn
         
         // Connect transmitter
         engine.attach(tx.player)
@@ -79,14 +74,14 @@ class UltrasonicViewController: UIViewController {
 
     }
     
-    // A/B control
-    // Only A is capable of starting a run using the button
-    // B scans Bluetooth for the start/stop signals
-    var abID: String!
-    @IBOutlet weak var abControl: UISegmentedControl!
-    @IBAction func abControlChanged(_ sender: Any) {
-        abID = abControl.titleForSegment(at: abControl.selectedSegmentIndex)
-        if abID == "B" {
+    // Master/slave control
+    // Only the master (0) is capable of starting a run using the button
+    // The slave (1) scans Bluetooth for the start/stop signals
+    var isSlave: Bool!
+    @IBOutlet weak var masterSlaveControl: UISegmentedControl!
+    @IBAction func masterSlaveControlChanged(_ sender: Any) {
+        isSlave = (masterSlaveControl.selectedSegmentIndex == 1)
+        if isSlave {
             runStopButton.isEnabled = false
             scanner.logToFile = false
             scanner.runDetector = false
@@ -108,18 +103,6 @@ class UltrasonicViewController: UIViewController {
         rangeLabel.text = range.description
     }
     
-    // Transmit switch
-    @IBOutlet weak var txSwitch: UISwitch!
-    @IBAction func txSwitchChanged(_ sender: Any) {
-        enableTx = txSwitch.isOn
-    }
-    
-    // Receive switch
-    @IBOutlet weak var rxSwitch: UISwitch!
-    @IBAction func rxSwitchChanged(_ sender: Any) {
-        enableRx = rxSwitch.isOn
-    }
-    
     // Run/stop button
     var isRunning: Bool!
     @IBOutlet weak var runStopButton: UIButton!
@@ -130,10 +113,7 @@ class UltrasonicViewController: UIViewController {
             startRun()
         }
     }
-    
-    // Counter
-    @IBOutlet weak var countLabel: UILabel!
-    
+        
     // Starts running
     @objc func startRun() {
         
@@ -142,30 +122,21 @@ class UltrasonicViewController: UIViewController {
             return
         }
         
-        // If we are node A (master), tell node B (slave) to start
-        if abID == "A" {
+        // If we are the master, tell the slave to start
+        if !isSlave {
             advertiser.stop()
             advertiser.setName(name: "ultraStart")
             advertiser.start()
         }
 
         // Start receiver and transmitter
-        if enableRx {
-            rx.startLoop(id: abID, range: range)
-        }
-        if enableTx {
-            tx.startLoop(id: abID, range: range)
-        }
-        
-        // Start updating counter
-        startUpdatingCount()
-        
+        rx.startLoop(isSlave: isSlave, range: range)
+        tx.startLoop(isSlave: isSlave, range: range)
+                
         // Update UI
         runStopButton.setTitle("Stop", for: .normal)
-        txSwitch.isEnabled = false
-        rxSwitch.isEnabled = false
         rangeStepper.isEnabled = false
-        abControl.isEnabled = false
+        masterSlaveControl.isEnabled = false
         
         // Update state
         isRunning = true
@@ -180,49 +151,23 @@ class UltrasonicViewController: UIViewController {
         }
         
         // If we are node A (master), tell node B (slave) to stop
-        if abID == "A" {
+        if !isSlave {
             advertiser.stop()
             advertiser.setName(name: "ultraStop")
             advertiser.start()
         }
 
         // Stop receiver and transmitter
-        if enableRx {
-            rx.stopLoop()
-        }
-        if enableTx {
-            tx.stopLoop()
-        }
-        
-        // Stop updating counter
-        stopUpdatingCount()
-        
+        rx.stopLoop()
+        tx.stopLoop()
+                
         // Update UI
         runStopButton.setTitle("Run", for: .normal)
-        txSwitch.isEnabled = true
-        rxSwitch.isEnabled = true
         rangeStepper.isEnabled = true
-        abControl.isEnabled = true
+        masterSlaveControl.isEnabled = true
         
         // Update state
         isRunning = false
-    }
-    
-    // Start updating counter
-    func startUpdatingCount() {
-        countTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateCount), userInfo: nil, repeats: true)
-        countTimer?.fire()
-    }
-    
-    // Update counter
-    @objc func updateCount() {
-        countLabel.text = tx.count.description
-    }
-    
-    // Stop updating counter
-    func stopUpdatingCount() {
-        countTimer?.invalidate()
-        countTimer = nil
     }
     
     // Stop any run when we leave the tab
@@ -293,7 +238,6 @@ class audioTx {
     var repeatEvery: Double!
     var writer: dataWriter!
     var y: [Float32]!
-    var count: Int!
     
     // Initialize
     init() {
@@ -307,9 +251,6 @@ class audioTx {
         
         // Buffer size
         let buffSize = AVAudioFrameCount(fs*d)
-        
-        // Counter
-        count = 0
         
         /*
         // Create a tone
@@ -399,12 +340,13 @@ class audioTx {
     }
     
     // Start transmitting in a loop
-    func startLoop(id: String, range: Int) {
-        
-        // Initialize counter
-        count = 0
-        
+    func startLoop(isSlave: Bool, range: Int) {
+                
         // Make a new file
+        var id = "master"
+        if isSlave {
+            id = "slave"
+        }
         let txFile = id + "_tx_" + range.description + ".dat"
         writer.createFile(fileName: txFile)
         
@@ -412,8 +354,8 @@ class audioTx {
         writer.writeDoubleArray(data: [Double(y.count)])
         writer.writeFloatArray(data: y)
         
-        // Wait half of a repitition before starting if we are node B
-        if id == "B" {
+        // Wait half of a repitition before starting if we are the slave
+        if isSlave {
             let s = UInt32((repeatEvery/2.0)*1000000.0)
             usleep(s)
         }
@@ -447,9 +389,6 @@ class audioTx {
         
         // Save times to file
         writer.writeDoubleArray(data: [Double(nanos), sendNanos])
-        
-        // Update counter
-        count += 1
     }
     
     // Stop transmitting in a loop
@@ -488,9 +427,13 @@ class audioRx {
     }
     
     // Start receiving in a loop
-    func startLoop(id: String, range: Int) {
+    func startLoop(isSlave: Bool, range: Int) {
         
         // Make a new file
+        var id = "master"
+        if isSlave {
+            id = "slave"
+        }
         let rxFile = id + "_rx_" + range.description + ".dat"
         writer.createFile(fileName: rxFile)
         
