@@ -71,9 +71,10 @@ class UltrasonicViewController: UIViewController {
         rangeLabel.text = range.description
         count = 0
         countLabel.text = count.description
-        localTimeLabel.text = "?"
-        remoteTimeLabel.text = "?"
-        calcRangeLabel.text = "?"
+        localStatusLabel.text = "?"
+        remoteStatusLabel.text = "?"
+        rangeFeetLabel.text = "?"
+        rangeInchesLabel.text = "?"
         
         // Connect transmitter
         engine.attach(tx.player)
@@ -234,33 +235,39 @@ class UltrasonicViewController: UIViewController {
     @IBOutlet weak var countLabel: UILabel!
     
     // Two-way ranging processing
-    var calcRange: Double!
-    @IBOutlet weak var localTimeLabel: UILabel!
-    @IBOutlet weak var remoteTimeLabel: UILabel!
-    @IBOutlet weak var calcRangeLabel: UILabel!
+    @IBOutlet weak var localStatusLabel: UILabel!
+    @IBOutlet weak var remoteStatusLabel: UILabel!
+    @IBOutlet weak var rangeFeetLabel: UILabel!
+    @IBOutlet weak var rangeInchesLabel: UILabel!
     func twoWayRanging() {
                 
         // Display local/remote time measurements
         if !ultrasonicData.localTimeValid {
-            localTimeLabel.text = "?"
+            localStatusLabel.text = "Error"
         } else {
-            localTimeLabel.text = ultrasonicData.localTime.description
+            localStatusLabel.text = "OK"
         }
         if !ultrasonicData.remoteTimeValid {
-            remoteTimeLabel.text = "?"
+            remoteStatusLabel.text = "Error"
         } else {
-            remoteTimeLabel.text = ultrasonicData.remoteTime.description
+            remoteStatusLabel.text = "OK"
         }
         
         // If either data is not valid, quit
         if !ultrasonicData.localTimeValid || !ultrasonicData.remoteTimeValid {
-            calcRangeLabel.text = "?"
+            rangeFeetLabel.text = "?"
+            rangeInchesLabel.text = "?"
             return
         }
         
-        // Display range
-        calcRange = (346.0/2.0)*(ultrasonicData.localTime + ultrasonicData.remoteTime)*3.28084/1e9
-        calcRangeLabel.text = String(format: "%.2f", calcRange)
+        // Display range in feet/inches
+        let rangeFeetFrac = (346.0/2.0)*(ultrasonicData.localTime + ultrasonicData.remoteTime)*3.28084/1e9
+        let rangeFeet = Int(rangeFeetFrac)
+        var rangeInchesFrac = (rangeFeetFrac - Double(rangeFeet))*12
+        rangeInchesFrac.round(.toNearestOrAwayFromZero)
+        let rangeInches = Int(rangeInchesFrac)
+        rangeFeetLabel.text = rangeFeet.description
+        rangeInchesLabel.text = rangeInches.description
     }
     
 }
