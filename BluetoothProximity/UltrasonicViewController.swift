@@ -142,9 +142,9 @@ class UltrasonicViewController: UIViewController {
         // Update run counter
         count += 1
 
-        // Run receiver (runs continuous) and transmitter (runs once)
-        rx.run(isSlave: isSlave, range: range, count: count)
+        // Run transmitter and receiver
         tx.run(isSlave: isSlave, range: range, count: count)
+        rx.run(isSlave: isSlave, range: range, count: count)
                 
         // Update UI
         runStopButton.setTitle("Running...", for: .normal)
@@ -155,8 +155,8 @@ class UltrasonicViewController: UIViewController {
         // Update state
         isRunning = true
         
-        // Stop running after 1 second
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
+        // Stop running after 500 ms
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500), execute: {
             self.stopRun()
         })
     }
@@ -183,9 +183,9 @@ class UltrasonicViewController: UIViewController {
         scanner.setName(name: "uMeas")
         scanner.startScanForService()
         
-        // After one second, stop scanning and compute range
+        // After 500 ms, stop scanning and compute range
         // If we're the slave, return to search for the start signal
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500), execute: {
             self.scanner.stop()
             if self.isSlave {
                 self.scanner.setName(name: "uStart")
@@ -309,7 +309,6 @@ class audioTx {
     // Objects
     var buff: AVAudioPCMBuffer!
     var player: AVAudioPlayerNode!
-    var repeatEvery: Double!
     var writer: dataWriter!
     var y: [Float32]!
     
@@ -318,11 +317,8 @@ class audioTx {
         
         // Sample rate (samples/second) and duration (seconds)
         let fs: Double = 48000.0
-        let d: Double = 0.2
-        
-        // How often to repeat (in seconds)
-        repeatEvery = 1.0
-        
+        let d: Double = 0.1
+                
         // Buffer size
         let buffSize = AVAudioFrameCount(fs*d)
         
@@ -427,18 +423,18 @@ class audioTx {
         // Save samples to file
         writer.writeDoubleArray(data: [Double(y.count)])
         writer.writeFloatArray(data: y)
-        
-        // If we're the slave, wait 300 ms before sending
-        if isSlave {
-            usleep(300000)
-        }
-        
-        // Schedule sending 100 ms from now
+                
+        // Master sends 50 ms from now, slave 250 ms from now
         var info = mach_timebase_info()
         guard mach_timebase_info(&info) == KERN_SUCCESS else { return }
         let currentTime = mach_absolute_time()
         let nanos = currentTime*UInt64(info.numer)/UInt64(info.denom)
-        let sendNanos = Double(nanos) + 100000000.0
+        var sendNanos: Double
+        if isSlave {
+            sendNanos = Double(nanos) + 250000000.0
+        } else {
+            sendNanos = Double(nanos) + 50000000.0
+        }
         let sendTime = UInt64(sendNanos)*UInt64(info.denom)/UInt64(info.numer)
         let sendAvTime = AVAudioTime(hostTime: sendTime)
         
@@ -464,7 +460,6 @@ class audioRx {
     
     // Objects
     var recorder: AVAudioInputNode!
-    var repeatEvery: Double!
     var fs: Double!
     var n: AVAudioFrameCount!
     var audioFormat: AVAudioFormat!
@@ -477,7 +472,7 @@ class audioRx {
         fs = 48000.0
         
         // Number of samples per receive buffer
-        n = 32768
+        n = 19200
         
         // Buffer format
         audioFormat = AVAudioFormat(standardFormatWithSampleRate: Double(fs), channels: 1)!
