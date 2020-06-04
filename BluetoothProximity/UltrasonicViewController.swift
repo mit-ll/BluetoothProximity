@@ -259,8 +259,8 @@ class UltrasonicViewController: UIViewController {
         }
         
         // Display range
-        calcRange = -1
-        calcRangeLabel.text = calcRange.description
+        calcRange = (346.0/2.0)*(ultrasonicData.localTime + ultrasonicData.remoteTime)*3.28084/1e9
+        calcRangeLabel.text = String(format: "%.2f", calcRange)
     }
     
 }
@@ -358,8 +358,10 @@ class audioTx {
     // Initialize
     init() {
         
-        // Sample rate (samples/second) and duration (seconds)
+        // Sample rate (samples/second(
         let fs: Double = 48000.0
+        
+        // Transmit waveform duration (seconds)
         let d: Double = 0.1
                 
         // Buffer size
@@ -561,6 +563,7 @@ class audioRx {
     // Objects
     var recorder: AVAudioInputNode!
     var fs: Double!
+    var txN: Int!
     var n: AVAudioFrameCount!
     var audioFormat: AVAudioFormat!
     var writer: dataWriter!
@@ -570,6 +573,10 @@ class audioRx {
         
         // Sample rate (samples/second)
         fs = 48000.0
+                
+        // Transmit waveform duration (seconds and samples
+        let d = 100e-3
+        txN = Int(fs*d)
         
         // Number of samples per receive buffer
         n = 19200
@@ -646,8 +653,44 @@ class audioRx {
         // Loopback delay
         let tDelta = (tSelf + t) - ultrasonicData.sendTime
         
-        // Mark measurement as valid
-        ultrasonicData.localTime = tDelta // temporary
+        // Crosscorrelation with remote, and remove self transmit signal
+        var z: [Float32]
+        var zLags: [Int]
+        if isSlave {
+            
+            // Slave with master
+            (z, zLags) = xcorr(a: x, b: ultrasonicData.masterTxSamples)
+            
+            // Slave transmits second
+            let rmIdx = Int(selfIdx) - txN
+            z = Array(z.prefix(rmIdx))
+            zLags = Array(zLags.prefix(rmIdx))
+            
+        } else {
+            
+            // Master with slave (master transmits first)
+            (z, zLags) = xcorr(a: x, b: ultrasonicData.slaveTxSamples)
+            
+            // Master transmits first
+            let rmIdx = Int(selfIdx) + txN
+            z.removeFirst(rmIdx)
+            zLags.removeFirst(rmIdx)
+            
+        }
+        z = z.map(abs)
+        var remoteIdx: UInt
+        if #available(iOS 13.0, *) {
+            (remoteIdx, _) = vDSP.indexOfMaximum(z)
+        } else {
+            #if DEBUG
+            print("vDSP.correlate is not available")
+            #endif
+            remoteIdx = 0
+        }
+        let tRemote = Double(zLags[Int(remoteIdx)])*(1.0/fs)*1e9
+                
+        // Compute timing measurement and mark as valid
+        ultrasonicData.localTime = (tRemote + t) - ultrasonicData.sendTime - tDelta
         ultrasonicData.localTimeValid = true
     }
     
