@@ -137,6 +137,12 @@ class UltrasonicViewController: UIViewController {
     // Starts running
     @objc func startRun() {
         
+        // Update UI
+        runStopButton.setTitle("Running...", for: .normal)
+        runStopButton.isEnabled = false
+        rangeStepper.isEnabled = false
+        masterSlaveControl.isEnabled = false
+        
         // Mark data as invalid
         ultrasonicData.localTimeValid = false
         ultrasonicData.remoteTimeValid = false
@@ -154,12 +160,6 @@ class UltrasonicViewController: UIViewController {
         // Run transmitter and receiver
         tx.run(isSlave: isSlave, range: range, count: count)
         rx.run(isSlave: isSlave, range: range, count: count)
-                
-        // Update UI
-        runStopButton.setTitle("Running...", for: .normal)
-        runStopButton.isEnabled = false
-        rangeStepper.isEnabled = false
-        masterSlaveControl.isEnabled = false
         
         // Update state
         isRunning = true
@@ -195,7 +195,8 @@ class UltrasonicViewController: UIViewController {
         // Wait 500 ms before continuing
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500), execute: {
             
-            // Stop scanning. If we're the slave, return to search for the start signal
+            // Stop BLE activity. If we're the slave, return to search for the start signal
+            self.advertiser.stop()
             self.scanner.stop()
             if self.isSlave {
                 self.scanner.setName(name: "uStart")
