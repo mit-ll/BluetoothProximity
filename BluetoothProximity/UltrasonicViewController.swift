@@ -11,6 +11,13 @@ import AVFoundation
 import GameplayKit
 import Accelerate
 
+struct ultrasonicData {
+    static var localTime: Double = 0
+    static var localTimeValid: Bool = false
+    static var remoteTime: Double = 0
+    static var remoteTimeValid: Bool = false
+}
+
 class UltrasonicViewController: UIViewController {
     
     // Objects
@@ -56,6 +63,9 @@ class UltrasonicViewController: UIViewController {
         rangeLabel.text = range.description
         count = 0
         countLabel.text = count.description
+        localTimeLabel.text = "?"
+        remoteTimeLabel.text = "?"
+        calcRangeLabel.text = "?"
         
         // Connect transmitter
         engine.attach(tx.player)
@@ -70,10 +80,8 @@ class UltrasonicViewController: UIViewController {
             #endif
         }
         
-        // Observers for start/stop commands
-        NotificationCenter.default.addObserver(self, selector: #selector(startRun), name: Notification.Name(rawValue: "ultraStart"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(stopRun), name: Notification.Name(rawValue: "ultraStop"), object: nil)
-
+        // Observers for BLE commands
+        NotificationCenter.default.addObserver(self, selector: #selector(startRun), name: Notification.Name(rawValue: "ultrasonicStartRun"), object: nil)
     }
     
     // Master/slave control
@@ -86,10 +94,11 @@ class UltrasonicViewController: UIViewController {
         if isSlave {
             runStopButton.setTitle("Waiting...", for: .normal)
             runStopButton.isEnabled = false
+            scanner.stop()
             scanner.logToFile = false
             scanner.runDetector = false
             scanner.runUltrasonic = true
-            scanner.setName(name: "ultraStart")
+            scanner.setName(name: "uStart")
             scanner.startScanForService()
         } else {
             runStopButton.setTitle("Run", for: .normal)
@@ -111,24 +120,22 @@ class UltrasonicViewController: UIViewController {
     var isRunning: Bool!
     @IBOutlet weak var runStopButton: UIButton!
     @IBAction func runStopButtonPressed(_ sender: Any) {
-        
-        // Run and then stop after 1 second
         if !isRunning {
             startRun()
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
-                self.stopRun()
-            })
         }
-        
     }
         
     // Starts running
     @objc func startRun() {
+        
+        // Mark data as invalid
+        ultrasonicData.localTimeValid = false
+        ultrasonicData.remoteTimeValid = false
                 
         // If we are the master, tell the slave to start
         if !isSlave {
             advertiser.stop()
-            advertiser.setName(name: "ultraStart")
+            advertiser.setName(name: "uStart")
             advertiser.start()
         }
         
@@ -147,6 +154,11 @@ class UltrasonicViewController: UIViewController {
         
         // Update state
         isRunning = true
+        
+        // Stop running after 1 second
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
+            self.stopRun()
+        })
     }
     
     // Stops running
@@ -157,12 +169,30 @@ class UltrasonicViewController: UIViewController {
             return
         }
         
-        // If we are node A (master), tell node B (slave) to stop
-        if !isSlave {
-            advertiser.stop()
-            advertiser.setName(name: "ultraStop")
-            advertiser.start()
-        }
+        // Advertise our measurement
+        advertiser.stop()
+        let m = "uMeas" + ultrasonicData.localTime.description
+        advertiser.setName(name: m)
+        advertiser.start()
+        
+        // Start scanning for the other measurement
+        scanner.stop()
+        scanner.logToFile = false
+        scanner.runDetector = false
+        scanner.runUltrasonic = true
+        scanner.setName(name: "uMeas")
+        scanner.startScanForService()
+        
+        // After one second, stop scanning and compute range
+        // If we're the slave, return to search for the start signal
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
+            self.scanner.stop()
+            if self.isSlave {
+                self.scanner.setName(name: "uStart")
+                self.scanner.startScanForService()
+            }
+            self.twoWayRanging()
+        })
         
         // Update UI
         if isSlave {
@@ -191,6 +221,36 @@ class UltrasonicViewController: UIViewController {
     // Run counter
     var count: Int!
     @IBOutlet weak var countLabel: UILabel!
+    
+    // Two-way ranging processing
+    var calcRange: Double!
+    @IBOutlet weak var localTimeLabel: UILabel!
+    @IBOutlet weak var remoteTimeLabel: UILabel!
+    @IBOutlet weak var calcRangeLabel: UILabel!
+    func twoWayRanging() {
+                
+        // Display local/remote time measurements
+        if !ultrasonicData.localTimeValid {
+            localTimeLabel.text = "?"
+        } else {
+            localTimeLabel.text = ultrasonicData.localTime.description
+        }
+        if !ultrasonicData.remoteTimeValid {
+            remoteTimeLabel.text = "?"
+        } else {
+            remoteTimeLabel.text = ultrasonicData.remoteTime.description
+        }
+        
+        // If either data is not valid, quit
+        if !ultrasonicData.localTimeValid || !ultrasonicData.remoteTimeValid {
+            calcRangeLabel.text = "?"
+            return
+        }
+        
+        // Display range
+        calcRange = -1
+        calcRangeLabel.text = calcRange.description
+    }
     
 }
 
@@ -382,7 +442,9 @@ class audioTx {
         let sendTime = UInt64(sendNanos)*UInt64(info.denom)/UInt64(info.numer)
         let sendAvTime = AVAudioTime(hostTime: sendTime)
         
-        // Save time to file
+        // Save time
+        ultrasonicData.localTime = sendNanos
+        ultrasonicData.localTimeValid = true
         writer.writeDoubleArray(data: [Double(nanos), sendNanos])
         
         #if DEBUG

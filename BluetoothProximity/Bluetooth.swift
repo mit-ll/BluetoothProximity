@@ -206,16 +206,15 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
             let hasName = advertisementData["kCBAdvDataLocalName"] != nil
             if hasName {
                 let advName = advertisementData["kCBAdvDataLocalName"] as! String
-                
-                // Commands to start or stop transmitting/receiving
-                // (master sends these commands, slave executes them)
-                if advName == "ultraStart" {
-                    NotificationCenter.default.post(name: Notification.Name(rawValue: "ultraStart"), object: nil)
-                    setName(name: "ultraStop")
-                } else if advName == "ultraStop" {
-                    NotificationCenter.default.post(name: Notification.Name(rawValue: "ultraStop"), object: nil)
-                    setName(name: "ultraStart")
+                                
+                // Start command or measurement data
+                if advName == "uStart" {
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: "ultrasonicStartRun"), object: nil)
+                } else if advName.prefix(5) == "uMeas" {
+                    ultrasonicData.remoteTime = Double(advName.dropFirst(5))!
+                    ultrasonicData.remoteTimeValid = true
                 }
+                
             }
             return
         }
