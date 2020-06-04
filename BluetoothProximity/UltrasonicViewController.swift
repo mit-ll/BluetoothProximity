@@ -14,8 +14,16 @@ import Accelerate
 struct ultrasonicData {
     static var localTime: Double = 0
     static var localTimeValid: Bool = false
+    
     static var remoteTime: Double = 0
     static var remoteTimeValid: Bool = false
+    
+    static var localTxSamples: [Float32] = [0]
+    static var remoteTxSamples: [Float32] = [0]
+    
+    static var sendTime: Double = 0
+    static var recvSelfTime: Double = 0
+    static var recvRemoteTime: Double = 0
 }
 
 class UltrasonicViewController: UIViewController {
@@ -303,6 +311,38 @@ class dataWriter {
     
 }
 
+// Crosscorrelation to match MATLAB routine
+func xcorr(a: [Float32], b: [Float32]) -> ([Float32], [Int]) {
+    
+    // Pad "a" (longer input) with zeros based on the length of "b"
+    var aPadded = a
+    for _ in 0...(b.count-2) {
+        aPadded.insert(0.0, at: 0)
+    }
+    for _ in 0...(b.count-1) {
+        aPadded.insert(0.0, at: aPadded.endIndex)
+    }
+    
+    // Crosscorrelation
+    var c: [Float32]
+    if #available(iOS 13.0, *) {
+        c = vDSP.correlate(aPadded, withKernel: b)
+    } else {
+        #if DEBUG
+        print("vDSP.correlate is not available")
+        #endif
+        c = [-1]
+    }
+    
+    // Lags
+    let lStart: Int = 0 - (b.count - 1)
+    let lEnd: Int = a.count + b.count - 2 - (b.count - 1)
+    let l: [Int] = Array(lStart...lEnd)
+    
+    // All done
+    return (c, l)
+}
+
 // Transmitter
 class audioTx {
     
@@ -310,7 +350,6 @@ class audioTx {
     var buff: AVAudioPCMBuffer!
     var player: AVAudioPlayerNode!
     var writer: dataWriter!
-    var y: [Float32]!
     
     // Initialize
     init() {
@@ -361,19 +400,18 @@ class audioTx {
         
         // High pass filter
         if #available(iOS 13.0, *) {
-            y = vDSP.convolve(x, withKernel: b)
+            ultrasonicData.localTxSamples = vDSP.convolve(x, withKernel: b)
         } else {
             // Fallback on earlier versions
             #if DEBUG
             print("vDSP.convolve is not available")
             #endif
-            y = Array(x.prefix(n))
         }
 
         // Normalize to +/- 1
-        let m = Float32(y.max()!)
-        y.enumerated().forEach { i, v in
-            y[i] = v/m
+        let m = Float32(ultrasonicData.localTxSamples.max()!)
+        ultrasonicData.localTxSamples.enumerated().forEach { i, v in
+            ultrasonicData.localTxSamples[i] = v/m
         }
         
         // Ramp up and down
@@ -381,15 +419,15 @@ class audioTx {
         let dRamp = 2.5e-3
         let nRamp = Int(fs*dRamp)
         for i in 0...(nRamp-1) {
-            y[i] *= Float32(i)/Float32(nRamp)
-            y[Int(buffSize)-i-1] *= Float32(i)/Float32(nRamp)
+            ultrasonicData.localTxSamples[i] *= Float32(i)/Float32(nRamp)
+            ultrasonicData.localTxSamples[Int(buffSize)-i-1] *= Float32(i)/Float32(nRamp)
         }
         
         // Set up buffer to send
         let audioFormat = AVAudioFormat(standardFormatWithSampleRate: fs, channels: 1)!
         buff = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: buffSize)!
         buff.frameLength = buffSize
-        buff.floatChannelData![0].initialize(from: &y, count: n)
+        buff.floatChannelData![0].initialize(from: &ultrasonicData.localTxSamples, count: n)
         
         // Create audio player
         player = AVAudioPlayerNode()
@@ -421,8 +459,8 @@ class audioTx {
         writer.createFile(fileName: txFile)
         
         // Save samples to file
-        writer.writeDoubleArray(data: [Double(y.count)])
-        writer.writeFloatArray(data: y)
+        writer.writeDoubleArray(data: [Double(ultrasonicData.localTxSamples.count)])
+        writer.writeFloatArray(data: ultrasonicData.localTxSamples)
                 
         // Master sends 50 ms from now, slave 250 ms from now
         var info = mach_timebase_info()
@@ -439,8 +477,7 @@ class audioTx {
         let sendAvTime = AVAudioTime(hostTime: sendTime)
         
         // Save time
-        ultrasonicData.localTime = sendNanos
-        ultrasonicData.localTimeValid = true
+        ultrasonicData.sendTime = sendNanos
         writer.writeDoubleArray(data: [Double(nanos), sendNanos])
         
         #if DEBUG
@@ -517,11 +554,32 @@ class audioRx {
         #if DEBUG
         //print("Received \(x.count) samples at \(t)")
         #endif
-        
+                
         // Save to file
         let md = [t, Double(x.count)]
         writer.writeDoubleArray(data: md)
         writer.writeFloatArray(data: x)
+        
+        // Crosscorrelation with self
+        var (y, yLags) = xcorr(a: x, b: ultrasonicData.localTxSamples)
+        y = y.map(abs)
+        var selfIdx: UInt
+        if #available(iOS 13.0, *) {
+            (selfIdx, _) = vDSP.indexOfMaximum(y)
+        } else {
+            #if DEBUG
+            print("vDSP.correlate is not available")
+            #endif
+            selfIdx = 0
+        }
+        let tSelf = Double(yLags[Int(selfIdx)])*(1.0/fs)*1e9
+        
+        // Loopback delay
+        let tDelta = (tSelf + t) - ultrasonicData.sendTime
+                
+        // Mark measurement as valid
+        ultrasonicData.localTime = tDelta/1e9 // temporary
+        ultrasonicData.localTimeValid = true
     }
     
 }
