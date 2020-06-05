@@ -24,6 +24,9 @@ struct ultrasonicData {
     static var sendTime: Double = 0
     static var recvSelfTime: Double = 0
     static var recvRemoteTime: Double = 0
+    
+    static var selfSNR: Double = 0
+    static var remoteSNR: Double = 0
 }
 
 class UltrasonicViewController: UIViewController {
@@ -75,6 +78,8 @@ class UltrasonicViewController: UIViewController {
         remoteStatusLabel.text = "?"
         rangeFeetLabel.text = "?"
         rangeInchesLabel.text = "?"
+        selfSNRLabel.text = "?"
+        remoteSNRLabel.text = "?"
         
         // Connect transmitter
         engine.attach(tx.player)
@@ -146,7 +151,7 @@ class UltrasonicViewController: UIViewController {
         // Mark data as invalid
         ultrasonicData.localTimeValid = false
         ultrasonicData.remoteTimeValid = false
-                
+        
         // If we are the master, tell the slave to start
         if !isSlave {
             advertiser.stop()
@@ -240,6 +245,8 @@ class UltrasonicViewController: UIViewController {
     @IBOutlet weak var remoteStatusLabel: UILabel!
     @IBOutlet weak var rangeFeetLabel: UILabel!
     @IBOutlet weak var rangeInchesLabel: UILabel!
+    @IBOutlet weak var selfSNRLabel: UILabel!
+    @IBOutlet weak var remoteSNRLabel: UILabel!
     func twoWayRanging() {
                 
         // Display local/remote time measurements
@@ -253,6 +260,10 @@ class UltrasonicViewController: UIViewController {
         } else {
             remoteStatusLabel.text = "OK"
         }
+        
+        // Display self/remote SNR measurements
+        selfSNRLabel.text = String(format: "%.1f", ultrasonicData.selfSNR)
+        remoteSNRLabel.text = String(format: "%.1f", ultrasonicData.remoteSNR)
         
         // If either data is not valid, quit
         if !ultrasonicData.localTimeValid || !ultrasonicData.remoteTimeValid {
@@ -647,19 +658,24 @@ class audioRx {
             (y, yLags) = xcorr(a: x, b: ultrasonicData.masterTxSamples)
         }
         y = y.map(abs)
-        var selfIdx: UInt
+        var selfIdx: UInt = 0
+        var yMax: Float32 = 1e-9
         if #available(iOS 13.0, *) {
-            (selfIdx, _) = vDSP.indexOfMaximum(y)
+            (selfIdx, yMax) = vDSP.indexOfMaximum(y)
         } else {
             #if DEBUG
             print("vDSP.correlate is not available")
             #endif
-            selfIdx = 0
         }
         let tSelf = Double(yLags[Int(selfIdx)])*(1.0/fs)*1e9
         
         // Loopback delay
         let tDelta = (tSelf + t) - ultrasonicData.sendTime
+        
+        // SNR for self received
+        let noise = y.prefix(Int(selfIdx) - txN)
+        let noiseMean = noise.reduce(0, +)/Float32(noise.count)
+        ultrasonicData.selfSNR = 10*log10(Double(yMax/noiseMean))
         
         // Crosscorrelation with remote, and remove self transmit signal
         var z: [Float32]
@@ -686,16 +702,19 @@ class audioRx {
             
         }
         z = z.map(abs)
-        var remoteIdx: UInt
+        var remoteIdx: UInt = 0
+        var zMax: Float32 = 1e-9
         if #available(iOS 13.0, *) {
-            (remoteIdx, _) = vDSP.indexOfMaximum(z)
+            (remoteIdx, zMax) = vDSP.indexOfMaximum(z)
         } else {
             #if DEBUG
             print("vDSP.correlate is not available")
             #endif
-            remoteIdx = 0
         }
         let tRemote = Double(zLags[Int(remoteIdx)])*(1.0/fs)*1e9
+        
+        // SNR for remote received (uses noise from before)
+        ultrasonicData.remoteSNR = 10*log10(Double(zMax/noiseMean))
                 
         // Compute timing measurement and mark as valid
         ultrasonicData.localTime = (tRemote + t) - ultrasonicData.sendTime - tDelta
