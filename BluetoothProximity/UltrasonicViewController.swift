@@ -612,6 +612,7 @@ class audioRx {
     var recorder: AVAudioInputNode!
     var fs: Double!
     var txN: Int!
+    var noiseN: Int!
     var n: AVAudioFrameCount!
     var audioFormat: AVAudioFormat!
     var writer: dataWriter!
@@ -625,6 +626,10 @@ class audioRx {
         // Transmit waveform duration (seconds and samples
         let d = 100e-3
         txN = Int(fs*d)
+        
+        // Number of samples to use for noise estimate
+        let dNoise = 20e-3
+        noiseN = Int(fs*dNoise)
         
         // Number of samples per receive buffer
         n = 19200
@@ -701,8 +706,8 @@ class audioRx {
         // Loopback delay
         let tDelta = (tSelf + t) - ultrasonicData.sendTime
         
-        // SNR for self received
-        let noise = y.prefix(Int(selfIdx) - txN)
+        // SNR for self received (uses noise from beginning)
+        let noise = y.prefix(noiseN)
         let noiseMean = noise.reduce(0, +)/Float32(noise.count)
         ultrasonicData.selfSNR = 10*log10(Double(yMax/noiseMean))
         
@@ -742,7 +747,7 @@ class audioRx {
         }
         let tRemote = Double(zLags[Int(remoteIdx)])*(1.0/fs)*1e9
         
-        // SNR for remote received (uses noise from before)
+        // SNR for remote received (uses noise from beginning)
         ultrasonicData.remoteSNR = 10*log10(Double(zMax/noiseMean))
                 
         // Compute timing measurement and mark as valid
