@@ -269,16 +269,20 @@ class UltrasonicViewController: UIViewController {
     @IBOutlet weak var remoteSNRLabel: UILabel!
     func twoWayRanging() {
                 
-        // Display local/remote time measurements
+        // Display local/remote status
         if !ultrasonicData.localTimeValid {
             localStatusLabel.text = "Error"
+            localStatusLabel.textColor = UIColor.red
         } else {
             localStatusLabel.text = "OK"
+            localStatusLabel.textColor = UIColor.green
         }
         if !ultrasonicData.remoteTimeValid {
             remoteStatusLabel.text = "Error"
+            remoteStatusLabel.textColor = UIColor.red
         } else {
             remoteStatusLabel.text = "OK"
+            remoteStatusLabel.textColor = UIColor.green
         }
         
         // Display self/remote SNR measurements
@@ -293,7 +297,8 @@ class UltrasonicViewController: UIViewController {
         }
         
         // Display range in feet and inches
-        let rangeFeetFrac = (346.0/2.0)*(ultrasonicData.localTime + ultrasonicData.remoteTime)*3.28084/1e9
+        var rangeFeetFrac = (346.0/2.0)*(ultrasonicData.localTime + ultrasonicData.remoteTime)*3.28084/1e9
+        rangeFeetFrac = abs(rangeFeetFrac)
         var rangeFeet = Int(rangeFeetFrac)
         var rangeInchesFrac = (rangeFeetFrac - Double(rangeFeet))*12
         rangeInchesFrac.round(.toNearestOrAwayFromZero)
