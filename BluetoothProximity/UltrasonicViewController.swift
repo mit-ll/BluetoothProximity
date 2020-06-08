@@ -692,13 +692,15 @@ class audioRx {
             (y, yLags) = xcorr(a: x, b: ultrasonicData.masterTxSamples)
         }
         y = y.map(abs)
+        
+        // Find direct path as the maximum (since TX/RX is on the same device)
         var selfIdx: UInt = 0
         var yMax: Float32 = 1e-9
         if #available(iOS 13.0, *) {
             (selfIdx, yMax) = vDSP.indexOfMaximum(y)
         } else {
             #if DEBUG
-            print("vDSP.correlate is not available")
+            print("vDSP.indexOfMaximum is not available")
             #endif
         }
         let tSelf = Double(yLags[Int(selfIdx)])*(1.0/fs)*1e9
@@ -736,13 +738,74 @@ class audioRx {
             
         }
         z = z.map(abs)
+        
+        // Try to find the direct path (first peak) using an adaptive threshold.
+        // Something like this, or a CFAR detector, will perform better in multipath
+        // than just taking the overall maximum.
         var remoteIdx: UInt = 0
-        var zMax: Float32 = 1e-9
+        var zMax: Float32 = 1e-6
         if #available(iOS 13.0, *) {
-            (remoteIdx, zMax) = vDSP.indexOfMaximum(z)
+            
+            // Threshold and look-ahead window for finding the true peak
+            let thresh = 8*vDSP.mean(z)
+            let nWin = 40
+            
+            // Find first sample to cross the threshold
+            var idx = -1
+            for i in 0...z.count {
+                if z[i] > thresh {
+                    idx = i
+                    break
+                }
+            }
+
+            // If the threshold was crossed, declare detection
+            if idx >= 0 {
+                
+                // Get samples around the peak
+                var zWin = Array(z[idx...(idx+nWin)])
+                
+                // Get maximum two samples within the window
+                var p1: Float32
+                var pIdx1: UInt
+                (pIdx1, p1) = vDSP.indexOfMaximum(zWin)
+                zWin[Int(pIdx1)] = 0
+                var p2: Float32
+                var pIdx2: UInt
+                (pIdx2, p2) = vDSP.indexOfMaximum(zWin)
+                
+                // Sort by time
+                if pIdx2 < pIdx1 {
+                    let tmpIdx = pIdx1
+                    let tmpP = p1
+                    pIdx1 = pIdx2
+                    pIdx2 = tmpIdx
+                    p1 = p2
+                    p2 = tmpP
+                }
+                
+                // If the two are separated by more than 15 samples (~0.3 ms, or 3 inches),
+                // take the first peak. Otherwise, take the largest peak.
+                if pIdx2 - pIdx1 > 15 {
+                    remoteIdx = pIdx1
+                    zMax = p1
+                } else {
+                    if p2 > p1 {
+                        remoteIdx = pIdx2
+                        zMax = p2
+                    } else {
+                        remoteIdx = pIdx1
+                        zMax = p1
+                    }
+                }
+                
+                // Update maximum index to be relative to buffer start
+                remoteIdx += UInt(idx)
+            }
+            
         } else {
             #if DEBUG
-            print("vDSP.correlate is not available")
+            print("vDSP.mean is not available")
             #endif
         }
         let tRemote = Double(zLags[Int(remoteIdx)])*(1.0/fs)*1e9
