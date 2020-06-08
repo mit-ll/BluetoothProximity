@@ -67,6 +67,22 @@ class UltrasonicViewController: UIViewController {
             #endif
         }
         
+        // Warn if no vDSP (and disable the UI)
+        if #available(iOS 13.0, *) {
+            #if DEBUG
+            print("vDSP is available")
+            #endif
+        } else {
+            masterSlaveControl.isEnabled = false
+            rangeStepper.isEnabled = false
+            runStopButton.isEnabled = false
+            runStopButton.setTitle("Disabled", for: .normal)
+            let alert = UIAlertController(title: "Warning", message: "Please update to iOS 13.0 or higher (this app requires vDSP to function)", preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction!) in
+            }))
+            present(alert, animated: true, completion: nil)
+        }
+        
         // Initialize
         engine = AVAudioEngine()
         tx = audioTx()
@@ -691,7 +707,9 @@ class audioRx {
         } else {
             (y, yLags) = xcorr(a: x, b: ultrasonicData.masterTxSamples)
         }
-        y = y.map(abs)
+        if #available(iOS 13.0, *) {
+            y = vDSP.absolute(y)
+        }
         
         // Find direct path as the maximum (since TX/RX is on the same device)
         var selfIdx: UInt = 0
@@ -737,7 +755,9 @@ class audioRx {
             zLags.removeFirst(rmIdx)
             
         }
-        z = z.map(abs)
+        if #available(iOS 13.0, *) {
+            z = vDSP.absolute(z)
+        }
         
         // Try to find the direct path (first peak) using an adaptive threshold.
         // Something like this, or a CFAR detector, will perform better in multipath
