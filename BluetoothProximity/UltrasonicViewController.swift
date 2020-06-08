@@ -292,12 +292,16 @@ class UltrasonicViewController: UIViewController {
             return
         }
         
-        // Display range in feet/inches
+        // Display range in feet and inches
         let rangeFeetFrac = (346.0/2.0)*(ultrasonicData.localTime + ultrasonicData.remoteTime)*3.28084/1e9
-        let rangeFeet = Int(rangeFeetFrac)
+        var rangeFeet = Int(rangeFeetFrac)
         var rangeInchesFrac = (rangeFeetFrac - Double(rangeFeet))*12
         rangeInchesFrac.round(.toNearestOrAwayFromZero)
-        let rangeInches = Int(rangeInchesFrac)
+        var rangeInches = Int(rangeInchesFrac)
+        if rangeInches == 12 {
+            rangeFeet += 1
+            rangeInches = 0
+        }
         rangeFeetLabel.text = rangeFeet.description
         rangeInchesLabel.text = rangeInches.description
     }
