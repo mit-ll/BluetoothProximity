@@ -391,14 +391,9 @@ func xcorr(a: [Float32], b: [Float32]) -> ([Float32], [Int]) {
     }
     
     // Crosscorrelation
-    var c: [Float32]
+    var c: [Float32] = [-1]
     if #available(iOS 13.0, *) {
         c = vDSP.correlate(aPadded, withKernel: b)
-    } else {
-        #if DEBUG
-        print("vDSP.correlate is not available")
-        #endif
-        c = [-1]
     }
     
     // Lags
@@ -476,11 +471,6 @@ class audioTx {
         // High pass filter
         if #available(iOS 13.0, *) {
             ultrasonicData.masterTxSamples = vDSP.convolve(x, withKernel: b)
-        } else {
-            // Fallback on earlier versions
-            #if DEBUG
-            print("vDSP.convolve is not available")
-            #endif
         }
 
         // Normalize to +/- 1
@@ -520,11 +510,6 @@ class audioTx {
         // High pass filter
         if #available(iOS 13.0, *) {
             ultrasonicData.slaveTxSamples = vDSP.convolve(x, withKernel: b)
-        } else {
-            // Fallback on earlier versions
-            #if DEBUG
-            print("vDSP.convolve is not available")
-            #endif
         }
 
         // Normalize to +/- 1
@@ -708,7 +693,7 @@ class audioRx {
             (y, yLags) = xcorr(a: x, b: ultrasonicData.masterTxSamples)
         }
         if #available(iOS 13.0, *) {
-            y = vDSP.absolute(y)
+            y = vDSP.square(y)
         }
         
         // Find direct path as the maximum (since TX/RX is on the same device)
@@ -716,10 +701,6 @@ class audioRx {
         var yMax: Float32 = 1e-9
         if #available(iOS 13.0, *) {
             (selfIdx, yMax) = vDSP.indexOfMaximum(y)
-        } else {
-            #if DEBUG
-            print("vDSP.indexOfMaximum is not available")
-            #endif
         }
         let tSelf = Double(yLags[Int(selfIdx)])*(1.0/fs)*1e9
         
@@ -756,7 +737,7 @@ class audioRx {
             
         }
         if #available(iOS 13.0, *) {
-            z = vDSP.absolute(z)
+            z = vDSP.square(z)
         }
         
         // Try to find the direct path (first peak) using an adaptive threshold.
@@ -767,8 +748,8 @@ class audioRx {
         if #available(iOS 13.0, *) {
             
             // Threshold and look-ahead window for finding the true peak
-            let thresh = 8*vDSP.mean(z)
-            let nWin = 40
+            let thresh = 15*vDSP.mean(z)
+            let nWin = 50
             
             // Find first sample to cross the threshold
             var idx = -1
@@ -823,10 +804,6 @@ class audioRx {
                 remoteIdx += UInt(idx)
             }
             
-        } else {
-            #if DEBUG
-            print("vDSP.mean is not available")
-            #endif
         }
         let tRemote = Double(zLags[Int(remoteIdx)])*(1.0/fs)*1e9
         
