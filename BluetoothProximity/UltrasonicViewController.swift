@@ -53,6 +53,10 @@ class UltrasonicViewController: UIViewController {
         advertiser = delegate.advertiser
         scanner = delegate.scanner
         
+        // Initialize scanner
+        scanner.logToFile = false
+        scanner.runDetector = false
+        
         // Setup to play and record
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playAndRecord, options: [.mixWithOthers, .defaultToSpeaker])
@@ -108,9 +112,6 @@ class UltrasonicViewController: UIViewController {
         if isSlave {
             runStopButton.setTitle("Waiting...", for: .normal)
             runStopButton.isEnabled = false
-            scanner.stop()
-            scanner.logToFile = false
-            scanner.runDetector = false
             scanner.runUltrasonic = true
             scanner.setName(name: "uStart")
             scanner.startScanForService()
@@ -142,6 +143,14 @@ class UltrasonicViewController: UIViewController {
     // Starts running
     @objc func startRun() {
         
+        // Only run if we're not already running
+        if isRunning {
+            return
+        }
+        
+        // Update state
+        isRunning = true
+        
         // Update UI
         runStopButton.setTitle("Running...", for: .normal)
         runStopButton.isEnabled = false
@@ -153,22 +162,23 @@ class UltrasonicViewController: UIViewController {
         ultrasonicData.remoteTimeValid = false
         
         // If we are the master, tell the slave to start
+        // If we are the slave, stop scanning
         if !isSlave {
-            advertiser.stop()
             advertiser.setName(name: "uStart")
             advertiser.start()
+        } else {
+            scanner.stop()
         }
         
-        // Update run counter
-        count += 1
-
+        // Start scanning for measurement data
+        scanner.runUltrasonic = true
+        scanner.setName(name: "uMeas")
+        scanner.startScanForService()
+        
         // Run transmitter and receiver
         tx.run(isSlave: isSlave, range: range, count: count)
         rx.run(isSlave: isSlave, range: range, count: count)
-        
-        // Update state
-        isRunning = true
-        
+                
         // Stop running after 1 second
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
             self.stopRun()
@@ -178,25 +188,18 @@ class UltrasonicViewController: UIViewController {
     // Stops running
     @objc func stopRun() {
         
-        // Only stop running if we are actually running
-        if isRunning == false {
-            return
+        // Advertise our measurement (if we're master, stop advertising first)
+        // The measurement is rounded to the nearest nanosecond, since that's
+        // plenty for precision, and using a longer advertising name seemed to
+        // cause unstable BLE behavior.
+        if !isSlave {
+            advertiser.stop()
         }
-        
-        // Advertise our measurement
-        advertiser.stop()
-        let m = "uMeas" + ultrasonicData.localTime.description
+        let t = Int64(round(ultrasonicData.localTime))
+        let m = "uMeas" + t.description
         advertiser.setName(name: m)
         advertiser.start()
-        
-        // Start scanning for the other measurement
-        scanner.stop()
-        scanner.logToFile = false
-        scanner.runDetector = false
-        scanner.runUltrasonic = true
-        scanner.setName(name: "uMeas")
-        scanner.startScanForService()
-        
+                
         // Wait 500 ms before continuing
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500), execute: {
             
@@ -204,12 +207,17 @@ class UltrasonicViewController: UIViewController {
             self.advertiser.stop()
             self.scanner.stop()
             if self.isSlave {
+                self.scanner.runUltrasonic = true
                 self.scanner.setName(name: "uStart")
                 self.scanner.startScanForService()
             }
             
             // Compute range
             self.twoWayRanging()
+            
+            // Update run counter
+            self.count += 1
+            self.countLabel.text = self.count.description
             
             // Update UI
             if self.isSlave {
@@ -223,9 +231,6 @@ class UltrasonicViewController: UIViewController {
             
             // Update state
             self.isRunning = false
-            
-            // Update run counter label
-            self.countLabel.text = self.count.description
         })
     }
     
@@ -233,6 +238,21 @@ class UltrasonicViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         if isRunning {
             stopRun()
+        }
+        advertiser.setName(name: "BlueProxTx")
+        if isSlave {
+            scanner.stop()
+        }
+        scanner.runUltrasonic = false
+        scanner.setName(name: "BlueProxTx")
+    }
+    
+    // Get back in a good state if we're returning to this tab
+    override func viewDidAppear(_ animated: Bool) {
+        if isSlave {
+            scanner.runUltrasonic = true
+            scanner.setName(name: "uStart")
+            scanner.startScanForService()
         }
     }
     
@@ -717,8 +737,10 @@ class audioRx {
         ultrasonicData.remoteSNR = 10*log10(Double(zMax/noiseMean))
                 
         // Compute timing measurement and mark as valid
-        ultrasonicData.localTime = (tRemote + t) - ultrasonicData.sendTime - tDelta
-        ultrasonicData.localTimeValid = true
+        if !ultrasonicData.localTimeValid {
+            ultrasonicData.localTime = (tRemote + t) - ultrasonicData.sendTime - tDelta
+            ultrasonicData.localTimeValid = true
+        }
     }
     
 }

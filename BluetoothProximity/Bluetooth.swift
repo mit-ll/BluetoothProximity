@@ -16,7 +16,10 @@ class BluetoothAdvertiser: NSObject, CBPeripheralManagerDelegate {
     var service: CBMutableService!
     var advertiser: CBPeripheralManager!
     var serviceCBUUID: CBUUID!
+    
+    // Variables
     var localName: String!
+    var isRunning: Bool!
     
     override init() {
         super.init()
@@ -32,6 +35,9 @@ class BluetoothAdvertiser: NSObject, CBPeripheralManagerDelegate {
         
         // Create advertiser
         advertiser = CBPeripheralManager(delegate: self, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: true])
+        
+        // Initialize off
+        isRunning = false
     }
     
     func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
@@ -51,22 +57,26 @@ class BluetoothAdvertiser: NSObject, CBPeripheralManagerDelegate {
     // Starts advertising
     // This can run in the background, but the local name is ignored and the frequency may decrease
     func start() {
-        if isOn() {
+        if isOn() && !isRunning {
             advertiser.add(service)
             let adData: [String: Any] = [
                 CBAdvertisementDataServiceUUIDsKey: [service.uuid],
                 CBAdvertisementDataLocalNameKey: localName
             ]
             advertiser.startAdvertising(adData)
+            isRunning = true
+        } else {
+            isRunning = false
         }
     }
     
     // Stops advertising
     func stop() {
-        if isOn() {
+        if isOn() && isRunning {
             advertiser.stopAdvertising()
             advertiser.removeAllServices()
         }
+        isRunning = false
     }
 }
 
@@ -78,9 +88,10 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     var scanner: CBCentralManager!
     var scanTimer: Timer?
     var serviceCBUUID: CBUUID!
-    var localName: String!
     
     // Variables
+    var localName: String!
+    var isRunning: Bool!
     var proxRSSICount: Int!
     var otherRSSICount: Int!
     var logToFile: Bool!
@@ -128,6 +139,7 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         logToFile = false
         runDetector = false
         runUltrasonic = false
+        isRunning = false
     }
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -142,21 +154,27 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
     // Start scanning for any device
     // Note that this will not do anything if the app is in the background
     func startScanForAll() {
-        if isOn() {
+        if isOn() && !isRunning {
             scanner.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey : true])
+            isRunning = true
+        } else {
+            isRunning = false
         }
     }
     
     // Start scanning for a service UUID
     // This can run in the background, but will not allow duplicates
     func startScanForService() {
-        if isOn() {
+        if isOn() && !isRunning {
             // In in ultrasonic mode, don't allow duplicates
             if runUltrasonic {
                 scanner.scanForPeripherals(withServices: [serviceCBUUID], options: [CBCentralManagerScanOptionAllowDuplicatesKey : false])
             } else {
                 scanner.scanForPeripherals(withServices: [serviceCBUUID], options: [CBCentralManagerScanOptionAllowDuplicatesKey : true])
             }
+            isRunning = true
+        } else {
+            isRunning = false
         }
     }
     
@@ -165,6 +183,7 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
         if isOn() {
             scanner.stopScan()
         }
+        isRunning = false
     }
     
     // Start scanning for a service UUID in a loop
@@ -210,7 +229,7 @@ class BluetoothScanner: NSObject, CBCentralManagerDelegate {
                 // Start command or measurement data
                 if advName == "uStart" {
                     NotificationCenter.default.post(name: Notification.Name(rawValue: "ultrasonicStartRun"), object: nil)
-                } else if advName.prefix(5) == "uMeas" {
+                } else if advName.prefix(5) == "uMeas" && !ultrasonicData.remoteTimeValid {
                     ultrasonicData.remoteTime = Double(advName.dropFirst(5))!
                     ultrasonicData.remoteTimeValid = true
                 }
