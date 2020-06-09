@@ -18,8 +18,8 @@ struct ultrasonicData {
     static var remoteTime: Double = 0
     static var remoteTimeValid: Bool = false
     
-    static var masterTxSamples: [Float32] = [0]
-    static var slaveTxSamples: [Float32] = [0]
+    static var leaderTxSamples: [Float32] = [0]
+    static var followerTxSamples: [Float32] = [0]
     
     static var sendTime: Double = 0
     static var recvSelfTime: Double = 0
@@ -73,7 +73,7 @@ class UltrasonicViewController: UIViewController {
             print("vDSP is available")
             #endif
         } else {
-            masterSlaveControl.isEnabled = false
+            leaderFollowerControl.isEnabled = false
             rangeStepper.isEnabled = false
             runStopButton.isEnabled = false
             runStopButton.setTitle("Disabled", for: .normal)
@@ -89,7 +89,7 @@ class UltrasonicViewController: UIViewController {
         rx = audioRx()
         rx.recorder = engine.inputNode
         isRunning = false
-        isSlave = (masterSlaveControl.selectedSegmentIndex == 1)
+        isFollower = (leaderFollowerControl.selectedSegmentIndex == 1)
         range = Int(rangeStepper.value)
         rangeLabel.text = range.description
         count = 0
@@ -103,7 +103,7 @@ class UltrasonicViewController: UIViewController {
         
         // Connect transmitter
         engine.attach(tx.player)
-        engine.connect(tx.player, to:engine.outputNode, format: tx.masterBuff.format)
+        engine.connect(tx.player, to:engine.outputNode, format: tx.leaderBuff.format)
         
         // Startup
         do {
@@ -118,14 +118,14 @@ class UltrasonicViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(startRun), name: Notification.Name(rawValue: "ultrasonicStartRun"), object: nil)
     }
     
-    // Master/slave control
-    // Only the master (0) is capable of starting a run using the button
-    // The slave (1) scans Bluetooth for the start/stop signals
-    var isSlave: Bool!
-    @IBOutlet weak var masterSlaveControl: UISegmentedControl!
-    @IBAction func masterSlaveControlChanged(_ sender: Any) {
-        isSlave = (masterSlaveControl.selectedSegmentIndex == 1)
-        if isSlave {
+    // Leader/follower control
+    // Only the leader (0) is capable of starting a run using the button
+    // The follower (1) scans Bluetooth for the start/stop signals
+    var isFollower: Bool!
+    @IBOutlet weak var leaderFollowerControl: UISegmentedControl!
+    @IBAction func leaderFollowerControlChanged(_ sender: Any) {
+        isFollower = (leaderFollowerControl.selectedSegmentIndex == 1)
+        if isFollower {
             runStopButton.setTitle("Waiting...", for: .normal)
             runStopButton.isEnabled = false
             scanner.runUltrasonic = true
@@ -171,15 +171,15 @@ class UltrasonicViewController: UIViewController {
         runStopButton.setTitle("Running...", for: .normal)
         runStopButton.isEnabled = false
         rangeStepper.isEnabled = false
-        masterSlaveControl.isEnabled = false
+        leaderFollowerControl.isEnabled = false
         
         // Mark data as invalid
         ultrasonicData.localTimeValid = false
         ultrasonicData.remoteTimeValid = false
         
-        // If we are the master, tell the slave to start
-        // If we are the slave, stop scanning
-        if !isSlave {
+        // If we are the leader, tell the follower to start
+        // If we are the follower, stop scanning
+        if !isFollower {
             advertiser.setName(name: "uStart")
             advertiser.start()
         } else {
@@ -192,8 +192,8 @@ class UltrasonicViewController: UIViewController {
         scanner.startScanForService()
         
         // Run transmitter and receiver
-        tx.run(isSlave: isSlave, range: range, count: count)
-        rx.run(isSlave: isSlave, range: range, count: count)
+        tx.run(isFollower: isFollower, range: range, count: count)
+        rx.run(isFollower: isFollower, range: range, count: count)
                 
         // Stop running after 1 second
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
@@ -204,11 +204,11 @@ class UltrasonicViewController: UIViewController {
     // Stops running
     @objc func stopRun() {
         
-        // Advertise our measurement (if we're master, stop advertising first)
+        // Advertise our measurement (if we're the leader, stop advertising first)
         // The measurement is rounded to the nearest nanosecond, since that's
         // plenty for precision, and using a longer advertising name seemed to
         // cause unstable BLE behavior.
-        if !isSlave {
+        if !isFollower {
             advertiser.stop()
         }
         let t = Int64(round(ultrasonicData.localTime))
@@ -219,10 +219,10 @@ class UltrasonicViewController: UIViewController {
         // Wait 500 ms before continuing
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500), execute: {
             
-            // Stop BLE activity. If we're the slave, return to search for the start signal
+            // Stop BLE activity. If we're the follower, return to search for the start signal
             self.advertiser.stop()
             self.scanner.stop()
-            if self.isSlave {
+            if self.isFollower {
                 self.scanner.runUltrasonic = true
                 self.scanner.setName(name: "uStart")
                 self.scanner.startScanForService()
@@ -236,14 +236,14 @@ class UltrasonicViewController: UIViewController {
             self.countLabel.text = self.count.description
             
             // Update UI
-            if self.isSlave {
+            if self.isFollower {
                 self.runStopButton.setTitle("Waiting...", for: .normal)
             } else {
                 self.runStopButton.isEnabled = true
                 self.runStopButton.setTitle("Run", for: .normal)
             }
             self.rangeStepper.isEnabled = true
-            self.masterSlaveControl.isEnabled = true
+            self.leaderFollowerControl.isEnabled = true
             
             // Update state
             self.isRunning = false
@@ -256,7 +256,7 @@ class UltrasonicViewController: UIViewController {
             stopRun()
         }
         advertiser.setName(name: "BlueProxTx")
-        if isSlave {
+        if isFollower {
             scanner.stop()
         }
         scanner.runUltrasonic = false
@@ -265,7 +265,7 @@ class UltrasonicViewController: UIViewController {
     
     // Get back in a good state if we're returning to this tab
     override func viewDidAppear(_ animated: Bool) {
-        if isSlave {
+        if isFollower {
             scanner.runUltrasonic = true
             scanner.setName(name: "uStart")
             scanner.startScanForService()
@@ -409,8 +409,8 @@ func xcorr(a: [Float32], b: [Float32]) -> ([Float32], [Int]) {
 class audioTx {
     
     // Objects
-    var masterBuff: AVAudioPCMBuffer!
-    var slaveBuff: AVAudioPCMBuffer!
+    var leaderBuff: AVAudioPCMBuffer!
+    var followerBuff: AVAudioPCMBuffer!
     var player: AVAudioPlayerNode!
     var writer: dataWriter!
     
@@ -449,7 +449,7 @@ class audioTx {
         let b: [Float32] = [-0.000236437942135332,0.000815325587435857,-0.00183656749123850,0.00322373502187833,-0.00457968516861099,0.00537189644388272,-0.00505499229413463,0.00347779908067731,-0.000994138199842880,-0.00149735453578532,0.00299215894167622,-0.00281888001320860,0.00112282019378742,0.00117742109999269,-0.00276190993327034,0.00268673229611326,-0.000919027237732912,-0.00151847017808169,0.00313502230989920,-0.00282316058926014,0.000639139330387021,0.00216118221188974,-0.00378479893826083,0.00305407445743594,-0.000213098251323078,-0.00305509803583764,0.00462083414717519,-0.00325156533384849,-0.000442882872856017,0.00423976399299556,-0.00559353103863132,0.00332987943691472,0.00143089652234904,-0.00575220869787921,0.00667203811847967,-0.00318132338188699,-0.00285718529266932,0.00765172352815033,-0.00780739875056750,0.00268031096794725,0.00487600364443114,-0.0100153958122534,0.00895157284903807,-0.00164111991850756,-0.00771526406578997,0.0129957257493104,-0.0100525527756791,-0.000208683315191778,0.0117728338217874,-0.0168823062953845,0.0110573662379157,0.00338991198315377,-0.0178761268941901,0.0223633756310119,-0.0118999586500315,-0.00913092301919785,0.0282155195419526,-0.0314611418824086,0.0125464824690390,0.0213641817308486,-0.0508192925894373,0.0527952804647337,-0.0129465536996555,-0.0650313835263956,0.158401873393614,-0.234059009950929,0.263085660805954,-0.234059009950929,0.158401873393614,-0.0650313835263956,-0.0129465536996555,0.0527952804647337,-0.0508192925894373,0.0213641817308486,0.0125464824690390,-0.0314611418824086,0.0282155195419526,-0.00913092301919785,-0.0118999586500315,0.0223633756310119,-0.0178761268941901,0.00338991198315377,0.0110573662379157,-0.0168823062953845,0.0117728338217874,-0.000208683315191778,-0.0100525527756791,0.0129957257493104,-0.00771526406578997,-0.00164111991850756,0.00895157284903807,-0.0100153958122534,0.00487600364443114,0.00268031096794725,-0.00780739875056750,0.00765172352815033,-0.00285718529266932,-0.00318132338188699,0.00667203811847967,-0.00575220869787921,0.00143089652234904,0.00332987943691472,-0.00559353103863132,0.00423976399299556,-0.000442882872856017,-0.00325156533384849,0.00462083414717519,-0.00305509803583764,-0.000213098251323078,0.00305407445743594,-0.00378479893826083,0.00216118221188974,0.000639139330387021,-0.00282316058926014,0.00313502230989920,-0.00151847017808169,-0.000919027237732912,0.00268673229611326,-0.00276190993327034,0.00117742109999269,0.00112282019378742,-0.00281888001320860,0.00299215894167622,-0.00149735453578532,-0.000994138199842880,0.00347779908067731,-0.00505499229413463,0.00537189644388272,-0.00457968516861099,0.00322373502187833,-0.00183656749123850,0.000815325587435857,-0.00023643794213533]
         
         // -------------------------------------------------------------------------------------
-        // Master TX waveform
+        // Leader TX waveform
         // -------------------------------------------------------------------------------------
         
         // Random number generator seed based on UDID
@@ -457,26 +457,26 @@ class audioTx {
         //let devSeed: UInt64 = strHash(devStr!)
         
         // Create white noise (as integers, then scaled to floats)
-        let masterSeed: UInt64 = strHash("master123")
-        let masterRng = GKMersenneTwisterRandomSource(seed: masterSeed)
+        let leaderSeed: UInt64 = strHash("leader123")
+        let leaderRng = GKMersenneTwisterRandomSource(seed: leaderSeed)
         let stdDev = Float32(65536.0)
-        let masterRandn = GKGaussianDistribution(randomSource: masterRng, mean: 0, deviation: stdDev)
+        let leaderRandn = GKGaussianDistribution(randomSource: leaderRng, mean: 0, deviation: stdDev)
         let n = Int(buffSize)
         let n_pad = b.count
         var x: [Float32] = Array(repeating: 0.0, count: (n + n_pad))
         for i in 0...(n-1) {
-            x[i] = Float32(masterRandn.nextInt())/stdDev
+            x[i] = Float32(leaderRandn.nextInt())/stdDev
         }
         
         // High pass filter
         if #available(iOS 13.0, *) {
-            ultrasonicData.masterTxSamples = vDSP.convolve(x, withKernel: b)
+            ultrasonicData.leaderTxSamples = vDSP.convolve(x, withKernel: b)
         }
 
         // Normalize to +/- 1
-        var m = Float32(ultrasonicData.masterTxSamples.max()!)
-        ultrasonicData.masterTxSamples.enumerated().forEach { i, v in
-            ultrasonicData.masterTxSamples[i] = v/m
+        var m = Float32(ultrasonicData.leaderTxSamples.max()!)
+        ultrasonicData.leaderTxSamples.enumerated().forEach { i, v in
+            ultrasonicData.leaderTxSamples[i] = v/m
         }
         
         // Ramp up and down
@@ -484,50 +484,50 @@ class audioTx {
         let dRamp = 2.5e-3
         let nRamp = Int(fs*dRamp)
         for i in 0...(nRamp-1) {
-            ultrasonicData.masterTxSamples[i] *= Float32(i)/Float32(nRamp)
-            ultrasonicData.masterTxSamples[Int(buffSize)-i-1] *= Float32(i)/Float32(nRamp)
+            ultrasonicData.leaderTxSamples[i] *= Float32(i)/Float32(nRamp)
+            ultrasonicData.leaderTxSamples[Int(buffSize)-i-1] *= Float32(i)/Float32(nRamp)
         }
         
         // Set up buffer to send
         let audioFormat = AVAudioFormat(standardFormatWithSampleRate: fs, channels: 1)!
-        masterBuff = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: buffSize)!
-        masterBuff.frameLength = buffSize
-        masterBuff.floatChannelData![0].initialize(from: &ultrasonicData.masterTxSamples, count: n)
+        leaderBuff = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: buffSize)!
+        leaderBuff.frameLength = buffSize
+        leaderBuff.floatChannelData![0].initialize(from: &ultrasonicData.leaderTxSamples, count: n)
         
         // -------------------------------------------------------------------------------------
-        // Slave TX waveform
+        // Follower TX waveform
         // -------------------------------------------------------------------------------------
         
         // Create white noise (as integers, then scaled to floats)
-        let slaveSeed: UInt64 = strHash("slave456")
-        let slaveRng = GKMersenneTwisterRandomSource(seed: slaveSeed)
-        let slaveRandn = GKGaussianDistribution(randomSource: slaveRng, mean: 0, deviation: stdDev)
+        let followerSeed: UInt64 = strHash("follower456")
+        let followerRng = GKMersenneTwisterRandomSource(seed: followerSeed)
+        let followerRandn = GKGaussianDistribution(randomSource: followerRng, mean: 0, deviation: stdDev)
         x = Array(repeating: 0.0, count: (n + n_pad))
         for i in 0...(n-1) {
-            x[i] = Float32(slaveRandn.nextInt())/stdDev
+            x[i] = Float32(followerRandn.nextInt())/stdDev
         }
         
         // High pass filter
         if #available(iOS 13.0, *) {
-            ultrasonicData.slaveTxSamples = vDSP.convolve(x, withKernel: b)
+            ultrasonicData.followerTxSamples = vDSP.convolve(x, withKernel: b)
         }
 
         // Normalize to +/- 1
-        m = Float32(ultrasonicData.slaveTxSamples.max()!)
-        ultrasonicData.slaveTxSamples.enumerated().forEach { i, v in
-            ultrasonicData.slaveTxSamples[i] = v/m
+        m = Float32(ultrasonicData.followerTxSamples.max()!)
+        ultrasonicData.followerTxSamples.enumerated().forEach { i, v in
+            ultrasonicData.followerTxSamples[i] = v/m
         }
         
         // Ramp up and down
         for i in 0...(nRamp-1) {
-            ultrasonicData.slaveTxSamples[i] *= Float32(i)/Float32(nRamp)
-            ultrasonicData.slaveTxSamples[Int(buffSize)-i-1] *= Float32(i)/Float32(nRamp)
+            ultrasonicData.followerTxSamples[i] *= Float32(i)/Float32(nRamp)
+            ultrasonicData.followerTxSamples[Int(buffSize)-i-1] *= Float32(i)/Float32(nRamp)
         }
         
         // Set up buffer to send
-        slaveBuff = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: buffSize)!
-        slaveBuff.frameLength = buffSize
-        slaveBuff.floatChannelData![0].initialize(from: &ultrasonicData.slaveTxSamples, count: n)
+        followerBuff = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: buffSize)!
+        followerBuff.frameLength = buffSize
+        followerBuff.floatChannelData![0].initialize(from: &ultrasonicData.followerTxSamples, count: n)
         
         // -------------------------------------------------------------------------------------
         // Finish audio setup
@@ -552,32 +552,32 @@ class audioTx {
     }
     
     // Main transmit routine
-    @objc func run(isSlave: Bool, range: Int, count: Int) {
+    @objc func run(isFollower: Bool, range: Int, count: Int) {
         
         // Make a new file
-        var id = "master"
-        if isSlave {
-            id = "slave"
+        var id = "leader"
+        if isFollower {
+            id = "follower"
         }
         let txFile = id + "_tx_rng_" + range.description + "_cnt_" + count.description + ".dat"
         writer.createFile(fileName: txFile)
         
         // Save samples to file
-        if isSlave {
-            writer.writeDoubleArray(data: [Double(ultrasonicData.slaveTxSamples.count)])
-            writer.writeFloatArray(data: ultrasonicData.slaveTxSamples)
+        if isFollower {
+            writer.writeDoubleArray(data: [Double(ultrasonicData.followerTxSamples.count)])
+            writer.writeFloatArray(data: ultrasonicData.followerTxSamples)
         } else {
-            writer.writeDoubleArray(data: [Double(ultrasonicData.masterTxSamples.count)])
-            writer.writeFloatArray(data: ultrasonicData.masterTxSamples)
+            writer.writeDoubleArray(data: [Double(ultrasonicData.leaderTxSamples.count)])
+            writer.writeFloatArray(data: ultrasonicData.leaderTxSamples)
         }
                 
-        // Master sends 50 ms from now, slave 250 ms from now
+        // Leader sends 50 ms from now, follower 250 ms from now
         var info = mach_timebase_info()
         guard mach_timebase_info(&info) == KERN_SUCCESS else { return }
         let currentTime = mach_absolute_time()
         let nanos = currentTime*UInt64(info.numer)/UInt64(info.denom)
         var sendNanos: Double
-        if isSlave {
+        if isFollower {
             sendNanos = Double(nanos) + 250000000.0
         } else {
             sendNanos = Double(nanos) + 50000000.0
@@ -595,12 +595,12 @@ class audioTx {
         
         // Schedule and playout
         player.stop()
-        if isSlave {
-            player.scheduleBuffer(slaveBuff)
-            player.prepare(withFrameCount: slaveBuff.frameLength)
+        if isFollower {
+            player.scheduleBuffer(followerBuff)
+            player.prepare(withFrameCount: followerBuff.frameLength)
         } else {
-            player.scheduleBuffer(masterBuff)
-            player.prepare(withFrameCount: masterBuff.frameLength)
+            player.scheduleBuffer(leaderBuff)
+            player.prepare(withFrameCount: leaderBuff.frameLength)
         }
         player.play(at: sendAvTime)
     }
@@ -643,12 +643,12 @@ class audioRx {
     }
     
     // Main receive routine
-    func run(isSlave: Bool, range: Int, count: Int) {
+    func run(isFollower: Bool, range: Int, count: Int) {
         
         // Make a new file
-        var id = "master"
-        if isSlave {
-            id = "slave"
+        var id = "leader"
+        if isFollower {
+            id = "follower"
         }
         let rxFile = id + "_rx_rng_" + range.description + "_cnt_" + count.description + ".dat"
         writer.createFile(fileName: rxFile)
@@ -667,13 +667,13 @@ class audioRx {
             self.recorder.removeTap(onBus: 0)
 
             // Process data
-            self.processData(isSlave: isSlave, x: Array(buff), t: nanos)
+            self.processData(isFollower: isFollower, x: Array(buff), t: nanos)
         }
         
     }
     
     // Receiver processing
-    func processData(isSlave: Bool, x: [Float32], t: Double) {
+    func processData(isFollower: Bool, x: [Float32], t: Double) {
         
         #if DEBUG
         //print("Received \(x.count) samples at \(t)")
@@ -687,10 +687,10 @@ class audioRx {
         // Crosscorrelation with self
         var y: [Float32]
         var yLags: [Int]
-        if isSlave {
-            (y, yLags) = xcorr(a: x, b: ultrasonicData.slaveTxSamples)
+        if isFollower {
+            (y, yLags) = xcorr(a: x, b: ultrasonicData.followerTxSamples)
         } else {
-            (y, yLags) = xcorr(a: x, b: ultrasonicData.masterTxSamples)
+            (y, yLags) = xcorr(a: x, b: ultrasonicData.leaderTxSamples)
         }
         if #available(iOS 13.0, *) {
             y = vDSP.square(y)
@@ -715,22 +715,22 @@ class audioRx {
         // Crosscorrelation with remote, and remove self transmit signal
         var z: [Float32]
         var zLags: [Int]
-        if isSlave {
+        if isFollower {
             
-            // Slave with master
-            (z, zLags) = xcorr(a: x, b: ultrasonicData.masterTxSamples)
+            // With leader TX signal
+            (z, zLags) = xcorr(a: x, b: ultrasonicData.leaderTxSamples)
             
-            // Slave transmits second
+            // Follower transmits second
             let rmIdx = Int(selfIdx) - txN
             z = Array(z.prefix(rmIdx))
             zLags = Array(zLags.prefix(rmIdx))
             
         } else {
             
-            // Master with slave (master transmits first)
-            (z, zLags) = xcorr(a: x, b: ultrasonicData.slaveTxSamples)
+            // With follower TX signal
+            (z, zLags) = xcorr(a: x, b: ultrasonicData.followerTxSamples)
             
-            // Master transmits first
+            // Leader transmits first
             let rmIdx = Int(selfIdx) + txN
             z.removeFirst(rmIdx)
             zLags.removeFirst(rmIdx)

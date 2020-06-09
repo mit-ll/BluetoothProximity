@@ -259,11 +259,11 @@
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="SeZ-8i-yP5">
                                 <rect key="frame" x="97" y="30" width="130" height="32"/>
                                 <segments>
-                                    <segment title="Master"/>
-                                    <segment title="Slave"/>
+                                    <segment title="Leader"/>
+                                    <segment title="Follower"/>
                                 </segments>
                                 <connections>
-                                    <action selector="masterSlaveControlChanged:" destination="szr-tK-8Yb" eventType="valueChanged" id="nL3-3F-wHI"/>
+                                    <action selector="leaderFollowerControlChanged:" destination="szr-tK-8Yb" eventType="valueChanged" id="urp-9B-91F"/>
                                 </connections>
                             </segmentedControl>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="feet" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uk2-hr-VOX">
@@ -477,8 +477,8 @@
                     <tabBarItem key="tabBarItem" title="Ultrasonic" image="Tab_Ultrasonic" id="K7a-FL-qwd"/>
                     <connections>
                         <outlet property="countLabel" destination="KBT-Qa-cpk" id="n3v-V3-BsQ"/>
+                        <outlet property="leaderFollowerControl" destination="SeZ-8i-yP5" id="Prf-QX-K3V"/>
                         <outlet property="localStatusLabel" destination="Mmo-Rr-tqn" id="LI9-aK-R4s"/>
-                        <outlet property="masterSlaveControl" destination="SeZ-8i-yP5" id="n1C-Y3-vfj"/>
                         <outlet property="rangeFeetLabel" destination="YXh-mW-dn2" id="wcT-7o-tBZ"/>
                         <outlet property="rangeInchesLabel" destination="dg4-KL-jkI" id="nwU-93-Ees"/>
                         <outlet property="rangeLabel" destination="87d-za-qtr" id="KsL-pk-xVw"/>
