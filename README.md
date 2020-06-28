@@ -51,7 +51,24 @@ A close/far decision with a ? indicates that there isn't enough data to make a d
 
 <img src="Screenshots/detector.jpg" width="30%">
 
-## Log Format
+## Ultrasonic Tab
+
+The ultrasonic tab performs a ranging measurement between two phones and displays the result in feet. The ranging protocol is actively under development, so fair warning that the results may not always be accurate!
+
+The basic process for taking measurements is:
+1. Choose to be leader or follower. The measurement process requires two phones, where only the leader can initiate a measurement, and the follower simply responds to requests from the leader.
+2. Enter the true range.
+3. Press run on the leader phone. After a measurement is complete, the range estimate and other metrics will be shown below.
+
+Everytime an ultrasonic waveform is sent or received, the raw data samples and timestamps are saved to file on the phone in a binary format. The file contains the node name (leader or follower), true range, and count. See the source code (UltrasonicViewController) for more details on the file format - they can easily be read into and processed using Python or MATLAB.
+
+Things that can mess up the range measurements:
+- Nearby sources of ultrasonic noise
+- The two phones don't have direct line of sight to each other
+- The phones are in a high multipath environment (e.g., in a corner of a room)
+- One or both phones are moving at a non-negligible speed
+
+## Logger Format
 
 Timestamped data is written to the log in a comma separated way. The general format is:
 
@@ -92,19 +109,6 @@ This app has been used on the following iPhone models:
 - 11 Pro
 
 There hasn't been extensive testing for all of these devices, nor the various iOS versions that may be in circulation. If something doesn't work as expected on your phone, please send us feedback!
-
-## Known Issues
-
-There are some autolayout warnings when building the project. Further there are some warnings in the console when using the UI switches and button to share data. These appear to be Swift UI bugs and do not affect anything.
-
-```
-invalid mode 'kCFRunLoopCommonModes' provided to CFRunLoopRunSpecific - break on _CFRunLoopError_RunCalledWithInvalidMode to debug. This message will only appear once per execution.
-```
-
-```
-[core] SLRemoteComposeViewController: (this may be harmless) viewServiceDidTerminateWithError: Error Domain=_UIViewServiceErrorDomain Code=1 "(null)" UserInfo={Terminated=disconnect method}
-[ShareSheet] connection invalidated
-```
 
 ## License
 
