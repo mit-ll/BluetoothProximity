@@ -22,11 +22,13 @@ struct ultrasonicData {
     static var followerTxSamples: [Float32] = [0]
     
     static var sendTime: Double = 0
-    static var recvSelfTime: Double = 0
     static var recvRemoteTime: Double = 0
     
-    static var selfSNR: Double = 0
+    static var localSNR: Double = 0
     static var remoteSNR: Double = 0
+    
+    static var localDoppler: Double = 0
+    static var remoteDoppler: Double = 0
 }
 
 class UltrasonicViewController: UIViewController {
@@ -94,12 +96,14 @@ class UltrasonicViewController: UIViewController {
         rangeLabel.text = range.description
         count = 0
         countLabel.text = count.description
-        localStatusLabel.text = "?"
-        remoteStatusLabel.text = "?"
         rangeFeetLabel.text = "?"
         rangeInchesLabel.text = "?"
-        selfSNRLabel.text = "?"
+        localStatusLabel.text = "?"
+        remoteStatusLabel.text = "?"
+        localSNRLabel.text = "?"
         remoteSNRLabel.text = "?"
+        localDopplerLabel.text = "?"
+        remoteDopplerLabel.text = "?"
         
         // Connect transmitter
         engine.attach(tx.player)
@@ -277,15 +281,19 @@ class UltrasonicViewController: UIViewController {
     @IBOutlet weak var countLabel: UILabel!
     
     // Two-way ranging processing
-    @IBOutlet weak var localStatusLabel: UILabel!
-    @IBOutlet weak var remoteStatusLabel: UILabel!
     @IBOutlet weak var rangeFeetLabel: UILabel!
     @IBOutlet weak var rangeInchesLabel: UILabel!
-    @IBOutlet weak var selfSNRLabel: UILabel!
+    @IBOutlet weak var localStatusLabel: UILabel!
+    @IBOutlet weak var remoteStatusLabel: UILabel!
+    @IBOutlet weak var localTimeLabel: UILabel!
+    @IBOutlet weak var remoteTimeLabel: UILabel!
+    @IBOutlet weak var localSNRLabel: UILabel!
     @IBOutlet weak var remoteSNRLabel: UILabel!
+    @IBOutlet weak var localDopplerLabel: UILabel!
+    @IBOutlet weak var remoteDopplerLabel: UILabel!
     func twoWayRanging() {
                 
-        // Display local/remote status
+        // Status
         if !ultrasonicData.localTimeValid {
             localStatusLabel.text = "Error"
             localStatusLabel.textColor = UIColor.red
@@ -301,9 +309,17 @@ class UltrasonicViewController: UIViewController {
             remoteStatusLabel.textColor = UIColor.green
         }
         
-        // Display self/remote SNR measurements
-        selfSNRLabel.text = String(format: "%.1f", ultrasonicData.selfSNR)
+        // Times
+        localTimeLabel.text = String(format: "%.1f", ultrasonicData.localTime/1e6)
+        remoteTimeLabel.text = String(format: "%.1f", ultrasonicData.remoteTime/1e6)
+        
+        // SNRs
+        localSNRLabel.text = String(format: "%.1f", ultrasonicData.localSNR)
         remoteSNRLabel.text = String(format: "%.1f", ultrasonicData.remoteSNR)
+        
+        // Dopplers
+        localDopplerLabel.text = String(format: "%.1f", ultrasonicData.localDoppler)
+        remoteDopplerLabel.text = String(format: "%.1f", ultrasonicData.remoteDoppler)
         
         // If either data is not valid, quit
         if !ultrasonicData.localTimeValid || !ultrasonicData.remoteTimeValid {
@@ -724,7 +740,7 @@ class audioRx {
         // SNR for self received (uses noise from beginning)
         let noise = y.prefix(noiseN)
         let noiseMean = noise.reduce(0, +)/Float32(noise.count)
-        ultrasonicData.selfSNR = 10*log10(Double(yMax/noiseMean))
+        ultrasonicData.localSNR = 10*log10(Double(yMax/noiseMean))
         
         // Crosscorrelation with remote, and remove self transmit signal
         var z: [Float32]
