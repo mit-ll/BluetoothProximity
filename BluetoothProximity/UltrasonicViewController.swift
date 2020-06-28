@@ -433,8 +433,13 @@ class audioTx {
     // Initialize
     init() {
         
-        // Sample rate (samples/second(
-        let fs: Double = 48000.0
+        // Sample rate (samples/second)
+        let fs: Double = AVAudioSession.sharedInstance().sampleRate
+        if fs != 48000.0 {
+            #if DEBUG
+            print("Sample rate is \(fs)")
+            #endif
+        }
         
         // Transmit waveform duration (seconds)
         let d: Double = 0.1
@@ -652,7 +657,12 @@ class audioRx {
     init() {
         
         // Sample rate (samples/second)
-        fs = 48000.0
+        fs = AVAudioSession.sharedInstance().sampleRate
+        if fs != 48000.0 {
+            #if DEBUG
+            print("Sample rate is \(fs!)")
+            #endif
+        }
                 
         // Transmit waveform duration (seconds and samples
         let d = 100e-3
