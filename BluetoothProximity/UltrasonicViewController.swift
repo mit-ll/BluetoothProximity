@@ -41,6 +41,7 @@ class UltrasonicViewController: UIViewController {
     // Objects from the AppDelegate
     var advertiser: BluetoothAdvertiser!
     var scanner: BluetoothScanner!
+    var logger: Logger!
     
     // Make status bar light
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -59,13 +60,17 @@ class UltrasonicViewController: UIViewController {
         scanner.logToFile = false
         scanner.runDetector = false
         
-        // Setup to play and record
+        // Create logger just for ranging
+        logger = Logger()
+        logger.createNewLog()
+                
+        // Setup to play and record in measurement mode
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playAndRecord, options: [.mixWithOthers, .defaultToSpeaker])
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
             #if DEBUG
-            print("AVAudioSession failed")
+            print("Failed to initialize AVAudioSession")
             #endif
         }
         
@@ -341,6 +346,10 @@ class UltrasonicViewController: UIViewController {
         }
         rangeFeetLabel.text = rangeFeet.description
         rangeInchesLabel.text = rangeInches.description
+        
+        // Log results
+        let s = rangeLabel.text! + ",\(rangeFeetFrac),\(ultrasonicData.localTime),\(ultrasonicData.remoteTime),\(ultrasonicData.localSNR),\(ultrasonicData.remoteSNR),\(ultrasonicData.localDoppler),\(ultrasonicData.remoteDoppler)"
+        logger.write(s)
     }
     
 }
